@@ -4,6 +4,8 @@
  */
 package frmView;
 
+import Controller.HoaDonData;
+import Controller.NguyenLieuData;
 import Controller.NhanVienData;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -23,10 +25,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.ListSelectionModel;
 import javax.swing.border.Border;
-import javax.swing.event.ListSelectionEvent;
 import org.apache.hc.core5.http.ParseException;
 
 /**
@@ -35,26 +38,48 @@ import org.apache.hc.core5.http.ParseException;
  */
 public class frmHome extends JFrame{
     //<editor-fold defaultstate="collapsed" desc="Var">
-    JLabel j_tile = new JLabel("QUÁN TRÀ SỮA");
+    JLabel tile = new JLabel("QUÁN TRÀ SỮA");
     JLabel l_pic = new JLabel();
     JPanel p1 = new JPanel();
     JButton btn_qlnv;
     JButton btn_qlnl;
     JButton btn_qlhd;
     JButton btn_tk;
+    
+    JMenuBar mb = new JMenuBar();
+    JMenu m_hethong = new JMenu("Hệ thống");
+    JMenu m_acc = new JMenu("Tài khoản");
+    JMenuItem mi_exit = new JMenuItem("Thoát");
+    JMenuItem mi_logout = new JMenuItem("Đăng xuất");
+    JMenuItem mi_changePass = new JMenuItem("Đổi mật khẩu");
+    
+    JLabel l_preAcc = new JLabel("Tài khoản: ");
+    public JLabel l_acc = new JLabel();
     //</editor-fold>
 
     public frmHome() throws IOException {
         this.setTitle("Quản lý quán trà sữa");
         this.setSize(1185,560);
+        this.setLocation(50, 70);
         this.setLayout(new BorderLayout());
-        Border g_pad = BorderFactory.createEmptyBorder(10,10,10,10);
         
         Font fo_l = new Font("Serif", Font.BOLD,30);
-        j_tile.setBorder(g_pad);
-        j_tile.setFont(fo_l);
-        j_tile.setHorizontalAlignment(JLabel.CENTER);
-        this.add(j_tile,BorderLayout.NORTH);
+        tile.setFont(fo_l);
+        tile.setHorizontalAlignment(JLabel.CENTER);
+        JPanel p_tile = new JPanel();
+        p_tile.setLayout(new BorderLayout());
+        p_tile.add(tile,BorderLayout.CENTER);
+        //<editor-fold defaultstate="collapsed" desc="Menu">
+        m_hethong.add(mi_exit);
+        m_acc.add(mi_logout);
+        m_acc.add(mi_changePass);
+        m_hethong.add(m_acc);
+        mb.add(m_hethong);
+        mb.add(l_preAcc);
+        mb.add(l_acc);
+        p_tile.add(mb,BorderLayout.NORTH);
+        //</editor-fold>
+        this.add(p_tile,BorderLayout.NORTH);
         
         File file = new File("");
         String currentDirectory = file.getAbsolutePath() + "/src/main/java";
@@ -96,18 +121,48 @@ public class frmHome extends JFrame{
         p1.setBorder(pad);
         p1.setPreferredSize(new Dimension(443,448));
         this.add(p1,BorderLayout.EAST);
-        
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setVisible(true);
         //<editor-fold defaultstate="collapsed" desc="Event">
         btn_qlnv.addActionListener(((e) -> {
             try {
-                NhanVienData frmQLNV = new NhanVienData();
-                dispose();
+                NhanVienData frmQLNV = new NhanVienData("qlnv");
             } catch (SQLException | IOException | ParseException | URISyntaxException ex) {
                 Logger.getLogger(frmHome.class.getName()).log(Level.SEVERE, null, ex);
             }
         }));
+        btn_qlnl.addActionListener(((e) -> {
+            try {
+                NguyenLieuData frmQLNL = new NguyenLieuData();
+            } catch (IOException | ParseException  ex) {
+                Logger.getLogger(frmHome.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }));
+        btn_qlhd.addActionListener((e) -> {
+            try {
+                HoaDonData frmQLHD = new HoaDonData(l_acc.getText());
+            } catch (ParseException | IOException ex) {
+                Logger.getLogger(frmHome.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        mi_exit.addActionListener((e) -> {
+            dispose();
+        });
+        mi_logout.addActionListener((e) -> {
+            try {
+                NhanVienData frm = new NhanVienData("login");
+                dispose();
+            } catch (SQLException | ParseException | URISyntaxException | IOException ex) {
+            }
+        });
+        mi_changePass.addActionListener((e) -> {
+            try {
+                NhanVienData frm = new NhanVienData(l_acc.getText());
+            } catch (SQLException | ParseException | URISyntaxException | IOException ex) {
+            }
+        });
         //</editor-fold>
+    }
+    public void lock(){
+        btn_qlnv.setEnabled(false);
     }
 }

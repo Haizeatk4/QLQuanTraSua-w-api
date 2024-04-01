@@ -9,14 +9,15 @@ import Model.QLNhanVien;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import frmView.frmDangNhap;
+import frmView.frmDoiMK;
+import frmView.frmHome;
 import frmView.frmQuanLyNV;
-import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,7 +35,17 @@ import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import java.lang.reflect.Type;
+import java.util.Base64;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.cookie.Cookie;
+import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
+import org.apache.hc.client5.http.protocol.HttpClientContext;
 
 /**
  *
@@ -43,25 +54,33 @@ import org.apache.hc.client5.http.classic.methods.HttpGet;
 public class NhanVienData {
 
     //<editor-fold defaultstate="collapsed" desc="Var">
-    public static PreparedStatement ps;
     frmQuanLyNV frm = new frmQuanLyNV();
-    public static ResultSet rs;
-    public static Statement st;
+    frmDangNhap frm_login;
+    frmDoiMK frm_doiMK;
     private ArrayList<QLNhanVien> arr = new ArrayList();
     private QLNhanVien nv;
     //</editor-fold>
-    public NhanVienData() throws SQLException, IOException, ParseException, URISyntaxException {
-        createArr();
-        frm.loadTable(arr);
-        frm.addListener(new AddListener());
-        frm.delListener(new DelListener());
-        frm.editListener(new EditListener());
-        frm.calListener(new CalListener());
-        frm.searchListener(new SearchListener());
-        frm.setVisible(true);
+    public NhanVienData(String l) throws SQLException, IOException, ParseException, URISyntaxException {
+        if(l.equals("login")){
+            this.frm_login = new frmDangNhap();
+            frm_login.loginListener(new LoginListener());
+            frm_login.setVisible(true);
+        } else if(l.equals("qlnv")){
+            createArr();
+            frm.loadTable(arr);
+            frm.addListener(new AddListener());
+            frm.delListener(new DelListener());
+            frm.editListener(new EditListener());
+            frm.calListener(new CalListener());
+            frm.searchListener(new SearchListener());
+            frm.setVisible(true);
+        } else {
+            this.frm_doiMK = new frmDoiMK(l);
+            frm_doiMK.confirmListener(new ConfirmListener());
+            frm_doiMK.setVisible(true);
+        }
     }
-
-    //<editor-fold defaultstate="collapsed" desc="Event">
+    //<editor-fold defaultstate="collapsed" desc="Event of QLNV">
     class AddListener implements ActionListener {
 
         @Override
@@ -72,7 +91,6 @@ public class NhanVienData {
                     CloseableHttpClient client = HttpClients.createDefault();
                     HttpPost httpP = new HttpPost("http://localhost:4567/nhan_vien/them");
                     ArrayList<NameValuePair> params = new ArrayList<>();
-                    params.add(new BasicNameValuePair("MaNhanVien", nv.getMaNhanVien()));
                     params.add(new BasicNameValuePair("TenNhanVien", nv.getTenNhanVien()));
                     params.add(new BasicNameValuePair("Password", nv.getPassword()));
                     params.add(new BasicNameValuePair("Phone", nv.getPhone()));
@@ -203,6 +221,65 @@ public class NhanVienData {
         }
     }
     //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Event of LOGIN">
+    class LoginListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String tk = frm_login.getTK();
+            String mk = frm_login.getMK();
+            try {
+                CloseableHttpClient client = HttpClients.createDefault();
+                HttpPost httpP = new HttpPost("http://localhost:4567/nhan_vien/login");
+                ArrayList<NameValuePair> params = new ArrayList<>();
+                params.add(new BasicNameValuePair("MaNhanVien", tk));
+                params.add(new BasicNameValuePair("Password", mk));
+                httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
+                CloseableHttpResponse response = client.execute(httpP);
+                HttpEntity entity = response.getEntity();
+                String r = EntityUtils.toString(entity, Charset.defaultCharset());
+                if(Boolean.parseBoolean(r)){
+                    JOptionPane.showMessageDialog(null, "Đăng nhập thành công", "Thông báo", 1);
+                    frmHome home = new frmHome();
+                    if(!tk.equals("admin")) home.lock();
+                    home.setVisible(true);
+                    home.l_acc.setText(tk);
+                    frm_login.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Tài khoản hoặc mật khẩu không chính xác", "Thông báo", 1);
+                }
+            } catch (IOException | ParseException ex) {
+                JOptionPane.showMessageDialog(null, ex, "Thông báo", 1);
+            }
+        }
+    }class ConfirmListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String tk = frm_doiMK.l_acc.getText();
+            String mk = frm_doiMK.getMatKhauCu();
+            String mkMoi = frm_doiMK.getMatKhauMoi();
+            try {
+                CloseableHttpClient client = HttpClients.createDefault();
+                HttpPost httpP = new HttpPost("http://localhost:4567/nhan_vien/doi_mat_khau");
+                ArrayList<NameValuePair> params = new ArrayList<>();
+                params.add(new BasicNameValuePair("MaNhanVien", tk));
+                params.add(new BasicNameValuePair("Password", mk));
+                params.add(new BasicNameValuePair("NewPassword", mkMoi));
+                httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
+                CloseableHttpResponse response = client.execute(httpP);
+                HttpEntity entity = response.getEntity();
+                String r = EntityUtils.toString(entity, Charset.defaultCharset());
+                if(Boolean.parseBoolean(r)){
+                    JOptionPane.showMessageDialog(null, "Đổi mật khẩu thành công", "Thông báo", 1);
+                    frm_doiMK.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Mật khẩu cũ không chính xác", "Thông báo", 1);
+                }
+            } catch (IOException | ParseException ex) {
+                JOptionPane.showMessageDialog(null, ex, "Thông báo", 1);
+            }
+        }
+    }
+    //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Method">
     public void thongBao(CloseableHttpResponse response) throws IOException, ParseException{
         if(response.toString().contains("200")){
@@ -242,10 +319,6 @@ public class NhanVienData {
         
     }
     //</editor-fold>
-//        CloseableHttpResponse response = client.execute(httpPost);
-//        HttpEntity entity = response.getEntity();
-//        String responseString = EntityUtils.toString(entity, Charset.defaultCharset());
-//        System.out.println(responseString);
     private void createArr() throws IOException, ParseException{
         CloseableHttpClient client = HttpClients.createDefault();
         HttpGet httpG = new HttpGet("http://localhost:4567/nhan_vien");
