@@ -17,10 +17,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.Base64;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -33,7 +37,6 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
-
 /**
  *
  * @author ad
@@ -87,15 +90,28 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
     JButton btn_cal = new JButton("TÍNH TIỀN");
     JTextField txt_search = new JTextField();
     JLabel l_noti = new JLabel();
+    
+    JMenuBar mb = new JMenuBar();
+    JMenu m_hethong = new JMenu("Hệ thống");
+    JMenuItem mi_exit = new JMenuItem("Thoát");
     //</editor-fold>
     public frmQuanLyNV() {
         this.setTitle("Quản lý nhân viên");
         this.setSize(1600,600);
+        this.setLocation(50, 70);
         this.setLayout(new BorderLayout());
         
         Font fo_tile = new Font("Serif", Font.BOLD,32);
         tile.setFont(fo_tile);
         tile.setHorizontalAlignment(JLabel.CENTER);
+        JPanel p_tile = new JPanel();
+        p_tile.setLayout(new BorderLayout());
+        p_tile.add(tile,BorderLayout.CENTER);
+        //<editor-fold defaultstate="collapsed" desc="Menu">
+        m_hethong.add(mi_exit);
+        mb.add(m_hethong);
+        p_tile.add(mb,BorderLayout.NORTH);
+        //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="Panel01">
         Border pad = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         p1.setBorder(pad);
@@ -249,10 +265,9 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         gbc.gridx=0;
         p2.add(bl,gbc);
         //</editor-fold>
-        this.add(tile,BorderLayout.NORTH);
+        this.add(p_tile,BorderLayout.NORTH);
         this.add(p1,BorderLayout.CENTER);
         this.add(p2,BorderLayout.EAST);
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         //<editor-fold defaultstate="collapsed" desc="Event">
         //--------------------------Select--------------------------------------
         final ListSelectionModel sel = td.getSelectionModel();
@@ -274,6 +289,9 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         });
         btn_clear.addActionListener((e) -> {
             clearMode();
+        });
+        mi_exit.addActionListener((e) -> {
+            this.dispose();
         });
         //</editor-fold>
     }
@@ -297,6 +315,13 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
     }
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Method">
+//    public String encode(String pass){
+//        String encode = Base64.getEncoder().encodeToString(pass.getBytes());
+//        return encode;
+//    }
+    public String decode(String pass){
+        return new String(Base64.getDecoder().decode(pass));
+    }
     public String getSearch(){
         String s = txt_search.getText().trim().replace(" ", "_");
         return s;
@@ -357,7 +382,7 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
     public void setText(){
         txt_maNV.setText(arr.get(item_id).getMaNhanVien());
         txt_tenNV.setText(arr.get(item_id).getTenNhanVien());
-        txt_pass.setText(arr.get(item_id).getPassword());
+        txt_pass.setText(decode(arr.get(item_id).getPassword()));
         txt_sdt.setText(arr.get(item_id).getPhone());
         txt_email.setText(arr.get(item_id).getEmail());
         txt_cccd.setText(arr.get(item_id).getCMND());
@@ -390,7 +415,6 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
             model.addRow(r);
         }
         this.arr = arr;
-        clearMode();
     }
     public boolean checkBlank(){
         if(txt_tenNV.getText().trim().isEmpty()||txt_pass.getText().trim().isEmpty()||txt_sdt.getText().trim().isEmpty()||txt_cccd.getText().trim().isEmpty()||Integer.parseInt(spr_time.getValue().toString())==0||Integer.parseInt(spr_luongCB.getValue().toString())==0||Double.parseDouble(spr_HSLuong.getValue().toString())==0){
@@ -414,12 +438,12 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         if(checkBlank()){
             return null;
         } else {
-            String a = txt_maNV.getText();
-            String b = txt_tenNV.getText();
-            String c = txt_pass.getText();
-            String d = txt_sdt.getText();
-            String e = txt_email.getText();
-            String f = txt_cccd.getText();
+            String a = txt_maNV.getText().trim();
+            String b = txt_tenNV.getText().trim();
+            String c = txt_pass.getText().trim();
+            String d = txt_sdt.getText().trim();
+            String e = txt_email.getText().trim();
+            String f = txt_cccd.getText().trim();
             Date g1 = dc_workDate.getDate();
             java.sql.Date g = new java.sql.Date(g1.getTime());
             String h = spr_time.getValue().toString();

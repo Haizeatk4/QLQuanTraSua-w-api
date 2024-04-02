@@ -4,7 +4,7 @@
 
 package com.mycompany.qltrasua;
 
-import frmView.frmHome;
+import Controller.NhanVienData;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
@@ -17,6 +17,6 @@ import org.apache.hc.core5.http.ParseException;
 public class QLTRASUA {
 
     public static void main(String[] args) throws SQLException, IOException, URISyntaxException, InterruptedException, ParseException {
-        frmHome frm = new frmHome();
+        NhanVienData frm = new NhanVienData("login");
     }
 }
