@@ -17,6 +17,15 @@ public class HoaDon {
     private Date NgayLap;
     private String MaBan;
     private String ThanhTien;
+    private String TinhTrang;
+
+    public String getTinhTrang() {
+        return TinhTrang;
+    }
+
+    public void setTinhTrang(String TinhTrang) {
+        this.TinhTrang = TinhTrang;
+    }
 
     public String getMaHD() {
         return MaHD;

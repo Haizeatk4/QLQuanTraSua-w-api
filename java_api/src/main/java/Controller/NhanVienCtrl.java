@@ -15,8 +15,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -120,8 +118,8 @@ public class NhanVienCtrl {
     public String InsertNhanVien(NhanVien nv) throws ClassNotFoundException {
         String sql = "INSERT INTO QLNhan_Vien VALUES(?,?,?,?,?,?,?,?,?,?,?)";
         try {
-            if(checkcmnd(nv.getCMND(),nv.getMaNhanVien())) return "2";
-            if(checkmail1(nv.getEmail(),nv.getMaNhanVien())) return "3";
+            if(checkcmnd(nv.getCMND(),nv.getMaNhanVien())) return "Căn cước công dân này đã tồn tại trong hệ thống! Vui lòng nhập lại hoặc xóa bản ghi trước đó.";
+            if(checkmail1(nv.getEmail(),nv.getMaNhanVien())) return "Email đã tồn tại trong hệ thống! Vui lòng nhập lại hoặc xóa bản ghi trước đó.";
             ps = connectDatabase.TaoKetNoi().prepareStatement(sql);
             ps.setString(1, nv.getMaNhanVien());
             ps.setString(2, nv.getTenNhanVien());
@@ -138,7 +136,7 @@ public class NhanVienCtrl {
             ps.setString(11, nv.getTienLuong());
             ps.execute();
             ps.close();
-            return "1";
+            return "Ðã thêm thành công!";
         } catch (SQLException e) {
             return e.getMessage();
         }
@@ -147,8 +145,8 @@ public class NhanVienCtrl {
 
     public String UpdateNhanVien(NhanVien nv) throws ClassNotFoundException {
         try {
-            if(checkcmnd(nv.getCMND(),nv.getMaNhanVien())) return "2";
-            if(checkmail1(nv.getEmail(),nv.getMaNhanVien())) return "3";
+            if(checkcmnd(nv.getCMND(),nv.getMaNhanVien())) return "Căn cước công dân này đã tồn tại trong hệ thống! Vui lòng nhập lại hoặc xóa bản ghi trước đó.";
+            if(checkmail1(nv.getEmail(),nv.getMaNhanVien())) return "Email đã tồn tại trong hệ thống! Vui lòng nhập lại hoặc xóa bản ghi trước đó.";
             ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE QLNhan_Vien SET TenNhanVien = ?,"
                     + "Password=? ,Phone=?,Email=?,CMND=?,NgayLamViec=?,CaLamViec=?,LuongCoBan=?,HeSoLuong=?,TienLuong=? where MaNhanVien = ?");
             ps.setString(1, nv.getTenNhanVien());
@@ -166,7 +164,7 @@ public class NhanVienCtrl {
             ps.setString(11, nv.getMaNhanVien());
             ps.executeUpdate();
             ps.close();
-            return "10";
+            return "Ðã sửa thành công!";
         } catch (SQLException e) {
             return e.getMessage();
         }
@@ -178,7 +176,7 @@ public class NhanVienCtrl {
             ps = connectDatabase.TaoKetNoi().prepareStatement("DELETE FROM QlNhan_Vien WHERE MaNhanVien = ?");
             ps.setString(1, MaNhanVien);
             ps.executeUpdate();
-            return "0";
+            return "Ðã xóa thành công!";
         } catch (SQLException e) {
             return e.getMessage();
         }

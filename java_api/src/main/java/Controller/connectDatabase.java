@@ -20,7 +20,7 @@ public class connectDatabase {
     public static Connection TaoKetNoi(){
         String url = "jdbc:mysql://localhost:3306/qlquantrasua";
         String user = "root";
-        String password = "";
+        String password = "admin";
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             

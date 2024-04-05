@@ -15,6 +15,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.BorderFactory;
@@ -47,7 +50,6 @@ public class frmQuanLyNguyenLieu extends JFrame implements ActionListener {
     int item_id,mode=0;
     private ArrayList<QLNguyenLieu> arr = new ArrayList();
     //---------------------------------------------------------------------------
-    
     JPanel p2 = new JPanel();
     JLabel tile = new JLabel("QUẢN LÝ NGUYÊN LIỆU");
     
@@ -80,25 +82,32 @@ public class frmQuanLyNguyenLieu extends JFrame implements ActionListener {
     JMenuBar mb = new JMenuBar();
     JMenu m_hethong = new JMenu("Hệ thống");
     JMenuItem mi_exit = new JMenuItem("Thoát");
+    JLabel l_preAcc = new JLabel("Tài khoản: ");
+    JLabel l_acc = new JLabel();
     //</editor-fold>
-    public frmQuanLyNguyenLieu() {
+    public frmQuanLyNguyenLieu(String tk) {
         this.setSize(1200,800);
         this.setLocation(50, 70);
         this.setTitle("Quản lý nguyên liệu");
         this.setLayout(new BorderLayout());
         Border pad = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         //<editor-fold defaultstate="collapsed" desc="Menu">
-        m_hethong.add(mi_exit);
-        mb.add(m_hethong);
-        //</editor-fold>
-        //<editor-fold defaultstate="collapsed" desc="Panel02">
         p2.setLayout(new BorderLayout());
         
+        l_acc.setText(tk);
+        m_hethong.add(mi_exit);
+        mb.add(m_hethong);
+        mb.add(l_preAcc);
+        mb.add(l_acc);
         p2.add(mb,BorderLayout.NORTH);
+        //</editor-fold>
+        //<editor-fold defaultstate="collapsed" desc="Panel02">
+        
         Font fo_tile = new Font("Serif", Font.BOLD,32);
         tile.setFont(fo_tile);
         tile.setHorizontalAlignment(JLabel.CENTER);
         tile.setBorder(pad);
+        p2.add(tile,BorderLayout.CENTER);
         //---------------------------------------------------------------------------------
         JPanel p21 = new JPanel();
         p21.setLayout(new GridBagLayout());
@@ -121,7 +130,6 @@ public class frmQuanLyNguyenLieu extends JFrame implements ActionListener {
         gbc.gridx=1;
         p21.add(txt_search,gbc);
         //---------------------------------------------------------------------------------
-        p2.add(tile,BorderLayout.CENTER);
         p2.add(p21,BorderLayout.SOUTH);
         //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="Panel01">
@@ -197,6 +205,8 @@ public class frmQuanLyNguyenLieu extends JFrame implements ActionListener {
         btn_edit.setBackground(Color.WHITE);
         btn_add.setBackground(Color.WHITE);
         btn_clear.setBackground(Color.WHITE);
+        btn_edit.setEnabled(false);
+        btn_del.setEnabled(false);
         j_b.add(btn_add);
         j_b.add(btn_edit);
         j_b.add(btn_del);
@@ -204,6 +214,7 @@ public class frmQuanLyNguyenLieu extends JFrame implements ActionListener {
         btn_add.addActionListener(this);
         btn_edit.addActionListener(this);
         btn_del.addActionListener(this);
+        btn_clear.addActionListener(this);
         
         gbc.gridx = 0;
         gbc.gridy = 6;
@@ -242,7 +253,20 @@ public class frmQuanLyNguyenLieu extends JFrame implements ActionListener {
             clearMode();
         });
         mi_exit.addActionListener((e) -> {
-            this.dispose();
+            try {
+                frmHome home = new frmHome(tk);
+                home.setVisible(true);
+                dispose();
+            } catch (IOException ex) {}
+        });
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    frmHome home = new frmHome(tk);
+                    home.setVisible(true);
+                } catch (IOException ex) {}
+            }
         });
         //</editor-fold>
     }
@@ -260,6 +284,9 @@ public class frmQuanLyNguyenLieu extends JFrame implements ActionListener {
     }
     public void searchListener (ActionListener log){
         btn_search.addActionListener(log);
+    }
+    public void clearListener (ActionListener log){
+        btn_clear.addActionListener(log);
     }
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Method">
@@ -305,7 +332,7 @@ public class frmQuanLyNguyenLieu extends JFrame implements ActionListener {
             java.sql.Date c = new java.sql.Date(g1.getTime());
             String d = spr_soLuong.getValue().toString();
             String e = cb_donVi.getSelectedItem().toString();
-            String f = spr_donGia.getValue().toString();
+            int f = (int) spr_donGia.getValue();
             QLNguyenLieu nl = new QLNguyenLieu(a,b,c,d,e,f);
             return nl;
         }
@@ -330,6 +357,7 @@ public class frmQuanLyNguyenLieu extends JFrame implements ActionListener {
         btn_edit.setEnabled(false);
         btn_del.setEnabled(false);
         td.clearSelection();
+        txt_search.setText("");
     }
     public void clearText(){
         txt_maNL.setText("");
@@ -364,7 +392,5 @@ public class frmQuanLyNguyenLieu extends JFrame implements ActionListener {
     }
     //</editor-fold>
     @Override
-    public void actionPerformed(ActionEvent e) {
-    }
-    
+    public void actionPerformed(ActionEvent e) {}
 }

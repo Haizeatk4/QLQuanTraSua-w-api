@@ -35,48 +35,39 @@ import org.apache.hc.core5.http.message.BasicNameValuePair;
  */
 public class NguyenLieuData {
     //<editor-fold defaultstate="collapsed" desc="Var">
-    private frmQuanLyNguyenLieu frm = new frmQuanLyNguyenLieu();
+    private frmQuanLyNguyenLieu frm;
     private ArrayList<QLNguyenLieu> arr = new ArrayList();
     private QLNguyenLieu nl;
     //</editor-fold>
-    public NguyenLieuData() throws IOException, ParseException {
-        createArr();
-        frm.loadTable(arr);
-        frm.addListener(new AddListener());
-        frm.delListener(new DelListener());
-        frm.editListener(new EditListener());
-        frm.searchListener(new SearchListener());
-        frm.setVisible(true);
+    public NguyenLieuData(String tk) throws IOException, ParseException {
+        if(!tk.equals("")){
+            frm = new frmQuanLyNguyenLieu(tk);
+            createArr();
+            frm.loadTable(arr);
+            frm.addListener(new AddListener());
+            frm.delListener(new DelListener());
+            frm.editListener(new EditListener());
+            frm.searchListener(new SearchListener());
+            frm.clearListener(new ClearListener());
+            frm.setVisible(true);
+        }
     }
     //<editor-fold defaultstate="collapsed" desc="Method">
     public void thongBao(CloseableHttpResponse response) throws IOException, ParseException{
         if(response.toString().contains("200")){
             HttpEntity entity = response.getEntity();
             String r = EntityUtils.toString(entity, Charset.defaultCharset());
-            switch(r){
-                case "0" -> {
-                    JOptionPane.showMessageDialog(null, "Ðã xóa thành công!", "Thông báo", 1);
-                    break;
-                }
-                case "1" -> {
-                    JOptionPane.showMessageDialog(null, "Ðã thêm nguyên liệu thành công!", "Thông báo", 1);
-                    break;
-                }
-                case "2" -> {
-                    JOptionPane.showMessageDialog(null, "Ðã sửa thành công!", "Thông báo", 1);
-                    break;
-                }
-                default -> {
-                    JOptionPane.showMessageDialog(null, r, "Thông báo", 1);
-                    break;
-                }
-            }
+            JOptionPane.showMessageDialog(null, r, "Thông báo", 1);
             createArr();
             frm.loadTable(arr);
         } else {
             JOptionPane.showMessageDialog(null, response.toString(), "Thông báo", 1);
         }
         
+    }
+    public ArrayList<QLNguyenLieu> getAllNL() throws ParseException, IOException{
+        createArr();
+        return arr;
     }
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Event">
@@ -95,7 +86,7 @@ public class NguyenLieuData {
                     params.add(new BasicNameValuePair("NgayNhap", strDate));
                     params.add(new BasicNameValuePair("SoLuong", nl.getSoLuong()));
                     params.add(new BasicNameValuePair("DonVi", nl.getDvTinh()));
-                    params.add(new BasicNameValuePair("DonGia", nl.getDonGia()));
+                    params.add(new BasicNameValuePair("DonGia", Integer.toString(nl.getDonGia())));
                     httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
                     CloseableHttpResponse response = client.execute(httpP);
                     thongBao(response);
@@ -141,7 +132,7 @@ public class NguyenLieuData {
                         params.add(new BasicNameValuePair("NgayNhap", strDate));
                         params.add(new BasicNameValuePair("SoLuong", nl.getSoLuong()));
                         params.add(new BasicNameValuePair("DonVi", nl.getDvTinh()));
-                        params.add(new BasicNameValuePair("DonGia", nl.getDonGia()));
+                        params.add(new BasicNameValuePair("DonGia", Integer.toString(nl.getDonGia())));
                         httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
                         CloseableHttpResponse response = client.execute(httpP);
                         thongBao(response);
@@ -170,6 +161,17 @@ public class NguyenLieuData {
                 frm.loadTable(arr);
             } catch (JsonSyntaxException | IOException | ParseException ex) {
                 JOptionPane.showMessageDialog(null, ex, "Thông báo", 1);
+            }
+        }
+    }
+    class ClearListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                frm.clearMode();
+                createArr();
+                frm.loadTable(arr);
+            } catch (IOException | ParseException ex) {
             }
         }
     }

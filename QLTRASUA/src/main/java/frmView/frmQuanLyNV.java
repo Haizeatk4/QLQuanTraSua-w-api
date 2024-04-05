@@ -15,6 +15,9 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -94,8 +97,10 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
     JMenuBar mb = new JMenuBar();
     JMenu m_hethong = new JMenu("Hệ thống");
     JMenuItem mi_exit = new JMenuItem("Thoát");
+    JLabel l_preAcc = new JLabel("Tài khoản: ");
+    JLabel l_acc = new JLabel();
     //</editor-fold>
-    public frmQuanLyNV() {
+    public frmQuanLyNV(String tk) {
         this.setTitle("Quản lý nhân viên");
         this.setSize(1600,600);
         this.setLocation(50, 70);
@@ -108,8 +113,11 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         p_tile.setLayout(new BorderLayout());
         p_tile.add(tile,BorderLayout.CENTER);
         //<editor-fold defaultstate="collapsed" desc="Menu">
+        l_acc.setText(tk);
         m_hethong.add(mi_exit);
         mb.add(m_hethong);
+        mb.add(l_preAcc);
+        mb.add(l_acc);
         p_tile.add(mb,BorderLayout.NORTH);
         //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="Panel01">
@@ -218,6 +226,8 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         btn_clear.setBackground(Color.WHITE);
         btn_search.setBackground(Color.WHITE);
         btn_cal.setBackground(Color.WHITE);
+        btn_edit.setEnabled(false);
+        btn_del.setEnabled(false);
         
         //add
         gbc.weightx = 1;
@@ -287,11 +297,21 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
                 }
             }
         });
-        btn_clear.addActionListener((e) -> {
-            clearMode();
-        });
         mi_exit.addActionListener((e) -> {
-            this.dispose();
+            try {
+                frmHome home = new frmHome(tk);
+                home.setVisible(true);
+                dispose();
+            } catch (IOException ex) {}
+        });
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    frmHome home = new frmHome(tk);
+                    home.setVisible(true);
+                } catch (IOException ex) {}
+            }
         });
         //</editor-fold>
     }
@@ -312,6 +332,9 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
     }
     public void searchListener (ActionListener log){
         btn_search.addActionListener(log);
+    }
+    public void clearListener (ActionListener log){
+        btn_clear.addActionListener(log);
     }
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Method">
@@ -365,6 +388,7 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         btn_cal.setEnabled(false);
         td.clearSelection();
         l_noti.setText("");
+        txt_search.setText("");
     }
     public void clearText(){
         txt_maNV.setText("");

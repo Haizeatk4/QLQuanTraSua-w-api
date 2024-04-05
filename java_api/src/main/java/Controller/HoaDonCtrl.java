@@ -29,7 +29,7 @@ public class HoaDonCtrl {
     }
     public ArrayList<HoaDon> createArr() throws SQLException{
         arr = new ArrayList<>();
-        ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT MaHD,TenNhanVien,Ngay,MaBan,ThanhTien FROM hoadon,qlnhan_vien WHERE qlnhan_vien.MaNhanVien=hoadon.MaNhanVien");
+        ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT MaHD,TenNhanVien,Ngay,MaBan,ThanhTien,TinhTrang FROM hoadon,qlnhan_vien WHERE qlnhan_vien.MaNhanVien=hoadon.MaNhanVien");
         rs = ps.executeQuery();
         while(rs.next()){
            HoaDon tmp = new HoaDon();
@@ -39,6 +39,7 @@ public class HoaDonCtrl {
            tmp.setNgayLap(rs.getDate("Ngay"));
            tmp.setMaBan(rs.getString("MaBan"));
            tmp.setThanhTien(rs.getString("ThanhTien"));
+           tmp.setTinhTrang(rs.getString("TinhTrang"));
            
            arr.add(tmp);
         }
