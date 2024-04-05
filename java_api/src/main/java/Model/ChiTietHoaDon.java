@@ -12,6 +12,15 @@ public class ChiTietHoaDon {
     String TenDV;
     double SoLuong;
     int DonGia;
+    int ThanhTien;
+
+    public int getThanhTien() {
+        return ThanhTien;
+    }
+
+    public void setThanhTien(int ThanhTien) {
+        this.ThanhTien = ThanhTien;
+    }
 
     public String getTenDV() {
         return TenDV;
@@ -36,4 +45,5 @@ public class ChiTietHoaDon {
     public void setDonGia(int DonGia) {
         this.DonGia = DonGia;
     }
+    
 }

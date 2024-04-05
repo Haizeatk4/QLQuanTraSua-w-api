@@ -37,12 +37,12 @@ public class NguyenLieuCtrl {
         while(rs.next()){
            NguyenLieu tmp = new NguyenLieu();
            
-           tmp.setMaNL(rs.getString("MaNL"));
-           tmp.setTenNL(rs.getString("TenNL"));
+           tmp.setMaNL(rs.getString("MaDV"));
+           tmp.setTenNL(rs.getString("TenDV"));
            tmp.setNgayNhap(rs.getDate("NgayNhap"));
            tmp.setSoLuong(rs.getString("SoLuong"));
            tmp.setDvTinh(rs.getString("DvTinh"));
-           tmp.setDonGia(rs.getString("Gia"));
+           tmp.setDonGia(rs.getInt("Gia"));
            
            arr.add(tmp);
         }
@@ -51,19 +51,19 @@ public class NguyenLieuCtrl {
     public ArrayList<NguyenLieu> searchArr(String s) throws SQLException{
         
         arr = new ArrayList<>();
-        String sql = "SELECT * FROM NguyenLieu where MaNL like '%"+s+"%'"
-                + " or TenNL like '%"+s+"%'"
+        String sql = "SELECT * FROM NguyenLieu where MaDV like '%"+s+"%'"
+                + " or TenDV like '%"+s+"%'"
                 + " or NgayNhap like '%"+s+"%'";
         ps = connectDatabase.TaoKetNoi().prepareStatement(sql);
         rs = ps.executeQuery();
         while(rs.next()){
            NguyenLieu tmp = new NguyenLieu();
-           tmp.setMaNL(rs.getString("MaNL"));
-           tmp.setTenNL(rs.getString("TenNL"));
+           tmp.setMaNL(rs.getString("MaDV"));
+           tmp.setTenNL(rs.getString("TenDV"));
            tmp.setNgayNhap(rs.getDate("NgayNhap"));
            tmp.setSoLuong(rs.getString("SoLuong"));
            tmp.setDvTinh(rs.getString("DvTinh"));
-           tmp.setDonGia(rs.getString("Gia"));
+           tmp.setDonGia(rs.getInt("Gia"));
            arr.add(tmp);
         }
         return arr;
@@ -79,7 +79,7 @@ public class NguyenLieuCtrl {
             ps.setString(3, strDate);
             ps.setString(4, nl.getSoLuong());
             ps.setString(5, nl.getDvTinh());
-            ps.setString(6, nl.getDonGia());
+            ps.setInt(6, nl.getDonGia());
             ps.execute();
             ps.close();
             return "Ðã thêm nguyên liệu thành công!";
@@ -101,13 +101,13 @@ public class NguyenLieuCtrl {
     }
     public String UpdateNguyenLieu(NguyenLieu nl) {
         try {
-            ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE NguyenLieu SET TenNL = ?,"
-                    + "NgayNhap = ?,SoLuong=?,DvTinh=?,Gia=? where MaNL = ?");
+            ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE NguyenLieu SET TenDV = ?,"
+                    + "NgayNhap = ?,SoLuong=?,DvTinh=?,Gia=? where MaDV = ?");
             ps.setString(1, nl.getTenNL());
             ps.setDate(2, nl.getNgayNhap());
             ps.setString(3, nl.getSoLuong());
             ps.setString(4, nl.getDvTinh());
-            ps.setString(5, nl.getDonGia());
+            ps.setInt(5, nl.getDonGia());
             ps.setString(6, nl.getMaNL());
             ps.executeUpdate();
             ps.close();
@@ -120,7 +120,7 @@ public class NguyenLieuCtrl {
 
     public String DeleteNguyenLieu(String MaNL) {
         try {
-            ps = connectDatabase.TaoKetNoi().prepareStatement("DELETE FROM NguyenLieu WHERE MaNL = ?");
+            ps = connectDatabase.TaoKetNoi().prepareStatement("DELETE FROM NguyenLieu WHERE MaDV = ?");
             ps.setString(1, MaNL);
             ps.executeUpdate();
             return "Ðã xóa thành công!";
@@ -133,12 +133,12 @@ public class NguyenLieuCtrl {
         Connection conn;
         Statement stmt;
         conn = connectDatabase.TaoKetNoi();
-        String sql = "SELECT MaNL FROM NguyenLieu order by MaNL Desc";
+        String sql = "SELECT MaDV FROM NguyenLieu order by MaDV Desc";
         stmt = conn.createStatement();
         String manv;
         rs = stmt.executeQuery(sql);
         rs.next();
-        manv = rs.getString("MaNL").trim();
+        manv = rs.getString("MaDV").trim();
         stmt.close();
         conn.close();
 

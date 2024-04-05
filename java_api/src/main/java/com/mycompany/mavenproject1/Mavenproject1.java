@@ -4,7 +4,9 @@
 
 package com.mycompany.mavenproject1;
 
+import API.ChiTietHoaDon_API;
 import API.QL_HoaDon_API;
+import API.QL_Menu_API;
 import API.QL_NguyenLieu_API;
 import API.QL_NhanVien_API;
 import java.sql.PreparedStatement;
@@ -23,6 +25,8 @@ public class Mavenproject1 {
         QL_NhanVien_API qlnv = new QL_NhanVien_API();
         QL_NguyenLieu_API qlnl = new QL_NguyenLieu_API();
         QL_HoaDon_API qlhd = new QL_HoaDon_API();
+        QL_Menu_API qlmn = new QL_Menu_API();
+        ChiTietHoaDon_API cthd = new ChiTietHoaDon_API();
     }
 }
 

@@ -332,7 +332,7 @@ public class frmQuanLyNguyenLieu extends JFrame implements ActionListener {
             java.sql.Date c = new java.sql.Date(g1.getTime());
             String d = spr_soLuong.getValue().toString();
             String e = cb_donVi.getSelectedItem().toString();
-            String f = spr_donGia.getValue().toString();
+            int f = (int) spr_donGia.getValue();
             QLNguyenLieu nl = new QLNguyenLieu(a,b,c,d,e,f);
             return nl;
         }

@@ -32,6 +32,7 @@ public class QL_NguyenLieu_API {
         post("/nguyen_lieu/them", (rqst,rspns) -> {
             NguyenLieuCtrl nvCtrl = new NguyenLieuCtrl();
             NguyenLieu nl = new NguyenLieu();
+            System.out.print("2");
             nl.setMaNL(nvCtrl.taomaNguyenLieu());
             nl.setTenNL(rqst.queryParams("TenNL"));
             
@@ -41,7 +42,7 @@ public class QL_NguyenLieu_API {
             
             nl.setSoLuong(rqst.queryParams("SoLuong"));
             nl.setDvTinh(rqst.queryParams("DonVi"));
-            nl.setDonGia(rqst.queryParams("DonGia"));
+            nl.setDonGia(Integer.parseInt(rqst.queryParams("DonGia")));
             
             rspns.type("application/json");
             return nvCtrl.InsertNguyenLieu(nl);
@@ -63,7 +64,7 @@ public class QL_NguyenLieu_API {
             
             nl.setSoLuong(rqst.queryParams("SoLuong"));
             nl.setDvTinh(rqst.queryParams("DonVi"));
-            nl.setDonGia(rqst.queryParams("DonGia"));
+            nl.setDonGia(Integer.parseInt(rqst.queryParams("DonGia")));
             
             rspns.type("application/json");
             return nvCtrl.UpdateNguyenLieu(nl);

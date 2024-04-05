@@ -40,15 +40,17 @@ public class NguyenLieuData {
     private QLNguyenLieu nl;
     //</editor-fold>
     public NguyenLieuData(String tk) throws IOException, ParseException {
-        frm = new frmQuanLyNguyenLieu(tk);
-        createArr();
-        frm.loadTable(arr);
-        frm.addListener(new AddListener());
-        frm.delListener(new DelListener());
-        frm.editListener(new EditListener());
-        frm.searchListener(new SearchListener());
-        frm.clearListener(new ClearListener());
-        frm.setVisible(true);
+        if(!tk.equals("")){
+            frm = new frmQuanLyNguyenLieu(tk);
+            createArr();
+            frm.loadTable(arr);
+            frm.addListener(new AddListener());
+            frm.delListener(new DelListener());
+            frm.editListener(new EditListener());
+            frm.searchListener(new SearchListener());
+            frm.clearListener(new ClearListener());
+            frm.setVisible(true);
+        }
     }
     //<editor-fold defaultstate="collapsed" desc="Method">
     public void thongBao(CloseableHttpResponse response) throws IOException, ParseException{
@@ -62,6 +64,10 @@ public class NguyenLieuData {
             JOptionPane.showMessageDialog(null, response.toString(), "Thông báo", 1);
         }
         
+    }
+    public ArrayList<QLNguyenLieu> getAllNL() throws ParseException, IOException{
+        createArr();
+        return arr;
     }
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Event">
@@ -80,7 +86,7 @@ public class NguyenLieuData {
                     params.add(new BasicNameValuePair("NgayNhap", strDate));
                     params.add(new BasicNameValuePair("SoLuong", nl.getSoLuong()));
                     params.add(new BasicNameValuePair("DonVi", nl.getDvTinh()));
-                    params.add(new BasicNameValuePair("DonGia", nl.getDonGia()));
+                    params.add(new BasicNameValuePair("DonGia", Integer.toString(nl.getDonGia())));
                     httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
                     CloseableHttpResponse response = client.execute(httpP);
                     thongBao(response);
@@ -126,7 +132,7 @@ public class NguyenLieuData {
                         params.add(new BasicNameValuePair("NgayNhap", strDate));
                         params.add(new BasicNameValuePair("SoLuong", nl.getSoLuong()));
                         params.add(new BasicNameValuePair("DonVi", nl.getDvTinh()));
-                        params.add(new BasicNameValuePair("DonGia", nl.getDonGia()));
+                        params.add(new BasicNameValuePair("DonGia", Integer.toString(nl.getDonGia())));
                         httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
                         CloseableHttpResponse response = client.execute(httpP);
                         thongBao(response);

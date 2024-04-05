@@ -17,7 +17,7 @@ public class QLNguyenLieu {
     private Date NgayNhap;
     private String SoLuong;
     private String DvTinh;
-    private String DonGia;
+    private int DonGia;
 
     public String getMaNL() {
         return MaNL;
@@ -39,7 +39,7 @@ public class QLNguyenLieu {
         return DvTinh;
     }
 
-    public String getDonGia() {
+    public int getDonGia() {
         return DonGia;
     }
 
@@ -63,11 +63,11 @@ public class QLNguyenLieu {
         this.DvTinh = DvTinh;
     }
 
-    public void setDonGia(String DonGia) {
+    public void setDonGia(int DonGia) {
         this.DonGia = DonGia;
     }
 
-    public QLNguyenLieu(String MaNL, String TenNL, Date NgayNhap, String SoLuong, String DvTinh, String DonGia) {
+    public QLNguyenLieu(String MaNL, String TenNL, Date NgayNhap, String SoLuong, String DvTinh, int DonGia) {
         this.MaNL = MaNL;
         this.TenNL = TenNL;
         this.NgayNhap = NgayNhap;
