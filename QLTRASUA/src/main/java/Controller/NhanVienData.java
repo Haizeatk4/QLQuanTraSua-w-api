@@ -18,10 +18,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
@@ -35,17 +32,7 @@ import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import java.lang.reflect.Type;
-import java.util.Base64;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.client5.http.cookie.BasicCookieStore;
-import org.apache.hc.client5.http.cookie.Cookie;
-import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler;
-import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
-import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
-import org.apache.hc.client5.http.protocol.HttpClientContext;
 
 /**
  *
@@ -54,7 +41,7 @@ import org.apache.hc.client5.http.protocol.HttpClientContext;
 public class NhanVienData {
 
     //<editor-fold defaultstate="collapsed" desc="Var">
-    frmQuanLyNV frm = new frmQuanLyNV();
+    frmQuanLyNV frm;
     frmDangNhap frm_login;
     frmDoiMK frm_doiMK;
     private ArrayList<QLNhanVien> arr = new ArrayList();
@@ -65,7 +52,8 @@ public class NhanVienData {
             this.frm_login = new frmDangNhap();
             frm_login.loginListener(new LoginListener());
             frm_login.setVisible(true);
-        } else if(l.equals("qlnv")){
+        } else if (l.contains("qlnv")){
+            frm = new frmQuanLyNV(l.replace("qlnv", ""));
             createArr();
             frm.loadTable(arr);
             frm.addListener(new AddListener());
@@ -73,6 +61,7 @@ public class NhanVienData {
             frm.editListener(new EditListener());
             frm.calListener(new CalListener());
             frm.searchListener(new SearchListener());
+            frm.clearListener(new ClearListener());
             frm.setVisible(true);
         } else {
             this.frm_doiMK = new frmDoiMK(l);
@@ -220,6 +209,17 @@ public class NhanVienData {
             }
         }
     }
+    class ClearListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                frm.clearMode();
+                createArr();
+                frm.loadTable(arr);
+            } catch (IOException | ParseException ex) {
+            }
+        }
+    }
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Event of LOGIN">
     class LoginListener implements ActionListener {
@@ -227,28 +227,29 @@ public class NhanVienData {
         public void actionPerformed(ActionEvent e) {
             String tk = frm_login.getTK();
             String mk = frm_login.getMK();
-            try {
-                CloseableHttpClient client = HttpClients.createDefault();
-                HttpPost httpP = new HttpPost("http://localhost:4567/nhan_vien/login");
-                ArrayList<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair("MaNhanVien", tk));
-                params.add(new BasicNameValuePair("Password", mk));
-                httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
-                CloseableHttpResponse response = client.execute(httpP);
-                HttpEntity entity = response.getEntity();
-                String r = EntityUtils.toString(entity, Charset.defaultCharset());
-                if(Boolean.parseBoolean(r)){
-                    JOptionPane.showMessageDialog(null, "Đăng nhập thành công", "Thông báo", 1);
-                    frmHome home = new frmHome();
-                    if(!tk.equals("admin")) home.lock();
-                    home.setVisible(true);
-                    home.l_acc.setText(tk);
-                    frm_login.dispose();
-                } else {
-                    JOptionPane.showMessageDialog(null, "Tài khoản hoặc mật khẩu không chính xác", "Thông báo", 1);
+            if(tk!=null && mk!=null){
+                try {
+                    CloseableHttpClient client = HttpClients.createDefault();
+                    HttpPost httpP = new HttpPost("http://localhost:4567/nhan_vien/login");
+                    ArrayList<NameValuePair> params = new ArrayList<>();
+                    params.add(new BasicNameValuePair("MaNhanVien", tk));
+                    params.add(new BasicNameValuePair("Password", mk));
+                    httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
+                    CloseableHttpResponse response = client.execute(httpP);
+                    HttpEntity entity = response.getEntity();
+                    String r = EntityUtils.toString(entity, Charset.defaultCharset());
+                    if(Boolean.parseBoolean(r)){
+                        JOptionPane.showMessageDialog(null, "Đăng nhập thành công", "Thông báo", 1);
+                        frmHome home = new frmHome(tk);
+                        if(!tk.equals("admin")) home.lock();
+                        home.setVisible(true);
+                        frm_login.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Tài khoản hoặc mật khẩu không chính xác", "Thông báo", 1);
+                    }
+                } catch (IOException | ParseException ex) {
+                    JOptionPane.showMessageDialog(null, ex, "Thông báo", 1);
                 }
-            } catch (IOException | ParseException ex) {
-                JOptionPane.showMessageDialog(null, ex, "Thông báo", 1);
             }
         }
     }class ConfirmListener implements ActionListener {
@@ -257,25 +258,27 @@ public class NhanVienData {
             String tk = frm_doiMK.l_acc.getText();
             String mk = frm_doiMK.getMatKhauCu();
             String mkMoi = frm_doiMK.getMatKhauMoi();
-            try {
-                CloseableHttpClient client = HttpClients.createDefault();
-                HttpPost httpP = new HttpPost("http://localhost:4567/nhan_vien/doi_mat_khau");
-                ArrayList<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair("MaNhanVien", tk));
-                params.add(new BasicNameValuePair("Password", mk));
-                params.add(new BasicNameValuePair("NewPassword", mkMoi));
-                httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
-                CloseableHttpResponse response = client.execute(httpP);
-                HttpEntity entity = response.getEntity();
-                String r = EntityUtils.toString(entity, Charset.defaultCharset());
-                if(Boolean.parseBoolean(r)){
-                    JOptionPane.showMessageDialog(null, "Đổi mật khẩu thành công", "Thông báo", 1);
-                    frm_doiMK.dispose();
-                } else {
-                    JOptionPane.showMessageDialog(null, "Mật khẩu cũ không chính xác", "Thông báo", 1);
+            if(tk!=null && mk!=null && mkMoi!=null){
+                try {
+                    CloseableHttpClient client = HttpClients.createDefault();
+                    HttpPost httpP = new HttpPost("http://localhost:4567/nhan_vien/doi_mat_khau");
+                    ArrayList<NameValuePair> params = new ArrayList<>();
+                    params.add(new BasicNameValuePair("MaNhanVien", tk));
+                    params.add(new BasicNameValuePair("Password", mk));
+                    params.add(new BasicNameValuePair("NewPassword", mkMoi));
+                    httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
+                    CloseableHttpResponse response = client.execute(httpP);
+                    HttpEntity entity = response.getEntity();
+                    String r = EntityUtils.toString(entity, Charset.defaultCharset());
+                    if(Boolean.parseBoolean(r)){
+                        JOptionPane.showMessageDialog(null, "Đổi mật khẩu thành công", "Thông báo", 1);
+                        frm_doiMK.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Mật khẩu cũ không chính xác", "Thông báo", 1);
+                    }
+                } catch (IOException | ParseException ex) {
+                    JOptionPane.showMessageDialog(null, ex, "Thông báo", 1);
                 }
-            } catch (IOException | ParseException ex) {
-                JOptionPane.showMessageDialog(null, ex, "Thông báo", 1);
             }
         }
     }
@@ -285,38 +288,12 @@ public class NhanVienData {
         if(response.toString().contains("200")){
             HttpEntity entity = response.getEntity();
             String r = EntityUtils.toString(entity, Charset.defaultCharset());
-            switch(r){
-                case "0" -> {
-                    JOptionPane.showMessageDialog(null, "Ðã xóa thành công!", "Thông báo", 1);
-                    break;
-                }
-                case "1" -> {
-                    JOptionPane.showMessageDialog(null, "Ðã thêm khách hàng thành công!", "Thông báo", 1);
-                    break;
-                }
-                case "10" -> {
-                    JOptionPane.showMessageDialog(null, "Ðã sửa thành công!", "Thông báo", 1);
-                    break;
-                }
-                case "2" -> {
-                    JOptionPane.showMessageDialog(null, "Căn cước công dân này đã tồn tại trong hệ thống! Vui lòng nhập lại hoặc xóa bản ghi trước đó.", "Thông báo", 1);
-                    break;
-                }
-                case "3" -> {
-                    JOptionPane.showMessageDialog(null, "Email đã tồn tại trong hệ thống! Vui lòng nhập lại hoặc xóa bản ghi trước đó.", "Thông báo", 1);
-                    break;
-                }
-                default -> {
-                    JOptionPane.showMessageDialog(null, r, "Thông báo", 1);
-                    break;
-                }
-            }
+            JOptionPane.showMessageDialog(null, r, "Thông báo", 1);
             createArr();
             frm.loadTable(arr);
         } else {
             JOptionPane.showMessageDialog(null, response.toString(), "Thông báo", 1);
-        }
-        
+        }   
     }
     //</editor-fold>
     private void createArr() throws IOException, ParseException{

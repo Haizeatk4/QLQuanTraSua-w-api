@@ -35,17 +35,19 @@ import org.apache.hc.core5.http.message.BasicNameValuePair;
  */
 public class NguyenLieuData {
     //<editor-fold defaultstate="collapsed" desc="Var">
-    private frmQuanLyNguyenLieu frm = new frmQuanLyNguyenLieu();
+    private frmQuanLyNguyenLieu frm;
     private ArrayList<QLNguyenLieu> arr = new ArrayList();
     private QLNguyenLieu nl;
     //</editor-fold>
-    public NguyenLieuData() throws IOException, ParseException {
+    public NguyenLieuData(String tk) throws IOException, ParseException {
+        frm = new frmQuanLyNguyenLieu(tk);
         createArr();
         frm.loadTable(arr);
         frm.addListener(new AddListener());
         frm.delListener(new DelListener());
         frm.editListener(new EditListener());
         frm.searchListener(new SearchListener());
+        frm.clearListener(new ClearListener());
         frm.setVisible(true);
     }
     //<editor-fold defaultstate="collapsed" desc="Method">
@@ -53,24 +55,7 @@ public class NguyenLieuData {
         if(response.toString().contains("200")){
             HttpEntity entity = response.getEntity();
             String r = EntityUtils.toString(entity, Charset.defaultCharset());
-            switch(r){
-                case "0" -> {
-                    JOptionPane.showMessageDialog(null, "Ðã xóa thành công!", "Thông báo", 1);
-                    break;
-                }
-                case "1" -> {
-                    JOptionPane.showMessageDialog(null, "Ðã thêm nguyên liệu thành công!", "Thông báo", 1);
-                    break;
-                }
-                case "2" -> {
-                    JOptionPane.showMessageDialog(null, "Ðã sửa thành công!", "Thông báo", 1);
-                    break;
-                }
-                default -> {
-                    JOptionPane.showMessageDialog(null, r, "Thông báo", 1);
-                    break;
-                }
-            }
+            JOptionPane.showMessageDialog(null, r, "Thông báo", 1);
             createArr();
             frm.loadTable(arr);
         } else {
@@ -170,6 +155,17 @@ public class NguyenLieuData {
                 frm.loadTable(arr);
             } catch (JsonSyntaxException | IOException | ParseException ex) {
                 JOptionPane.showMessageDialog(null, ex, "Thông báo", 1);
+            }
+        }
+    }
+    class ClearListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                frm.clearMode();
+                createArr();
+                frm.loadTable(arr);
+            } catch (IOException | ParseException ex) {
             }
         }
     }

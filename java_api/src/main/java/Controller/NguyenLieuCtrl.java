@@ -42,7 +42,7 @@ public class NguyenLieuCtrl {
            tmp.setNgayNhap(rs.getDate("NgayNhap"));
            tmp.setSoLuong(rs.getString("SoLuong"));
            tmp.setDvTinh(rs.getString("DvTinh"));
-           tmp.setDonGia(rs.getString("DonGia"));
+           tmp.setDonGia(rs.getString("Gia"));
            
            arr.add(tmp);
         }
@@ -63,7 +63,7 @@ public class NguyenLieuCtrl {
            tmp.setNgayNhap(rs.getDate("NgayNhap"));
            tmp.setSoLuong(rs.getString("SoLuong"));
            tmp.setDvTinh(rs.getString("DvTinh"));
-           tmp.setDonGia(rs.getString("DonGia"));
+           tmp.setDonGia(rs.getString("Gia"));
            arr.add(tmp);
         }
         return arr;
@@ -82,7 +82,7 @@ public class NguyenLieuCtrl {
             ps.setString(6, nl.getDonGia());
             ps.execute();
             ps.close();
-            return "1";
+            return "Ðã thêm nguyên liệu thành công!";
         } catch (HeadlessException | SQLException e) {
             return e.getMessage();
         }
@@ -102,7 +102,7 @@ public class NguyenLieuCtrl {
     public String UpdateNguyenLieu(NguyenLieu nl) {
         try {
             ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE NguyenLieu SET TenNL = ?,"
-                    + "NgayNhap = ?,SoLuong=?,DvTinh=?,DonGia=? where MaNL = ?");
+                    + "NgayNhap = ?,SoLuong=?,DvTinh=?,Gia=? where MaNL = ?");
             ps.setString(1, nl.getTenNL());
             ps.setDate(2, nl.getNgayNhap());
             ps.setString(3, nl.getSoLuong());
@@ -111,7 +111,7 @@ public class NguyenLieuCtrl {
             ps.setString(6, nl.getMaNL());
             ps.executeUpdate();
             ps.close();
-            return "2";
+            return "Ðã sửa thành công!";
         } catch (SQLException e) {
             return e.getMessage();
         }
@@ -123,7 +123,7 @@ public class NguyenLieuCtrl {
             ps = connectDatabase.TaoKetNoi().prepareStatement("DELETE FROM NguyenLieu WHERE MaNL = ?");
             ps.setString(1, MaNL);
             ps.executeUpdate();
-            return "0";
+            return "Ðã xóa thành công!";
         } catch (SQLException e) {
             return e.getMessage();
         }

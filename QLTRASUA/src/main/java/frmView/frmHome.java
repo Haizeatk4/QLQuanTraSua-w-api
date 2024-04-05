@@ -17,8 +17,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -54,10 +52,10 @@ public class frmHome extends JFrame{
     JMenuItem mi_changePass = new JMenuItem("Đổi mật khẩu");
     
     JLabel l_preAcc = new JLabel("Tài khoản: ");
-    public JLabel l_acc = new JLabel();
+    JLabel l_acc = new JLabel();
     //</editor-fold>
 
-    public frmHome() throws IOException {
+    public frmHome(String tk) throws IOException {
         this.setTitle("Quản lý quán trà sữa");
         this.setSize(1185,560);
         this.setLocation(50, 70);
@@ -70,6 +68,7 @@ public class frmHome extends JFrame{
         p_tile.setLayout(new BorderLayout());
         p_tile.add(tile,BorderLayout.CENTER);
         //<editor-fold defaultstate="collapsed" desc="Menu">
+        l_acc.setText(tk);
         m_hethong.add(mi_exit);
         m_acc.add(mi_logout);
         m_acc.add(mi_changePass);
@@ -125,24 +124,21 @@ public class frmHome extends JFrame{
         //<editor-fold defaultstate="collapsed" desc="Event">
         btn_qlnv.addActionListener(((e) -> {
             try {
-                NhanVienData frmQLNV = new NhanVienData("qlnv");
-            } catch (SQLException | IOException | ParseException | URISyntaxException ex) {
-                Logger.getLogger(frmHome.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                NhanVienData frmQLNV = new NhanVienData(tk+"qlnv");
+                dispose();
+            } catch (SQLException | IOException | ParseException | URISyntaxException ex) {}
         }));
         btn_qlnl.addActionListener(((e) -> {
             try {
-                NguyenLieuData frmQLNL = new NguyenLieuData();
-            } catch (IOException | ParseException  ex) {
-                Logger.getLogger(frmHome.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                NguyenLieuData frmQLNL = new NguyenLieuData(tk);
+                dispose();
+            } catch (IOException | ParseException  ex) {}
         }));
         btn_qlhd.addActionListener((e) -> {
             try {
-                HoaDonData frmQLHD = new HoaDonData(l_acc.getText());
-            } catch (ParseException | IOException ex) {
-                Logger.getLogger(frmHome.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                HoaDonData frmQLHD = new HoaDonData(tk);
+                dispose();
+            } catch (ParseException | IOException ex) {}
         });
         mi_exit.addActionListener((e) -> {
             dispose();
@@ -151,18 +147,18 @@ public class frmHome extends JFrame{
             try {
                 NhanVienData frm = new NhanVienData("login");
                 dispose();
-            } catch (SQLException | ParseException | URISyntaxException | IOException ex) {
-            }
+            } catch (SQLException | ParseException | URISyntaxException | IOException ex) {}
         });
         mi_changePass.addActionListener((e) -> {
             try {
-                NhanVienData frm = new NhanVienData(l_acc.getText());
-            } catch (SQLException | ParseException | URISyntaxException | IOException ex) {
-            }
+                NhanVienData frm = new NhanVienData(tk);
+                dispose();
+            } catch (SQLException | ParseException | URISyntaxException | IOException ex) {}
         });
         //</editor-fold>
     }
     public void lock(){
         btn_qlnv.setEnabled(false);
+        btn_tk.setEnabled(false);
     }
 }

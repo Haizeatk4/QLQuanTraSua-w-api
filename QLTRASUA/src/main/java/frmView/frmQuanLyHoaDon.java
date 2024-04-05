@@ -14,6 +14,9 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -60,14 +63,14 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
     JLabel l_preAcc = new JLabel("Tài khoản: ");
     public JLabel l_acc = new JLabel();
     //</editor-fold>
-    public frmQuanLyHoaDon(String nv) {
+    public frmQuanLyHoaDon(String tk) {
         this.setSize(1200,800);
         this.setLocation(50, 70);
         this.setTitle("Quản lý hóa đơn");
         this.setLayout(new BorderLayout());
         Border pad = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         //<editor-fold defaultstate="collapsed" desc="Menu">
-        l_acc.setText(nv);
+        l_acc.setText(tk);
         m_hethong.add(mi_exit);
         mb.add(m_hethong);
         mb.add(l_preAcc);
@@ -138,7 +141,23 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
             }
         });
         mi_exit.addActionListener((e) -> {
-            this.dispose();
+            try {
+                frmHome home = new frmHome(tk);
+                home.setVisible(true);
+                dispose();
+            } catch (IOException ex) {}
+        });
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    frmHome home = new frmHome(tk);
+                    home.setVisible(true);
+                } catch (IOException ex) {}
+            }
+        });
+        btn_newOrder.addActionListener((e) -> {
+            frmChiTietHoaDon frm = new frmChiTietHoaDon("HD001", "NV001");
         });
         //</editor-fold>
     }

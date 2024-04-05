@@ -11,6 +11,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -41,11 +43,12 @@ public class frmDoiMK extends JFrame implements ActionListener {
     JPasswordField txt_mk = new JPasswordField();
     JPasswordField txt_mkc = new JPasswordField();
     JButton btn_confirm = new JButton("XÁC NHẬN");
+    JButton btn_cancel = new JButton("HỦY");
     JLabel l_tk = new JLabel("Tài khoản:");
     public JLabel l_acc = new JLabel();
     //</editor-fold>
-    public frmDoiMK(String l) throws IOException {
-        l_acc.setText(l);
+    public frmDoiMK(String tk) throws IOException {
+        l_acc.setText(tk);
         this.setTitle("ĐỔI MẬT KHẨU");
         this.setSize(750,400);
         this.setLocation(50, 70);
@@ -123,18 +126,37 @@ public class frmDoiMK extends JFrame implements ActionListener {
         JLabel l_bl3 = new JLabel("                               ");
         gbc.gridwidth = 1;
         gbc.gridy = 7;
-        gbc.gridx = 2;
+        gbc.gridx = 1;
         p1.add(l_bl3,gbc);
         
         btn_confirm.setBackground(Color.WHITE);
-        gbc.gridx = 1;
+        gbc.gridx = 2;
         gbc.gridy = 8;
         p1.add(btn_confirm,gbc);
+        btn_cancel.setBackground(Color.WHITE);
+        gbc.gridx = 0;
+        p1.add(btn_cancel,gbc);
         btn_confirm.addActionListener(this);
         //</editor-fold>
         Border pad = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         p1.setBorder(pad);
         this.add(p1,BorderLayout.CENTER);
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    frmHome home = new frmHome(tk);
+                    home.setVisible(true);
+                } catch (IOException ex) {}
+            }
+        });
+        btn_cancel.addActionListener((e) -> {
+            try {
+                frmHome home = new frmHome(tk);
+                home.setVisible(true);
+                dispose();
+            } catch (IOException ex) {}
+        });
     }
     public String getMatKhauCu(){
         if(txt_omk.getText().trim().isEmpty()){
