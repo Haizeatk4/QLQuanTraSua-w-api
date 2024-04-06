@@ -4,6 +4,7 @@
  */
 package frmView;
 
+import Controller.ChiTietHoaDonData;
 import Model.QLHoaDon;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -17,11 +18,17 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -55,9 +62,13 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
     
     JPanel p2 = new JPanel();
     JButton btn_detail = new JButton("CHI TIẾT");
+    JComboBox<String> cb_ban = new JComboBox<>();
     JButton btn_newOrder = new JButton("HÓA ĐƠN MỚI");
-    JButton btn_thanhToan = new JButton("XÁC NHẬN THANH TOÁN HÓA ĐƠN");
+    JButton btn_edit = new JButton("SỬA");
+    JButton btn_del = new JButton("XÓA");
+    JCheckBox check_thanhToan = new JCheckBox("Đã thanh toán");
     
+    JPanel p3 = new JPanel();
     JTable td = new JTable();
     DefaultTableModel model = (DefaultTableModel) td.getModel();
     
@@ -66,6 +77,7 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
     JMenuItem mi_exit = new JMenuItem("Thoát");
     JLabel l_preAcc = new JLabel("Tài khoản: ");
     public JLabel l_acc = new JLabel();
+    JComboBox<String> cb_month = new JComboBox<>();
     //</editor-fold>
     public frmQuanLyHoaDon(String tk) {
         this.setSize(1200,800);
@@ -87,11 +99,27 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
         btn_detail.setBackground(Color.WHITE);
         btn_detail.setEnabled(false);
         btn_newOrder.setBackground(Color.WHITE);
-        btn_thanhToan.setBackground(Color.WHITE);
-        btn_thanhToan.setEnabled(false);
+        check_thanhToan.setEnabled(false);
+        btn_edit.setBackground(Color.WHITE);
+        btn_edit.setEnabled(false);
+        btn_del.setBackground(Color.WHITE);
+        btn_del.setEnabled(false);
+        cb_ban.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Đem về", "Bàn 001", "Bàn 002", "Bàn 003", "Bàn 004", "Bàn 005", "Bàn 006", "Bàn 007", "Bàn 008", "Bàn 009", "Bàn 010"}));
+        cb_ban.setEditable(false);
+        
+        JPanel p11 = new JPanel();
+        p11.setLayout(new GridLayout(3, 1, 0, 0));
+        p11.add(cb_ban);
+        p11.add(check_thanhToan);
+        p11.add(btn_edit);
+        
         p1.add(btn_detail);
         p1.add(btn_newOrder);
-        p1.add(btn_thanhToan);
+        p1.add(p11);
+        p1.add(btn_del);
+        btn_newOrder.addActionListener(this);
+        btn_edit.addActionListener(this);
+        btn_del.addActionListener(this);
         //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="Panel02">
         p2.setLayout(new BorderLayout());
@@ -126,34 +154,54 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
         p2.add(tile,BorderLayout.CENTER);
         p2.add(p21,BorderLayout.SOUTH);
         //</editor-fold>
+        //<editor-fold defaultstate="collapsed" desc="Panel03">
+        p3.setLayout(new BorderLayout());
+        
+        cb_month.setModel(new javax.swing.DefaultComboBoxModel(get12Thang()));
+        p3.add(cb_month,BorderLayout.NORTH);
+        cb_month.addActionListener(this);
+        
         model.addColumn("Mã hóa đơn");
         model.addColumn("Tên nhân viên");
         model.addColumn("Ngày lập");
         model.addColumn("Bàn");
         model.addColumn("Thành tiền");
         model.addColumn("Tình trạng");
-        
-        this.add(new JScrollPane(td),BorderLayout.CENTER);
+        p3.add(new JScrollPane(td),BorderLayout.CENTER);
+        //</editor-fold>
+        this.add(p3,BorderLayout.CENTER);
         this.add(p1,BorderLayout.WEST);
         this.add(p2,BorderLayout.NORTH);
         //<editor-fold defaultstate="collapsed" desc="Event">
+        btn_detail.addActionListener((e) -> {
+            try {
+                ChiTietHoaDonData cthd = new ChiTietHoaDonData(tk, arr.get(item_id));
+                dispose();
+            } catch (IOException | ParseException ex) {
+                Logger.getLogger(frmQuanLyHoaDon.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
         final ListSelectionModel sel = td.getSelectionModel();
         sel.addListSelectionListener((ListSelectionEvent e) -> {
-            if(!sel.isSelectionEmpty()){
                 if(!sel.isSelectionEmpty()){
+                    btn_detail.setEnabled(true);
+                    btn_del.setEnabled(true);
                     item_id=sel.getMinSelectionIndex();
+                    cb_ban.setSelectedItem(arr.get(item_id).getMaBan());
                     if(arr.get(item_id).getTinhTrang().equals("Chưa thanh toán")){
-                        btn_detail.setEnabled(true);
-                        btn_thanhToan.setEnabled(true);
+                        check_thanhToan.setSelected(false);
                     } else {
-                        btn_detail.setEnabled(false);
-                        btn_thanhToan.setEnabled(false);
+                        check_thanhToan.setSelected(true);
                     }
+                    btn_edit.setEnabled(true);
                     isSelected=true;
                 } else {
+                    btn_detail.setEnabled(false);
+                    btn_edit.setEnabled(false);
+                    btn_del.setEnabled(false);
                     isSelected=false;
                 }
-            }
+            
         });
         mi_exit.addActionListener((e) -> {
             try {
@@ -171,19 +219,72 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
                 } catch (IOException ex) {}
             }
         });
-        btn_newOrder.addActionListener((e) -> {
-            try {
-                frmChiTietHoaDon frm = new frmChiTietHoaDon(tk,"", arr.get(item_id).getTenNhanVien());
-            } catch (ParseException | IOException ex) {}
-        });
         //</editor-fold>
     }
     //<editor-fold defaultstate="collapsed" desc="Event2">
     public void searchListener (ActionListener log){
         btn_search.addActionListener(log);
     }
+    public void newOrderListener (ActionListener log){
+        btn_newOrder.addActionListener(log);
+    }
+    public void editListener (ActionListener log){
+        btn_edit.addActionListener(log);
+    }
+    public void delListener (ActionListener log){
+        btn_del.addActionListener(log);
+    }
+    public void monthListener (ActionListener log){
+        cb_month.addActionListener(log);
+    }
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Method">
+    public String getMonth(){
+        return cb_month.getSelectedItem().toString();
+    }
+    public Object[] get12Thang(){
+        LocalDate date = LocalDate.now();
+        ArrayList<String> dates = new ArrayList<>();
+        dates.add("Toàn bộ");
+        for(int i=0;i<6;i++){
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
+            String strDate = dateFormat.format(java.sql.Date.valueOf(date.minusMonths(i)));
+            dates.add(strDate);
+        }
+        return dates.toArray();
+    }
+    public QLHoaDon getInfo(){
+        arr.get(item_id).setMaBan(getBan());
+        if(check_thanhToan.isSelected()){
+            arr.get(item_id).setTinhTrang("Đã thanh toán");
+        } else {
+            arr.get(item_id).setTinhTrang("Chưa thanh toán");
+        }
+        return arr.get(item_id);
+    }
+    public boolean editMode(){
+        if(mode == 1){
+            mode = 0;
+            check_thanhToan.setEnabled(false);
+            btn_edit.setBackground(Color.WHITE);
+            btn_del.setEnabled(true);
+            td.setEnabled(true);
+            return true;
+        } else {
+            mode = 1;
+            check_thanhToan.setEnabled(true);
+            btn_edit.setBackground(Color.YELLOW);
+            btn_del.setEnabled(false);
+            td.setEnabled(false);
+            return false;
+        }
+    }
+    public int getItem_id() {
+        return item_id;
+    }
+    public String getBan(){
+        return cb_ban.getSelectedItem().toString();
+    }
     public String getSearch(){
         String s = txt_search.getText().trim().replace(" ", "_");
         return s;

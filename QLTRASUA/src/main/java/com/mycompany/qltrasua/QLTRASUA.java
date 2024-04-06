@@ -4,6 +4,8 @@
 
 package com.mycompany.qltrasua;
 
+import Controller.ChiTietHoaDonData;
+import Controller.HoaDonData;
 import Controller.NhanVienData;
 import frmView.frmChiTietHoaDon;
 import java.io.IOException;
@@ -19,6 +21,7 @@ public class QLTRASUA {
 
     public static void main(String[] args) throws SQLException, IOException, URISyntaxException, InterruptedException, ParseException {
 //        NhanVienData frm = new NhanVienData("login");
-        frmChiTietHoaDon frm = new frmChiTietHoaDon("admin","","Phong");    
+//        ChiTietHoaDonData frm = new ChiTietHoaDonData("admin","HD001","Phong");    
+        HoaDonData hd = new HoaDonData("admin");
     }
 }

@@ -4,9 +4,11 @@
  */
 package frmView;
 
+import Controller.HoaDonData;
 import Controller.MenuData;
 import Controller.NguyenLieuData;
 import Model.ChiTietHoaDon;
+import Model.QLHoaDon;
 import Model.QLMenu;
 import Model.QLNguyenLieu;
 import java.awt.BorderLayout;
@@ -16,13 +18,16 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,6 +41,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -55,12 +61,13 @@ import org.apache.hc.core5.http.ParseException;
 public class frmChiTietHoaDon extends JFrame implements ActionListener {
     //<editor-fold defaultstate="collapsed" desc="Var">
     boolean tbdv_isSelected = false, tbhd_isSelected = false;
-    int tbdv_item_id, tbhd_item_id;
+    int tbdv_item_id, tbhd_item_id,n;
     private ArrayList<QLNguyenLieu> arr_nl = new ArrayList();
     private ArrayList<ChiTietHoaDon> arr_hd = new ArrayList();
     private ArrayList<QLMenu> arr_mn = new ArrayList();
     MenuData mn = new MenuData("");
     NguyenLieuData nl = new NguyenLieuData("");
+    public QLHoaDon chd;
     //---------------------------------------------------------------------------
     
     JPanel p_left = new JPanel();//_________________
@@ -73,7 +80,7 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
     JLabel l_pic = new JLabel();
     
     JLabel l_soLuong = new JLabel(" Số lượng: ");
-    SpinnerNumberModel snm_soLuong = new SpinnerNumberModel(0, 0, 500, 0.5);
+    SpinnerNumberModel snm_soLuong = new SpinnerNumberModel(0, 0, 500, 1);
     JSpinner spr_soLuong = new JSpinner(snm_soLuong);
     JButton btn_add = new JButton("THÊM MÓN");
     JButton btn_del = new JButton("XÓA MÓN");
@@ -83,7 +90,7 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
     JLabel l_maHD = new JLabel();
     JLabel l_tenNV = new JLabel();
     JLabel l_ngayLap = new JLabel();
-    JComboBox<String> cb_ban = new JComboBox<>();
+    JLabel l_ban = new JLabel();
     JTable tbhd = new JTable();
     DefaultTableModel model_hd = (DefaultTableModel) tbhd.getModel();
     JLabel l_thanhTien = new JLabel();
@@ -94,7 +101,8 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
     JLabel l_preAcc = new JLabel("Tài khoản: ");
     JLabel l_acc = new JLabel();
     //</editor-fold>
-    public frmChiTietHoaDon(String tk, String maHD, String tenNV) throws ParseException, IOException {
+    public frmChiTietHoaDon(String tk, QLHoaDon hd) throws ParseException, IOException {
+        chd=hd;
         this.setSize(1200,800);
         this.setLocation(50, 70);
         this.setTitle("Chi tiết hóa đơn");
@@ -157,11 +165,13 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
         model_dv.addColumn("Số lượng");
         model_dv.addColumn("Giá");
         pL2.add(new JScrollPane(tbdv),BorderLayout.CENTER);
-                    this.arr_mn = mn.getAllDV();
-                    loadTableMN();
+        
+        this.arr_mn = mn.getAllDV();
+        loadTableMN();
         //setup ảnh
         l_pic.setPreferredSize(new Dimension(250,250));
         l_pic.setBorder(padB);
+        l_pic.setHorizontalAlignment(JLabel.CENTER);
         pL2.add(l_pic,BorderLayout.SOUTH);
         
         p_left.add(pL2,BorderLayout.CENTER);//thêm panel phụ 2
@@ -180,6 +190,7 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
         btn_add.setBackground(Color.WHITE);
         btn_add.setEnabled(false);
         pL3.add(btn_add);
+        btn_add.addActionListener(this);
         
         p_left.add(pL3,BorderLayout.SOUTH);//thêm panel phụ 3
 
@@ -202,30 +213,25 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
         l_maHD.setFont(fo_l);
         l_tenNV.setFont(fo_l);
         l_ngayLap.setFont(fo_l);
-        cb_ban.setFont(fo_t);
+        l_ban.setFont(fo_l);
+       
+        l_maHD.setText("Mã hóa đơn: " + hd.getMaHD());
+        l_tenNV.setText("Nhân viên: " + hd.getTenNhanVien());
         
-        if(maHD.equals("")){
-            l_maHD.setText("Mã hóa đơn: Tạo mới");
-        } else {
-            l_maHD.setText("Mã hóa đơn: " + maHD);
-        }
-        l_tenNV.setText("Nhân viên: " + tenNV);
-        LocalDate localDate = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String date = localDate.format(formatter);
-        l_ngayLap.setText("Ngày: " + date);
-        
-        cb_ban.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "B001", "B002", "B003", "B004", "B005" }));
-        cb_ban.setEditable(false);
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        String strDate = dateFormat.format(hd.getNgayLap());
+        l_ngayLap.setText("Ngày: " + strDate);
+        l_ban.setText("Bàn: "+hd.getMaBan());
         //add
         pR11.add(l_maHD);
         pR11.add(l_tenNV);
         pR11.add(l_ngayLap);
-        pR11.add(cb_ban);
+        pR11.add(l_ban);
         //------------------------table
         model_hd.addColumn("Dịch vụ");
         model_hd.addColumn("Số lượng");
         model_hd.addColumn("Đơn giá");
+        model_hd.addColumn("Thành tiền");
         
         JPanel pR1 = new JPanel();
         pR1.setLayout(new BorderLayout());
@@ -238,7 +244,9 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
         pR2.setLayout(new BorderLayout());
         
         btn_del.setBackground(Color.WHITE);
+        btn_del.setEnabled(false);
         pR2.add(btn_del,BorderLayout.WEST);
+        btn_del.addActionListener(this);
         
         JLabel l_bl = new JLabel("  ");
         pR2.add(l_bl,BorderLayout.CENTER);
@@ -251,51 +259,160 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
         
         this.add(p_right,BorderLayout.CENTER);
         //</editor-fold>
-        this.setVisible(true);
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         //<editor-fold defaultstate="collapsed" desc="Event">
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    HoaDonData hdfrm = new HoaDonData(tk);
+                } catch (IOException | ParseException ex) {
+                    Logger.getLogger(frmChiTietHoaDon.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        mi_exit.addActionListener((e) -> {
+            try {
+                HoaDonData hdfrm = new HoaDonData(tk);
+                dispose();
+            } catch (IOException | ParseException ex) {
+                Logger.getLogger(frmChiTietHoaDon.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
         final ListSelectionModel sel_dv = tbdv.getSelectionModel();
         sel_dv.addListSelectionListener((ListSelectionEvent e) -> {
-//            if(!sel_dv.isSelectionEmpty()){
-                if(!sel_dv.isSelectionEmpty()){
-                    tbdv_item_id = sel_dv.getMinSelectionIndex();
-                    btn_add.setEnabled(true);
-                    tbdv_isSelected=true;
-                    setPic();
-                } else {
-                    btn_add.setEnabled(false);
-                    tbdv_isSelected=false;
-                }
-//            }
+            if(!sel_dv.isSelectionEmpty()){
+                spr_soLuong.setValue(0);
+                tbdv_item_id = sel_dv.getMinSelectionIndex();
+                btn_add.setEnabled(true);
+                tbdv_isSelected=true;
+                setPic();
+            } else {
+                btn_add.setEnabled(false);
+                tbdv_isSelected=false;
+            }
         });
         cb_filter.addActionListener((e) -> {
+            spr_soLuong.setValue(0);
             if(cb_filter.getSelectedIndex()==0){
                 try {
-                    tile1.setText("Menu");
+                    tbdv.clearSelection();
+                    tile1.setText("MENU");
                     this.arr_mn = mn.getAllDV();
                     loadTableMN();
                     pL2.add(l_pic,BorderLayout.SOUTH);
                 } catch (ParseException | IOException ex) {}
             } else {
                 try {
-                    tile1.setText("Danh sách Nguyên liệu");
+                    tbdv.clearSelection();
+                    tile1.setText("DANH SÁCH NGUYÊN LIỆU");
                     this.arr_nl = nl.getAllNL();
                     loadTableNL();
                     pL2.remove(l_pic);
                 } catch (IOException | ParseException ex) {}
             }
         });
+        final ListSelectionModel sel_hd = tbhd.getSelectionModel();
+        sel_hd.addListSelectionListener((ListSelectionEvent e) -> {
+            if(!sel_hd.isSelectionEmpty()){
+                tbhd_item_id = sel_hd.getMinSelectionIndex();
+                btn_del.setEnabled(true);
+                tbhd_isSelected=true;
+            } else {
+                btn_del.setEnabled(false);
+                tbhd_isSelected=false;
+            }
+        });
         //</editor-fold>
     }
+    //<editor-fold defaultstate="collapsed" desc="Event2">
+    public void searchListener (ActionListener log){
+        btn_search.addActionListener(log);
+    }
+    public void delListener (ActionListener log){
+        btn_del.addActionListener(log);
+    }
+    public void addListener (ActionListener log){
+        btn_add.addActionListener(log);
+    }
+    //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Method">
+    public boolean checkMon(){
+        String maT;
+        if(cb_filter.getSelectedIndex()==0){
+            maT = arr_mn.get(tbdv_item_id).getMaMon();
+        } else {
+            maT = arr_nl.get(tbdv_item_id).getMaNL();
+        }
+        for(int i=0;i<arr_hd.size();i++){
+            if(maT.equals(arr_hd.get(i).getMaDV())){
+                n=i;
+                return true;
+            }
+        }
+        return false;
+    }
+    public String getMaHD(){
+        return chd.getMaHD();
+    }
+    public String getMaDV(){
+        if(cb_filter.getSelectedIndex()==0){
+            return arr_mn.get(tbdv_item_id).getMaMon();
+        } else {
+            return arr_nl.get(tbdv_item_id).getMaNL();
+        }
+    }
+    public int getSoLuong(){
+        if(Integer.parseInt(spr_soLuong.getValue().toString())==0){
+            JOptionPane.showMessageDialog(null, "Chọn số lượng muốn thêm", "Thông báo", 1);
+            return 0;
+        } else {
+            if(checkMon()){
+                return Integer.parseInt(spr_soLuong.getValue().toString())+arr_hd.get(n).getSoLuong();
+            } else {
+                return Integer.parseInt(spr_soLuong.getValue().toString());
+            }
+        }
+    }
+    public String getThanhTien(){
+        int r;
+        if(cb_filter.getSelectedIndex()==0){
+            r = arr_mn.get(tbdv_item_id).getGia() * getSoLuong();
+        } else {
+            r = arr_nl.get(tbdv_item_id).getDonGia() * getSoLuong();
+        }
+        return Integer.toString(r);
+    }
+    public int getTbhd_item_id() {
+        return tbhd_item_id;
+    }
+    
+    public void loadTable(ArrayList<ChiTietHoaDon> arr){
+        int rc = model_hd.getRowCount();
+        for(int i=0;i<rc;i++){
+            model_hd.removeRow(0);
+        }
+        Object r[] = new Object[4];
+        int tong=0;
+        for(int i=0;i<arr.size();i++){
+            r[0] = arr.get(i).getTenDV();
+            r[1] = arr.get(i).getSoLuong();
+            r[2] = arr.get(i).getDonGia();
+            r[3] = arr.get(i).getThanhTien();
+            tong = tong + arr.get(i).getThanhTien();
+            model_hd.addRow(r);
+        }
+        this.arr_hd = arr;
+        chd.setThanhTien(tong);
+        l_thanhTien.setText("Tổng: "+chd.getThanhTien()+"   Tình Trạng: "+chd.getTinhTrang());
+    }
     public void setPic(){
         if(cb_filter.getSelectedIndex()==0){
             try {
                 File file = new File("");
                 String currentDirectory = file.getAbsolutePath() + "/src/main/java";
                 BufferedImage myPicture = ImageIO.read(new File(currentDirectory + arr_mn.get(tbdv_item_id).getAnh()));
-                System.out.println(currentDirectory + arr_mn.get(tbdv_item_id).getAnh());
-                l_pic = new JLabel(new ImageIcon(myPicture));
+                l_pic.setIcon(new ImageIcon(myPicture.getScaledInstance(250, 250, Image.SCALE_SMOOTH)));
+                l_pic.repaint();
             } catch (IOException ex) {
                 Logger.getLogger(frmChiTietHoaDon.class.getName()).log(Level.SEVERE, null, ex);
             }

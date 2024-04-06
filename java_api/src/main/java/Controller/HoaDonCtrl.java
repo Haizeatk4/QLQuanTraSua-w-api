@@ -4,12 +4,16 @@
  * and open the template in the editor.
  */
 package Controller;
+import static Controller.NhanVienCtrl.ps;
 import Model.HoaDon;
+import java.awt.HeadlessException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -38,7 +42,7 @@ public class HoaDonCtrl {
            tmp.setTenNhanVien(rs.getString("TenNhanVien"));
            tmp.setNgayLap(rs.getDate("Ngay"));
            tmp.setMaBan(rs.getString("MaBan"));
-           tmp.setThanhTien(rs.getString("ThanhTien"));
+           tmp.setThanhTien(rs.getInt("ThanhTien"));
            tmp.setTinhTrang(rs.getString("TinhTrang"));
            
            arr.add(tmp);
@@ -48,64 +52,85 @@ public class HoaDonCtrl {
     public ArrayList<HoaDon> searchArr(String s) throws SQLException{
         
         arr = new ArrayList<>();
-        String sql = "SELECT MaHD,TenNhanVien,Ngay,MaBan,ThanhTien FROM hoadon,qlnhan_vien WHERE qlnhan_vien.MaNhanVien=hoadon.MaNhanVien "
+        String sql = "SELECT MaHD,TenNhanVien,Ngay,MaBan,ThanhTien,TinhTrang FROM hoadon,qlnhan_vien WHERE qlnhan_vien.MaNhanVien=hoadon.MaNhanVien "
                 + "and (MaHD like '%"+s+"%'"
                 + " or TenNhanVien like '%"+s+"%'"
                 + " or Ngay like '%"+s+"%'"
                 + " or MaBan like '%"+s+"%'"
-                + " or ThanhTien like '%"+s+"%')";
+                + " or ThanhTien like '%"+s+"%'"
+                + " or TinhTrang like '%"+s+"%')";
         ps = connectDatabase.TaoKetNoi().prepareStatement(sql);
         rs = ps.executeQuery();
         while(rs.next()){
            HoaDon tmp = new HoaDon();
+           
            tmp.setMaHD(rs.getString("MaHD"));
            tmp.setTenNhanVien(rs.getString("TenNhanVien"));
            tmp.setNgayLap(rs.getDate("Ngay"));
            tmp.setMaBan(rs.getString("MaBan"));
-           tmp.setThanhTien(rs.getString("ThanhTien"));
+           tmp.setThanhTien(rs.getInt("ThanhTien"));
+           tmp.setTinhTrang(rs.getString("TinhTrang"));
+           
            arr.add(tmp);
         }
         return arr;
     }
-    public static boolean UpdateHoaDon(HoaDon nv) {
-        String sql = "UPDATE HoaDon SET ThanhTien = ? where MaHD = ?";
+    public String UpdateHoaDon(HoaDon nv) {
+        String sql = "UPDATE HoaDon SET MaBan = ?,"
+                + "ThanhTien = ?,TinhTrang = ? where MaHD = ?";
         try {
             ps = conn.prepareStatement(sql);;
-            ps.setString(1, nv.getThanhTien());
-            ps.setString(2, nv.getMaHD());
+            ps.setString(1, nv.getMaBan());
+            ps.setInt(2, nv.getThanhTien());
+            ps.setString(3, nv.getTinhTrang());
+            ps.setString(4, nv.getMaHD());
             ps.executeUpdate();
             ps.close();
-            return true;
+            return "Sửa thành công";
         } catch (SQLException e) {
-            return false;
+            return e.getMessage();
         }
 
     }
-//    public static void InsertHoaDon(QLHoaDon nl) {
-//        String sql = "INSERT INTO HoaDon VALUES(?,?,?,?,?)";
-//        try {
-//            ps = conn.prepareStatement(sql);
-//            ps.setString(1, nl.getMaHD());
-//            ps.setString(2, nl.getMaNhanVien());
-//            ps.setString(3, nl.getNgayLap());
-//            ps.setString(4, nl.getMaBan());
-//            ps.setString(5, nl.getThanhTien());
-//            ps.execute();
-//            JOptionPane.showMessageDialog(null, "Ðã thêm nguyên liệu thành công!", "Thông báo", 1);
-//            ps.close();
-//        } catch (HeadlessException | SQLException e) {
-//        }
-//
-//    }
+    public HoaDon InsertHoaDon(HoaDon nl) throws SQLException {
+        String sql = "INSERT INTO HoaDon VALUES(?,?,?,?,?,?)";
+        ps = conn.prepareStatement(sql);
+        ps.setString(1, nl.getMaHD());
+        ps.setString(2, nl.getTenNhanVien());
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String strDate = dateFormat.format(nl.getNgayLap());
+        ps.setString(3, strDate);
+        ps.setString(4, nl.getMaBan());
+        ps.setInt(5, nl.getThanhTien());
+        ps.setString(6, nl.getTinhTrang());
+        ps.execute();
+        
+        ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT MaHD,TenNhanVien,Ngay,MaBan,ThanhTien,TinhTrang "
+                + "FROM hoadon,qlnhan_vien "
+                + "WHERE qlnhan_vien.MaNhanVien=hoadon.MaNhanVien "
+                + "AND MaHD='"+nl.getMaHD()+"'");
+        rs = ps.executeQuery();
+        HoaDon tmp = new HoaDon();
+        while(rs.next()){
+            tmp.setMaHD(rs.getString("MaHD"));
+            tmp.setTenNhanVien(rs.getString("TenNhanVien"));
+            tmp.setNgayLap(rs.getDate("Ngay"));
+            tmp.setMaBan(rs.getString("MaBan"));
+            tmp.setThanhTien(rs.getInt("ThanhTien"));
+        }
+        ps.close();
+        return tmp;
+    }
     
 
-    public static boolean DeleteHoaDon(String MaHD) {
+    public String DeleteHoaDon(String MaHD) {
         try {
             ps = conn.prepareStatement("DELETE FROM HoaDon WHERE MaHD = ?");
             ps.setString(1, MaHD);
-            return ps.executeUpdate() > 0;
+            ps.executeUpdate();
+            return "Xóa thành công";
         } catch (SQLException e) {
-            return false;
+            return e.getMessage();
         }
     }
 

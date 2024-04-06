@@ -9,10 +9,28 @@ package Model;
  * @author ad
  */
 public class ChiTietHoaDon {
+    int ID;
+    String maDV;
     String TenDV;
     double SoLuong;
     int DonGia;
     int ThanhTien;
+
+    public String getMaDV() {
+        return maDV;
+    }
+
+    public void setMaDV(String maDV) {
+        this.maDV = maDV;
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
 
     public int getThanhTien() {
         return ThanhTien;
