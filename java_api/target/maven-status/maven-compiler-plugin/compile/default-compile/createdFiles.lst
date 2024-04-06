@@ -1,6 +1,5 @@
 Controller\NguyenLieuCtrl.class
 Model\user.class
-Controller\DichVuCtrl.class
 API\QL_NguyenLieu_API.class
 Controller\HoaDonCtrl.class
 Controller\ChiTietHoaDonCtrl.class

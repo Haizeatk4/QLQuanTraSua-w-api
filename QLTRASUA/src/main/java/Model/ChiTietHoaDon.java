@@ -9,9 +9,36 @@ package Model;
  * @author ad
  */
 public class ChiTietHoaDon {
+    int ID;
+    String maDV;
     String TenDV;
-    double SoLuong;
+    int SoLuong;
     int DonGia;
+    int ThanhTien;
+
+    public String getMaDV() {
+        return maDV;
+    }
+
+    public void setMaDV(String maDV) {
+        this.maDV = maDV;
+    }
+    
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+    
+    public int getThanhTien() {
+        return ThanhTien;
+    }
+
+    public void setThanhTien(int ThanhTien) {
+        this.ThanhTien = ThanhTien;
+    }
 
     public String getTenDV() {
         return TenDV;
@@ -21,11 +48,11 @@ public class ChiTietHoaDon {
         this.TenDV = TenDV;
     }
 
-    public double getSoLuong() {
+    public int getSoLuong() {
         return SoLuong;
     }
 
-    public void setSoLuong(double SoLuong) {
+    public void setSoLuong(int SoLuong) {
         this.SoLuong = SoLuong;
     }
 

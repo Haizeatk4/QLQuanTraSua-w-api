@@ -88,17 +88,6 @@ public class NguyenLieuCtrl {
         }
 
     }
-    public void InsertTienNL(QLThongKe nl){
-        String sql = "INSERT INTO ThongKe VALUES (?)";
-        
-        try {
-            ps = connectDatabase.TaoKetNoi().prepareStatement(sql);
-            ps.setString(1, nl.getTongTienNL());
-            ps.execute();
-            JOptionPane.showMessageDialog(null, "Đã thanh toán xong tiền nguyên liệu cho NCC");
-        } catch (HeadlessException | SQLException e) {
-        }
-    }
     public String UpdateNguyenLieu(NguyenLieu nl) {
         try {
             ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE NguyenLieu SET TenDV = ?,"
