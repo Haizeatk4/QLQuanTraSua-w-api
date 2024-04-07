@@ -1,5 +1,4 @@
 Controller\NguyenLieuCtrl.class
-Model\user.class
 API\QL_NguyenLieu_API.class
 Controller\HoaDonCtrl.class
 Controller\ChiTietHoaDonCtrl.class
@@ -8,6 +7,7 @@ Model\ThongKe.class
 API\ChiTietHoaDon_API.class
 Controller\NhanVienCtrl.class
 API\QL_HoaDon_API.class
+API\ThongKe_API.class
 Model\Menu.class
 API\QL_Menu_API.class
 Model\NguyenLieu.class

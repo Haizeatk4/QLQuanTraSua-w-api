@@ -32,7 +32,6 @@ public class QL_NguyenLieu_API {
         post("/nguyen_lieu/them", (rqst,rspns) -> {
             NguyenLieuCtrl nvCtrl = new NguyenLieuCtrl();
             NguyenLieu nl = new NguyenLieu();
-            System.out.print("2");
             nl.setMaNL(nvCtrl.taomaNguyenLieu());
             nl.setTenNL(rqst.queryParams("TenNL"));
             

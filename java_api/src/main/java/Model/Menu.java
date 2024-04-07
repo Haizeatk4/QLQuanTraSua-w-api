@@ -11,7 +11,7 @@ package Model;
 public class Menu {
     String MaMon;
     String TenMon;
-    String SoLuong;
+    int SoLuong;
     int Gia;
     String Anh;
 
@@ -31,11 +31,11 @@ public class Menu {
         this.TenMon = TenMon;
     }
 
-    public String getSoLuong() {
+    public int getSoLuong() {
         return SoLuong;
     }
 
-    public void setSoLuong(String SoLuong) {
+    public void setSoLuong(int SoLuong) {
         this.SoLuong = SoLuong;
     }
 

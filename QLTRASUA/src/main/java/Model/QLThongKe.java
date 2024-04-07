@@ -10,21 +10,23 @@ package Model;
  * @author Administrator
  */
 public class QLThongKe {
-    private String TongTienNL;
+    String MaTK;
+    int DoanhThu;
 
-    public String getTongTienNL() {
-        return TongTienNL;
+    public String getMaTK() {
+        return MaTK;
     }
 
-    public void setTongTienNL(String TongTienNL) {
-        this.TongTienNL = TongTienNL;
+    public void setMaTK(String MaTK) {
+        this.MaTK = MaTK;
     }
 
-    public QLThongKe(String TongTienNL) {
-        this.TongTienNL = TongTienNL;
+    public int getDoanhThu() {
+        return DoanhThu;
     }
 
-    public QLThongKe() {
+    public void setDoanhThu(int DoanhThu) {
+        this.DoanhThu = DoanhThu;
     }
     
 }

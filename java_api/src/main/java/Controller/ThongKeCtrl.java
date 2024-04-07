@@ -31,7 +31,7 @@ public class ThongKeCtrl {
     
     public ArrayList<ThongKe> createArr() throws SQLException{
         arr = new ArrayList<>();
-        ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT * FROM thongke WHERE NOT MaNhanVien = 'admin'");
+        ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT * FROM thongke LIMIT 6");
         rs = ps.executeQuery();
         while(rs.next()){
            ThongKe tmp = new ThongKe();

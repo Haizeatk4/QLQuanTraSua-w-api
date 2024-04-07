@@ -4,8 +4,8 @@
  */
 package frmView;
 
-import Model.QLNguyenLieu;
-import com.toedter.calendar.JDateChooser;
+import Controller.NhanVienData;
+import Model.QLMenu;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -19,10 +19,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -48,10 +46,10 @@ public class frmQuanLyDichVu extends JFrame implements ActionListener {
     //<editor-fold defaultstate="collapsed" desc="Var">
     boolean isSelected = false;
     int item_id,mode=0;
-    private ArrayList<QLNguyenLieu> arr = new ArrayList();
+    private ArrayList<QLMenu> arr = new ArrayList();
     //---------------------------------------------------------------------------
     JPanel p2 = new JPanel();
-    JLabel tile = new JLabel("QUẢN LÝ DỊCH VỤ");
+    JLabel tile = new JLabel("MENU");
     
     JPanel p1 = new JPanel();
     JButton btn_add = new JButton("THÊM");
@@ -61,8 +59,8 @@ public class frmQuanLyDichVu extends JFrame implements ActionListener {
     JButton btn_search = new JButton("TÌM KIẾM");
     JTextField txt_search = new JTextField();
     
-    JLabel l_maDV = new JLabel("Mã Dịch Vụ:");
-    JLabel l_tenDV = new JLabel("Tên Dịch vụ:");
+    JLabel l_maDV = new JLabel("Mã Món:");
+    JLabel l_tenDV = new JLabel("Tên Món:");
     JLabel l_soLuong = new JLabel("Số Lượng:");
     JLabel l_donGia = new JLabel("Đơn Giá:");
     JLabel l_anh = new JLabel("Ảnh");
@@ -90,8 +88,7 @@ public class frmQuanLyDichVu extends JFrame implements ActionListener {
         Border pad = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         //<editor-fold defaultstate="collapsed" desc="Menu">
         p2.setLayout(new BorderLayout());
-        
-        
+        l_acc.setText(NhanVienData.user);
         m_hethong.add(mi_exit);
         mb.add(m_hethong);
         mb.add(l_preAcc);
@@ -219,7 +216,6 @@ public class frmQuanLyDichVu extends JFrame implements ActionListener {
         this.add(new JScrollPane(td),BorderLayout.CENTER);
         this.add(p2,BorderLayout.NORTH);
         this.add(p1,BorderLayout.WEST);
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setVisible(true);
         //<editor-fold defaultstate="collapsed" desc="Event">
         //--------------------------Select--------------------------------------
@@ -236,6 +232,9 @@ public class frmQuanLyDichVu extends JFrame implements ActionListener {
                     setText();
                 } else {
                     isSelected=false;
+                    btn_add.setEnabled(true);
+                    btn_edit.setEnabled(false);
+                    btn_del.setEnabled(false);
                 }
             }
         });
@@ -249,6 +248,22 @@ public class frmQuanLyDichVu extends JFrame implements ActionListener {
             @Override
             public void windowClosing(WindowEvent e) {
               
+            }
+        });
+        mi_exit.addActionListener((e) -> {
+            try {
+                frmHome home = new frmHome();
+                home.setVisible(true);
+                dispose();
+            } catch (IOException ex) {}
+        });
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    frmHome home = new frmHome();
+                    home.setVisible(true);
+                } catch (IOException ex) {}
             }
         });
         //</editor-fold>
@@ -305,26 +320,26 @@ public class frmQuanLyDichVu extends JFrame implements ActionListener {
             return false;
         }
     }
-//    public QLDichVu getInfo(){
-//        if(checkBlank()){
-//            return null;
-//        } else {
-//            String a = txt_maDV.getText();
-//            String b = txt_tenDV.getText();
-//            String c = spr_soLuong.getValue().toString();
-//            int d = (int) spr_donGia.getValue();
-//            
-//            QLDichVu nl = new QLDichVu(a,b,c,d,e);
-//            return nl;
-//        }
-//    }
+    public QLMenu getInfo(){
+        if(checkBlank()){
+            return null;
+        } else {
+            String a = txt_maDV.getText();
+            String b = txt_tenDV.getText();
+            int c = Integer.parseInt(spr_soLuong.getValue().toString());
+            int d = Integer.parseInt(spr_donGia.getValue().toString());
+            String e = txt_anh.getText();
+            
+            QLMenu nl = new QLMenu(a,b,c,d,e);
+            return nl;
+        }
+    }
     public void setText(){
-        txt_maDV.setText(arr.get(item_id).getMaNL());
-        txt_tenDV.setText(arr.get(item_id).getTenNL());
-        java.util.Date  utilDate = new java.util.Date(arr.get(item_id).getNgayNhap().getTime());
+        txt_maDV.setText(arr.get(item_id).getMaMon());
+        txt_tenDV.setText(arr.get(item_id).getTenMon());
         spr_soLuong.setValue(arr.get(item_id).getSoLuong());
-        spr_donGia.setValue(Integer.valueOf(arr.get(item_id).getDonGia()));
-        txt_anh.setText(arr.get(item_id).getMaNL());        
+        spr_donGia.setValue(Integer.valueOf(arr.get(item_id).getGia()));
+        txt_anh.setText(arr.get(item_id).getAnh());        
     }
     public void clearMode(){
         clearText();
@@ -336,7 +351,6 @@ public class frmQuanLyDichVu extends JFrame implements ActionListener {
         btn_edit.setEnabled(false);
         btn_del.setEnabled(false);
         td.clearSelection();
-        txt_search.setText("");
     }
     public void clearText(){
         txt_maDV.setText("");
@@ -349,22 +363,24 @@ public class frmQuanLyDichVu extends JFrame implements ActionListener {
         txt_tenDV.setEditable(a);
         spr_soLuong.setEnabled(a);
         spr_donGia.setEnabled(a);
+        txt_anh.setEnabled(a);
     }
-    public void loadTable(ArrayList<QLNguyenLieu> arr){
+    public void loadTable(ArrayList<QLMenu> arr){
         int rc = model.getRowCount();
         for(int i=0;i<rc;i++){
             model.removeRow(0);
         }
-        Object r[] = new Object[6];
+        Object r[] = new Object[5];
         for(int i=0;i<arr.size();i++){
-            r[0] = arr.get(i).getMaNL();
-            r[1] = arr.get(i).getTenNL();
+            r[0] = arr.get(i).getMaMon();
+            r[1] = arr.get(i).getTenMon();
             r[2] = arr.get(i).getSoLuong();
-            r[3] = arr.get(i).getDvTinh();
-            r[4] = arr.get(i).getDonGia();
+            r[3] = arr.get(i).getGia();
+            r[4] = arr.get(i).getAnh();
             model.addRow(r);
         }
         this.arr = arr;
+        clearMode();
     }
     //</editor-fold>
     @Override
