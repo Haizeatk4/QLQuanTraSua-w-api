@@ -42,25 +42,59 @@ public class ChiTietHoaDonCtrl {
             }
     }
     public String InsertMon(String MaHD,String MaDV,int SoLuong,int DonGia) throws SQLException {
-            String sql = "INSERT INTO chitiethoadon (`MaHD`, `MaDV`, `SoLuong`, `DonGia`) VALUES (?,?,?,?)";
-            try {
-                ps = connectDatabase.TaoKetNoi().prepareStatement(sql);
-                ps.setString(1, MaHD);
-                ps.setString(2, MaDV);
-                ps.setInt(3, SoLuong);
-                ps.setInt(4, DonGia);
-                ps.execute();
-                ps.close();
-                return "Ðã thêm món thành công!";
-            } catch (HeadlessException | SQLException e) {
-                return e.getMessage();
-            }
+        if(MaDV.contains("NL")){
+            NguyenLieuCtrl nl = new NguyenLieuCtrl();
+            nl.updateSoLuongNL(MaDV, SoLuong);
+        } else {
+            MenuCtrl mn = new MenuCtrl();
+            mn.updateSoLuongM(MaDV, SoLuong);
+        }
+        ps = connectDatabase.TaoKetNoi().prepareStatement("select SoLuong,DonGia from chitiethoadon where MaDV=? and MaHD=?");
+        ps.setString(1, MaDV);
+        ps.setString(2, MaHD);
+        rs = ps.executeQuery();
+        if (rs.next()) {
+            int n = rs.getInt("Soluong");
+            int g = rs.getInt("DonGia");
+            ps.close();
+            return UpdateMon(MaHD, MaDV, SoLuong+n, DonGia+g);
+        }
+        
+        String sql = "INSERT INTO chitiethoadon (`MaHD`, `MaDV`, `SoLuong`, `DonGia`) VALUES (?,?,?,?)";
+        try {
+            ps = connectDatabase.TaoKetNoi().prepareStatement(sql);
+            ps.setString(1, MaHD);
+            ps.setString(2, MaDV);
+            ps.setInt(3, SoLuong);
+            ps.setInt(4, DonGia);
+            ps.execute();
+            ps.close();
+            return "Ðã thêm món thành công!";
+        } catch (HeadlessException | SQLException e) {
+            return e.getMessage();
+        }
     }
-    public String DeleteMon(String ID) {
+    public String DeleteMon(String ID) throws SQLException {
+        ps = connectDatabase.TaoKetNoi().prepareStatement("select MaDV,SoLuong from chitiethoadon where WHERE STT = ?");
+        ps.setString(1, ID);
+        rs = ps.executeQuery();
+        rs.next();
+        String MaDV = rs.getString("MaDV");
+        int SoLuong = rs.getInt("Soluong");
+        if(MaDV.contains("NL")){
+            NguyenLieuCtrl nl = new NguyenLieuCtrl();
+            nl.updateSoLuongNL(MaDV, SoLuong*(-1));
+        } else {
+            MenuCtrl mn = new MenuCtrl();
+            mn.updateSoLuongM(MaDV, SoLuong*(-1));
+        }
+        
         try {
             ps = conn.prepareStatement("DELETE FROM chitiethoadon WHERE STT = ?");
             ps.setString(1, ID);
             ps.executeUpdate();
+            ps.close();
+            ps.close();
             return "Xóa thành công";
         } catch (SQLException e) {
             return e.getMessage();
@@ -90,6 +124,7 @@ public class ChiTietHoaDonCtrl {
                 + "where chitiethoadon.MaDV=dichvu.MaDV and MaHD = ?");
         ps.setString(1, MaHD);
         rs = ps.executeQuery();
+        
         while(rs.next()){
            ChiTietHoaDon tmp = new ChiTietHoaDon();
            
@@ -102,6 +137,7 @@ public class ChiTietHoaDonCtrl {
            
            arr.add(tmp);
         }
+        ps.close();
         return arr;
     }
 }

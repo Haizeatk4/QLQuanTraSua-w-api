@@ -4,6 +4,7 @@
  */
 package frmView;
 
+import Controller.NhanVienData;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -45,10 +46,10 @@ public class frmDoiMK extends JFrame implements ActionListener {
     JButton btn_confirm = new JButton("XÁC NHẬN");
     JButton btn_cancel = new JButton("HỦY");
     JLabel l_tk = new JLabel("Tài khoản:");
-    public JLabel l_acc = new JLabel();
+    JLabel l_acc = new JLabel();
     //</editor-fold>
-    public frmDoiMK(String tk) throws IOException {
-        l_acc.setText(tk);
+    public frmDoiMK() throws IOException {
+        l_acc.setText(NhanVienData.user);
         this.setTitle("ĐỔI MẬT KHẨU");
         this.setSize(750,400);
         this.setLocation(50, 70);
@@ -145,14 +146,14 @@ public class frmDoiMK extends JFrame implements ActionListener {
             @Override
             public void windowClosing(WindowEvent e) {
                 try {
-                    frmHome home = new frmHome(tk);
+                    frmHome home = new frmHome();
                     home.setVisible(true);
                 } catch (IOException ex) {}
             }
         });
         btn_cancel.addActionListener((e) -> {
             try {
-                frmHome home = new frmHome(tk);
+                frmHome home = new frmHome();
                 home.setVisible(true);
                 dispose();
             } catch (IOException ex) {}

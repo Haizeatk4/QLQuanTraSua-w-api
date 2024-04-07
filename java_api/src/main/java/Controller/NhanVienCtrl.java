@@ -5,6 +5,7 @@
  */
 package Controller;
 
+import static Controller.ChiTietHoaDonCtrl.ps;
 import Model.NhanVien;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -66,6 +67,7 @@ public class NhanVienCtrl {
            
            arr.add(tmp);
         }
+        ps.close();
         return arr;
     }
     public ArrayList<NhanVien> searchArr(String s) throws SQLException{
@@ -95,6 +97,7 @@ public class NhanVienCtrl {
            tmp.setTienLuong(rs.getString("TienLuong"));
            arr.add(tmp);
         }
+        ps.close();
         return arr;
     }
     public boolean dangNhap(String taiKhoan, String pass) throws SQLException {
@@ -176,6 +179,7 @@ public class NhanVienCtrl {
             ps = connectDatabase.TaoKetNoi().prepareStatement("DELETE FROM QlNhan_Vien WHERE MaNhanVien = ?");
             ps.setString(1, MaNhanVien);
             ps.executeUpdate();
+            ps.close();
             return "Ðã xóa thành công!";
         } catch (SQLException e) {
             return e.getMessage();

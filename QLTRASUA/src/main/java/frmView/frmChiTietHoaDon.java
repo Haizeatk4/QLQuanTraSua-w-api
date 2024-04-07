@@ -4,9 +4,11 @@
  */
 package frmView;
 
+import Controller.ExcelFileExporter;
 import Controller.HoaDonData;
 import Controller.MenuData;
 import Controller.NguyenLieuData;
+import Controller.NhanVienData;
 import Model.ChiTietHoaDon;
 import Model.QLHoaDon;
 import Model.QLMenu;
@@ -58,7 +60,7 @@ import org.apache.hc.core5.http.ParseException;
  *
  * @author ad
  */
-public class frmChiTietHoaDon extends JFrame implements ActionListener {
+public class frmChiTietHoaDon extends JFrame implements ActionListener{
     //<editor-fold defaultstate="collapsed" desc="Var">
     boolean tbdv_isSelected = false, tbhd_isSelected = false;
     int tbdv_item_id, tbhd_item_id,n;
@@ -67,7 +69,7 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
     private ArrayList<QLMenu> arr_mn = new ArrayList();
     MenuData mn = new MenuData("");
     NguyenLieuData nl = new NguyenLieuData("");
-    public QLHoaDon chd;
+    QLHoaDon chd;
     //---------------------------------------------------------------------------
     
     JPanel p_left = new JPanel();//_________________
@@ -94,6 +96,7 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
     JTable tbhd = new JTable();
     DefaultTableModel model_hd = (DefaultTableModel) tbhd.getModel();
     JLabel l_thanhTien = new JLabel();
+    JButton btn_excel = new JButton("Excel");
     
     JMenuBar mb = new JMenuBar();
     JMenu m_hethong = new JMenu("Hệ thống");
@@ -101,8 +104,14 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
     JLabel l_preAcc = new JLabel("Tài khoản: ");
     JLabel l_acc = new JLabel();
     //</editor-fold>
-    public frmChiTietHoaDon(String tk, QLHoaDon hd) throws ParseException, IOException {
+    public frmChiTietHoaDon(QLHoaDon hd) throws ParseException, IOException {
         chd=hd;
+        btn_excel.setEnabled(false);
+        if(chd.getTinhTrang().equals("Đã thanh toán")){
+            tbdv.setEnabled(false);
+            tbhd.setEnabled(false);
+            btn_excel.setEnabled(true);
+        }
         this.setSize(1200,800);
         this.setLocation(50, 70);
         this.setTitle("Chi tiết hóa đơn");
@@ -110,7 +119,7 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
         Border pad = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         Border padB = BorderFactory.createLineBorder(Color.BLACK);
         //<editor-fold defaultstate="collapsed" desc="Menu">
-        l_acc.setText(tk);
+        l_acc.setText(NhanVienData.user);
         m_hethong.add(mi_exit);
         mb.add(m_hethong);
         mb.add(l_preAcc);
@@ -143,7 +152,6 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
         gbc.gridx = 0;
         gbc.gridy = 1;
         pL1.add(btn_search,gbc);
-        btn_search.addActionListener(this);
         
         Font fo_t = new Font("Serif", Font.PLAIN,14);
         txt_search.setFont(fo_t);
@@ -166,8 +174,7 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
         model_dv.addColumn("Giá");
         pL2.add(new JScrollPane(tbdv),BorderLayout.CENTER);
         
-        this.arr_mn = mn.getAllDV();
-        loadTableMN();
+//        loadTableMN("");
         //setup ảnh
         l_pic.setPreferredSize(new Dimension(250,250));
         l_pic.setBorder(padB);
@@ -248,23 +255,44 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
         pR2.add(btn_del,BorderLayout.WEST);
         btn_del.addActionListener(this);
         
-        JLabel l_bl = new JLabel("  ");
-        pR2.add(l_bl,BorderLayout.CENTER);
-        
         l_thanhTien.setFont(fo_l);
         l_thanhTien.setHorizontalAlignment(JLabel.RIGHT);
-        pR2.add(l_thanhTien,BorderLayout.EAST);
+        pR2.add(l_thanhTien,BorderLayout.CENTER);
         pR2.setBorder(pad);
+        
+        btn_excel.setBackground(Color.WHITE);
+        pR2.add(btn_excel,BorderLayout.EAST);
+        
         p_right.add(pR2,BorderLayout.SOUTH);
         
         this.add(p_right,BorderLayout.CENTER);
         //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="Event">
+        btn_excel.addActionListener((e) -> {
+            String[] headers = new String[] {"Tên sản phẩm","Số lượng","Đơn giá","Thành tiền"};
+            String fileName = "Hóa đơn.xlsx";
+            ExcelFileExporter excelFileExporter = new ExcelFileExporter();
+            excelFileExporter.exportChiTietHoaDonExcelFile(chd, arr_hd, headers, fileName);
+        });
+        btn_search.addActionListener((e) -> {
+            spr_soLuong.setValue(0);
+            if(cb_filter.getSelectedIndex()==0){
+                try {
+                    tbdv.clearSelection();
+                    loadTableMN(txt_search.getText());
+                } catch (ParseException | IOException ex) {}
+            } else {
+                try {
+                    tbdv.clearSelection();
+                    loadTableNL(txt_search.getText());
+                } catch (IOException | ParseException ex) {}
+            }
+        });
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 try {
-                    HoaDonData hdfrm = new HoaDonData(tk);
+                    HoaDonData hdfrm = new HoaDonData();
                 } catch (IOException | ParseException ex) {
                     Logger.getLogger(frmChiTietHoaDon.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -272,7 +300,7 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
         });
         mi_exit.addActionListener((e) -> {
             try {
-                HoaDonData hdfrm = new HoaDonData(tk);
+                HoaDonData hdfrm = new HoaDonData();
                 dispose();
             } catch (IOException | ParseException ex) {
                 Logger.getLogger(frmChiTietHoaDon.class.getName()).log(Level.SEVERE, null, ex);
@@ -297,16 +325,14 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
                 try {
                     tbdv.clearSelection();
                     tile1.setText("MENU");
-                    this.arr_mn = mn.getAllDV();
-                    loadTableMN();
+                    loadTableMN("");
                     pL2.add(l_pic,BorderLayout.SOUTH);
                 } catch (ParseException | IOException ex) {}
             } else {
                 try {
                     tbdv.clearSelection();
                     tile1.setText("DANH SÁCH NGUYÊN LIỆU");
-                    this.arr_nl = nl.getAllNL();
-                    loadTableNL();
+                    loadTableNL("");
                     pL2.remove(l_pic);
                 } catch (IOException | ParseException ex) {}
             }
@@ -325,9 +351,6 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
         //</editor-fold>
     }
     //<editor-fold defaultstate="collapsed" desc="Event2">
-    public void searchListener (ActionListener log){
-        btn_search.addActionListener(log);
-    }
     public void delListener (ActionListener log){
         btn_del.addActionListener(log);
     }
@@ -336,21 +359,11 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
     }
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Method">
-    public boolean checkMon(){
-        String maT;
-        if(cb_filter.getSelectedIndex()==0){
-            maT = arr_mn.get(tbdv_item_id).getMaMon();
-        } else {
-            maT = arr_nl.get(tbdv_item_id).getMaNL();
-        }
-        for(int i=0;i<arr_hd.size();i++){
-            if(maT.equals(arr_hd.get(i).getMaDV())){
-                n=i;
-                return true;
-            }
-        }
-        return false;
+
+    public QLHoaDon getChd() {
+        return chd;
     }
+    
     public String getMaHD(){
         return chd.getMaHD();
     }
@@ -361,24 +374,20 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
             return arr_nl.get(tbdv_item_id).getMaNL();
         }
     }
-    public int getSoLuong(){
+    public String getSoLuong(){
         if(Integer.parseInt(spr_soLuong.getValue().toString())==0){
             JOptionPane.showMessageDialog(null, "Chọn số lượng muốn thêm", "Thông báo", 1);
-            return 0;
+            return "";
         } else {
-            if(checkMon()){
-                return Integer.parseInt(spr_soLuong.getValue().toString())+arr_hd.get(n).getSoLuong();
-            } else {
-                return Integer.parseInt(spr_soLuong.getValue().toString());
-            }
+            return spr_soLuong.getValue().toString();
         }
     }
     public String getThanhTien(){
-        int r;
+        int r,n=Integer.parseInt(spr_soLuong.getValue().toString());
         if(cb_filter.getSelectedIndex()==0){
-            r = arr_mn.get(tbdv_item_id).getGia() * getSoLuong();
+            r = arr_mn.get(tbdv_item_id).getGia() * n;
         } else {
-            r = arr_nl.get(tbdv_item_id).getDonGia() * getSoLuong();
+            r = arr_nl.get(tbdv_item_id).getDonGia() * n;
         }
         return Integer.toString(r);
     }
@@ -386,7 +395,7 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
         return tbhd_item_id;
     }
     
-    public void loadTable(ArrayList<ChiTietHoaDon> arr){
+    public void loadTable(ArrayList<ChiTietHoaDon> arr) throws ParseException, IOException{
         int rc = model_hd.getRowCount();
         for(int i=0;i<rc;i++){
             model_hd.removeRow(0);
@@ -403,6 +412,12 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
         }
         this.arr_hd = arr;
         chd.setThanhTien(tong);
+        if(cb_filter.getSelectedIndex()==0){
+            loadTableMN("");
+        } else {
+            loadTableNL("");
+        }
+        txt_search.setText("");
         l_thanhTien.setText("Tổng: "+chd.getThanhTien()+"   Tình Trạng: "+chd.getTinhTrang());
     }
     public void setPic(){
@@ -418,7 +433,8 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
             }
         }
     }
-    public void loadTableNL(){
+    public void loadTableNL(String s) throws ParseException, IOException{
+        this.arr_nl = nl.getNL(s);
         int rc = model_dv.getRowCount();
         for(int i=0;i<rc;i++){
             model_dv.removeRow(0);
@@ -431,7 +447,8 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener {
             model_dv.addRow(r);
         }
     }
-    public void loadTableMN(){
+    public void loadTableMN(String s) throws ParseException, IOException{
+        this.arr_mn = mn.getDV(s);
         int rc = model_dv.getRowCount();
         for(int i=0;i<rc;i++){
             model_dv.removeRow(0);

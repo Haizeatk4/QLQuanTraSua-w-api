@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package Controller;
+import static Controller.ChiTietHoaDonCtrl.ps;
 import static Controller.NhanVienCtrl.ps;
 import Model.HoaDon;
 import java.awt.HeadlessException;
@@ -47,6 +48,7 @@ public class HoaDonCtrl {
            
            arr.add(tmp);
         }
+        ps.close();
         return arr;
     }
     public ArrayList<HoaDon> searchArr(String s) throws SQLException{
@@ -73,9 +75,21 @@ public class HoaDonCtrl {
            
            arr.add(tmp);
         }
+        ps.close();
         return arr;
     }
-    public String UpdateHoaDon(HoaDon nv) {
+    public String UpdateHoaDon(HoaDon nv) throws SQLException {
+        if(nv.getTinhTrang().equals("Đã thanh toán")){
+            ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT Ngay FROM hoadon WHERE MaHD=?");
+            ps.setString(1, nv.getMaHD());
+            rs = ps.executeQuery();
+            rs.next();
+            nv.setNgayLap(rs.getDate("Ngay"));
+            
+            ThongKeCtrl tkCtrl = new ThongKeCtrl();
+            tkCtrl.themDoanhThu(nv.getNgayLap(), nv.getThanhTien());
+        }
+        
         String sql = "UPDATE HoaDon SET MaBan = ?,"
                 + "ThanhTien = ?,TinhTrang = ? where MaHD = ?";
         try {
@@ -88,6 +102,7 @@ public class HoaDonCtrl {
             ps.close();
             return "Sửa thành công";
         } catch (SQLException e) {
+            ps.close();
             return e.getMessage();
         }
 
@@ -117,19 +132,22 @@ public class HoaDonCtrl {
             tmp.setNgayLap(rs.getDate("Ngay"));
             tmp.setMaBan(rs.getString("MaBan"));
             tmp.setThanhTien(rs.getInt("ThanhTien"));
+            tmp.setTinhTrang(rs.getString("TinhTrang"));
         }
         ps.close();
         return tmp;
     }
     
 
-    public String DeleteHoaDon(String MaHD) {
+    public String DeleteHoaDon(String MaHD) throws SQLException {
         try {
             ps = conn.prepareStatement("DELETE FROM HoaDon WHERE MaHD = ?");
             ps.setString(1, MaHD);
             ps.executeUpdate();
+            ps.close();
             return "Xóa thành công";
         } catch (SQLException e) {
+            ps.close();
             return e.getMessage();
         }
     }

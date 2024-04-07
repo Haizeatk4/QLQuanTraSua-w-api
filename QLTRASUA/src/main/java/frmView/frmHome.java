@@ -55,7 +55,7 @@ public class frmHome extends JFrame{
     JLabel l_acc = new JLabel();
     //</editor-fold>
 
-    public frmHome(String tk) throws IOException {
+    public frmHome() throws IOException {
         this.setTitle("Quản lý quán trà sữa");
         this.setSize(1185,560);
         this.setLocation(50, 70);
@@ -68,7 +68,7 @@ public class frmHome extends JFrame{
         p_tile.setLayout(new BorderLayout());
         p_tile.add(tile,BorderLayout.CENTER);
         //<editor-fold defaultstate="collapsed" desc="Menu">
-        l_acc.setText(tk);
+        l_acc.setText(NhanVienData.user);
         m_hethong.add(mi_exit);
         m_acc.add(mi_logout);
         m_acc.add(mi_changePass);
@@ -124,19 +124,19 @@ public class frmHome extends JFrame{
         //<editor-fold defaultstate="collapsed" desc="Event">
         btn_qlnv.addActionListener(((e) -> {
             try {
-                NhanVienData frmQLNV = new NhanVienData(tk+"qlnv");
+                NhanVienData frmQLNV = new NhanVienData(NhanVienData.user+"qlnv");
                 dispose();
             } catch (SQLException | IOException | ParseException | URISyntaxException ex) {}
         }));
         btn_qlnl.addActionListener(((e) -> {
             try {
-                NguyenLieuData frmQLNL = new NguyenLieuData(tk);
+                NguyenLieuData frmQLNL = new NguyenLieuData();
                 dispose();
             } catch (IOException | ParseException  ex) {}
         }));
         btn_qlhd.addActionListener((e) -> {
             try {
-                HoaDonData frmQLHD = new HoaDonData(tk);
+                HoaDonData frmQLHD = new HoaDonData();
                 dispose();
             } catch (ParseException | IOException ex) {}
         });
@@ -151,7 +151,7 @@ public class frmHome extends JFrame{
         });
         mi_changePass.addActionListener((e) -> {
             try {
-                NhanVienData frm = new NhanVienData(tk);
+                NhanVienData frm = new NhanVienData("");
                 dispose();
             } catch (SQLException | ParseException | URISyntaxException | IOException ex) {}
         });

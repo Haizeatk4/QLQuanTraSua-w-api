@@ -38,9 +38,9 @@ public class ChiTietHoaDonData {
     ArrayList<ChiTietHoaDon> arr = new ArrayList();
     ChiTietHoaDon cthd;
     QLHoaDon hd;
-    public ChiTietHoaDonData(String tk, QLHoaDon hd) throws IOException, ParseException {
+    public ChiTietHoaDonData(QLHoaDon hd) throws IOException, ParseException {
         this.hd=hd;
-        frm = new frmChiTietHoaDon(tk, hd);
+        frm = new frmChiTietHoaDon(hd);
         createArr(hd.getMaHD());
         frm.loadTable(arr);
         updateTong();
@@ -54,18 +54,13 @@ public class ChiTietHoaDonData {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                if(frm.getSoLuong()!=0){
+                if(!frm.getSoLuong().equals("")){
                     CloseableHttpClient client = HttpClients.createDefault();
-                    HttpPost httpP;
+                    HttpPost httpP = new HttpPost("http://localhost:4567/chi_tiet_hoa_don/them");
                     ArrayList<NameValuePair> params = new ArrayList<>();
-                    if(frm.checkMon()){
-                        httpP = new HttpPost("http://localhost:4567/chi_tiet_hoa_don/sua");
-                    } else {
-                        httpP = new HttpPost("http://localhost:4567/chi_tiet_hoa_don/them");
-                    }
                     params.add(new BasicNameValuePair("MaHD", frm.getMaHD()));
                     params.add(new BasicNameValuePair("MaDV", frm.getMaDV()));
-                    params.add(new BasicNameValuePair("SoLuong",Integer.toString(frm.getSoLuong())));
+                    params.add(new BasicNameValuePair("SoLuong", frm.getSoLuong()));
                     params.add(new BasicNameValuePair("DonGia", frm.getThanhTien()));
                     httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
                     CloseableHttpResponse response = client.execute(httpP);
@@ -98,7 +93,7 @@ public class ChiTietHoaDonData {
     //</editor-fold>
     public void updateTong() throws ParseException, IOException{
         HoaDonData ctrl = new HoaDonData("");
-        ctrl.UpdateHoaDon(frm.chd);
+        ctrl.UpdateHoaDon(frm.getChd());
     }
     public void thongBao(CloseableHttpResponse response) throws IOException, ParseException{
         if(response.toString().contains("200")){

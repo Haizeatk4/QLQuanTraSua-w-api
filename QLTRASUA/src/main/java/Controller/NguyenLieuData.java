@@ -39,18 +39,18 @@ public class NguyenLieuData {
     private ArrayList<QLNguyenLieu> arr = new ArrayList();
     private QLNguyenLieu nl;
     //</editor-fold>
-    public NguyenLieuData(String tk) throws IOException, ParseException {
-        if(!tk.equals("")){
-            frm = new frmQuanLyNguyenLieu(tk);
-            createArr();
-            frm.loadTable(arr);
-            frm.addListener(new AddListener());
-            frm.delListener(new DelListener());
-            frm.editListener(new EditListener());
-            frm.searchListener(new SearchListener());
-            frm.clearListener(new ClearListener());
-            frm.setVisible(true);
-        }
+    public NguyenLieuData() throws IOException, ParseException {
+        frm = new frmQuanLyNguyenLieu();
+        createArr();
+        frm.loadTable(arr);
+        frm.addListener(new AddListener());
+        frm.delListener(new DelListener());
+        frm.editListener(new EditListener());
+        frm.searchListener(new SearchListener());
+        frm.clearListener(new ClearListener());
+        frm.setVisible(true);
+    }
+    public NguyenLieuData(String l){
     }
     //<editor-fold defaultstate="collapsed" desc="Method">
     public void thongBao(CloseableHttpResponse response) throws IOException, ParseException{
@@ -65,8 +65,22 @@ public class NguyenLieuData {
         }
         
     }
-    public ArrayList<QLNguyenLieu> getAllNL() throws ParseException, IOException{
-        createArr();
+    public ArrayList<QLNguyenLieu> getNL(String s) throws ParseException, IOException{
+        try {
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpPost httpG = new HttpPost("http://localhost:4567/nguyen_lieu/search");
+            ArrayList<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("search", s));
+            httpG.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
+            CloseableHttpResponse response = client.execute(httpG);
+            HttpEntity entity = response.getEntity();
+            String responseString = EntityUtils.toString(entity, Charset.defaultCharset());
+            Gson gson = new Gson();
+            Type type = new TypeToken<ArrayList<QLNguyenLieu>>(){}.getType();
+            arr = gson.fromJson(responseString, type);
+        } catch (JsonSyntaxException | IOException | ParseException ex) {
+            JOptionPane.showMessageDialog(null, ex, "Thông báo", 1);
+        }
         return arr;
     }
     //</editor-fold>
@@ -84,7 +98,7 @@ public class NguyenLieuData {
                     params.add(new BasicNameValuePair("TenNL", nl.getTenNL()));
                     String strDate = nl.getNgayNhap().toString();
                     params.add(new BasicNameValuePair("NgayNhap", strDate));
-                    params.add(new BasicNameValuePair("SoLuong", nl.getSoLuong()));
+                    params.add(new BasicNameValuePair("SoLuong", Integer.toString(nl.getSoLuong())));
                     params.add(new BasicNameValuePair("DonVi", nl.getDvTinh()));
                     params.add(new BasicNameValuePair("DonGia", Integer.toString(nl.getDonGia())));
                     httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
@@ -130,7 +144,7 @@ public class NguyenLieuData {
                         params.add(new BasicNameValuePair("TenNL", nl.getTenNL()));
                         String strDate = nl.getNgayNhap().toString();
                         params.add(new BasicNameValuePair("NgayNhap", strDate));
-                        params.add(new BasicNameValuePair("SoLuong", nl.getSoLuong()));
+                        params.add(new BasicNameValuePair("SoLuong", Integer.toString(nl.getSoLuong())));
                         params.add(new BasicNameValuePair("DonVi", nl.getDvTinh()));
                         params.add(new BasicNameValuePair("DonGia", Integer.toString(nl.getDonGia())));
                         httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
