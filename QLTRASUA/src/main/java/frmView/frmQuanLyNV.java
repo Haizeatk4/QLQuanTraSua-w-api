@@ -4,6 +4,7 @@
  */
 package frmView;
 
+import Controller.NhanVienData;
 import Model.QLNhanVien;
 import com.toedter.calendar.JDateChooser;
 import java.awt.BorderLayout;
@@ -100,7 +101,7 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
     JLabel l_preAcc = new JLabel("Tài khoản: ");
     JLabel l_acc = new JLabel();
     //</editor-fold>
-    public frmQuanLyNV(String tk) {
+    public frmQuanLyNV() {
         this.setTitle("Quản lý nhân viên");
         this.setSize(1600,600);
         this.setLocation(50, 70);
@@ -113,7 +114,7 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         p_tile.setLayout(new BorderLayout());
         p_tile.add(tile,BorderLayout.CENTER);
         //<editor-fold defaultstate="collapsed" desc="Menu">
-        l_acc.setText(tk);
+        l_acc.setText(NhanVienData.user);
         m_hethong.add(mi_exit);
         mb.add(m_hethong);
         mb.add(l_preAcc);
@@ -299,7 +300,7 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         });
         mi_exit.addActionListener((e) -> {
             try {
-                frmHome home = new frmHome(tk);
+                frmHome home = new frmHome();
                 home.setVisible(true);
                 dispose();
             } catch (IOException ex) {}
@@ -308,7 +309,7 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
             @Override
             public void windowClosing(WindowEvent e) {
                 try {
-                    frmHome home = new frmHome(tk);
+                    frmHome home = new frmHome();
                     home.setVisible(true);
                 } catch (IOException ex) {}
             }

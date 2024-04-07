@@ -22,6 +22,20 @@ public class MenuCtrl {
     private ArrayList<Menu> arr = new ArrayList();
 
     public MenuCtrl() {}
+    public void updateSoLuongM(String MaDV,int SoLuong) throws SQLException{
+        ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT * FROM dichvu WHERE MaDV=?");
+        ps.setString(1, MaDV);
+        rs = ps.executeQuery();
+        rs.next();
+        int s = rs.getInt("SoLuong");
+        int r = s-SoLuong;
+        
+        ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE dichvu SET SoLuong=? where MaDV = ?");
+        ps.setInt(1, r);
+        ps.setString(2, MaDV);
+        ps.executeUpdate();
+        ps.close();
+    }
     public ArrayList<Menu> createArr() throws SQLException{
         arr = new ArrayList<>();
         ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT * FROM dichvu");
@@ -37,6 +51,29 @@ public class MenuCtrl {
            
            arr.add(tmp);
         }
+        ps.close();
+        return arr;
+    }
+    public ArrayList<Menu> searchArr(String s) throws SQLException{
+        
+        arr = new ArrayList<>();
+        String sql = "SELECT * FROM dichvu where MaDV like '%"+s+"%'"
+                + " or TenDV like '%"+s+"%'"
+                + " or Gia like '%"+s+"%'";
+        ps = connectDatabase.TaoKetNoi().prepareStatement(sql);
+        rs = ps.executeQuery();
+        while(rs.next()){
+           Menu tmp = new Menu();
+           
+           tmp.setMaMon(rs.getString("MaDV"));
+           tmp.setTenMon(rs.getString("TenDV"));
+           tmp.setSoLuong(rs.getString("SoLuong"));
+           tmp.setGia(rs.getInt("Gia"));
+           tmp.setAnh(rs.getString("Anh"));
+           
+           arr.add(tmp);
+        }
+        ps.close();
         return arr;
     }
 }

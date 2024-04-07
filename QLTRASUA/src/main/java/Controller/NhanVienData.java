@@ -46,6 +46,7 @@ public class NhanVienData {
     frmDoiMK frm_doiMK;
     private ArrayList<QLNhanVien> arr = new ArrayList();
     private QLNhanVien nv;
+    public static String user;
     //</editor-fold>
     public NhanVienData(String l) throws SQLException, IOException, ParseException, URISyntaxException {
         if(l.equals("login")){
@@ -53,7 +54,7 @@ public class NhanVienData {
             frm_login.loginListener(new LoginListener());
             frm_login.setVisible(true);
         } else if (l.contains("qlnv")){
-            frm = new frmQuanLyNV(l.replace("qlnv", ""));
+            frm = new frmQuanLyNV();
             createArr();
             frm.loadTable(arr);
             frm.addListener(new AddListener());
@@ -64,7 +65,7 @@ public class NhanVienData {
             frm.clearListener(new ClearListener());
             frm.setVisible(true);
         } else {
-            this.frm_doiMK = new frmDoiMK(l);
+            this.frm_doiMK = new frmDoiMK();
             frm_doiMK.confirmListener(new ConfirmListener());
             frm_doiMK.setVisible(true);
         }
@@ -226,6 +227,7 @@ public class NhanVienData {
         @Override
         public void actionPerformed(ActionEvent e) {
             String tk = frm_login.getTK();
+            user=tk;
             String mk = frm_login.getMK();
             if(tk!=null && mk!=null){
                 try {
@@ -240,8 +242,7 @@ public class NhanVienData {
                     String r = EntityUtils.toString(entity, Charset.defaultCharset());
                     if(Boolean.parseBoolean(r)){
                         JOptionPane.showMessageDialog(null, "Đăng nhập thành công", "Thông báo", 1);
-                        frmHome home = new frmHome(tk);
-                        if(!tk.equals("admin")) home.lock();
+                        frmHome home = new frmHome();
                         home.setVisible(true);
                         frm_login.dispose();
                     } else {
@@ -255,7 +256,7 @@ public class NhanVienData {
     }class ConfirmListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            String tk = frm_doiMK.l_acc.getText();
+            String tk = NhanVienData.user;
             String mk = frm_doiMK.getMatKhauCu();
             String mkMoi = frm_doiMK.getMatKhauMoi();
             if(tk!=null && mk!=null && mkMoi!=null){

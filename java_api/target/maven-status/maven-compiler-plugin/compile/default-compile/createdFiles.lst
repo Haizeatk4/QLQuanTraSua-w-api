@@ -3,8 +3,8 @@ Model\user.class
 API\QL_NguyenLieu_API.class
 Controller\HoaDonCtrl.class
 Controller\ChiTietHoaDonCtrl.class
-Model\QLThongKe.class
 API\QL_NhanVien_API.class
+Model\ThongKe.class
 API\ChiTietHoaDon_API.class
 Controller\NhanVienCtrl.class
 API\QL_HoaDon_API.class
@@ -16,4 +16,5 @@ Model\HoaDon.class
 Controller\connectDatabase.class
 com\mycompany\mavenproject1\Mavenproject1.class
 Model\NhanVien.class
+Controller\ThongKeCtrl.class
 Controller\MenuCtrl.class

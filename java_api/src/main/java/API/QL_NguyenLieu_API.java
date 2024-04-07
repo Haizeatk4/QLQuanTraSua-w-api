@@ -40,7 +40,7 @@ public class QL_NguyenLieu_API {
             Date date = Date.valueOf(d);
             nl.setNgayNhap(date);
             
-            nl.setSoLuong(rqst.queryParams("SoLuong"));
+            nl.setSoLuong(Integer.parseInt(rqst.queryParams("SoLuong")));
             nl.setDvTinh(rqst.queryParams("DonVi"));
             nl.setDonGia(Integer.parseInt(rqst.queryParams("DonGia")));
             
@@ -62,7 +62,7 @@ public class QL_NguyenLieu_API {
             Date date = Date.valueOf(d);
             nl.setNgayNhap(date);
             
-            nl.setSoLuong(rqst.queryParams("SoLuong"));
+            nl.setSoLuong(Integer.parseInt(rqst.queryParams("SoLuong")));
             nl.setDvTinh(rqst.queryParams("DonVi"));
             nl.setDonGia(Integer.parseInt(rqst.queryParams("DonGia")));
             

@@ -23,6 +23,11 @@ public class QL_NhanVien_API {
             rspns.type("application/json");
             return new Gson().toJson(nv.createArr());
         });
+        get("/nhan_vien", (rqst,rspns) -> {
+            NhanVienCtrl nv = new NhanVienCtrl();
+            rspns.type("application/json");
+            return new Gson().toJson(nv.createArr());
+        });
         post("/nhan_vien/login", (rqst,rspns) -> {
             NhanVienCtrl nv = new NhanVienCtrl();
             String tk = rqst.queryParams("MaNhanVien");

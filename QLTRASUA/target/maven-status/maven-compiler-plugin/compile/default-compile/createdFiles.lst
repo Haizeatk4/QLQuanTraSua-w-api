@@ -4,6 +4,8 @@ Controller\NguyenLieuData$DelListener.class
 Controller\NhanVienData.class
 Controller\NhanVienData$ClearListener.class
 Controller\NhanVienData$DelListener.class
+frmView\frmThongKe.class
+Controller\NguyenLieuData$2.class
 Controller\ChiTietHoaDonData$DelListener.class
 Controller\NhanVienData$AddListener.class
 Controller\NguyenLieuData.class
@@ -17,6 +19,7 @@ Controller\HoaDonData$1.class
 frmView\frmDoiMK$1.class
 Controller\ChiTietHoaDonData$1.class
 Controller\NhanVienData$ConfirmListener.class
+Controller\ExcelFileExporter.class
 Controller\NguyenLieuData$1.class
 Controller\NguyenLieuData$SearchListener.class
 frmView\frmQuanLyNguyenLieu.class
@@ -53,4 +56,5 @@ Controller\NguyenLieuData$SearchListener$1.class
 Controller\HoaDonData$NewOrderListener.class
 Controller\NhanVienData$LoginListener.class
 Controller\NhanVienData$SearchListener$1.class
+Controller\MenuData$2.class
 Controller\ChiTietHoaDonData$AddListener.class

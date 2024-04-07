@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
@@ -40,18 +38,19 @@ public class HoaDonData {
     private ArrayList<QLHoaDon> arr = new ArrayList();
     QLHoaDon hd = new QLHoaDon();
     //</editor-fold>
-    public HoaDonData(String nv) throws ParseException, IOException {
-        if(!nv.equals("")){
-            frm = new frmQuanLyHoaDon(nv);
-            createArr();
-            frm.loadTable(arr);
-            frm.searchListener(new SearchListener());
-            frm.monthListener(new MonthListener());
-            frm.newOrderListener(new NewOrderListener());
-            frm.delListener(new DelListener());
-            frm.editListener(new EditListener());
-            frm.setVisible(true);
-        }
+    public HoaDonData() throws ParseException, IOException {
+        frm = new frmQuanLyHoaDon();
+        createArr();
+        frm.loadTable(arr);
+        frm.searchListener(new SearchListener());
+        frm.monthListener(new MonthListener());
+        frm.newOrderListener(new NewOrderListener());
+        frm.delListener(new DelListener());
+        frm.editListener(new EditListener());
+        frm.setVisible(true);
+    }
+    public HoaDonData(String l) {
+        
     }
     //<editor-fold defaultstate="collapsed" desc="Event">
     class EditListener implements ActionListener {
@@ -62,16 +61,18 @@ public class HoaDonData {
                     int id = frm.getItem_id();
                     hd = frm.getInfo();
                     if(hd != null){
-                        CloseableHttpClient client = HttpClients.createDefault();
-                        HttpPost httpP = new HttpPost("http://localhost:4567/hoa_don/sua");
-                        ArrayList<NameValuePair> params = new ArrayList<>();
-                        params.add(new BasicNameValuePair("MaHD", hd.getMaHD()));
-                        params.add(new BasicNameValuePair("MaBan", hd.getMaBan()));
-                        params.add(new BasicNameValuePair("ThanhTien", Integer.toString(hd.getThanhTien())));
-                        params.add(new BasicNameValuePair("TinhTrang", hd.getTinhTrang()));
-                        httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
-                        CloseableHttpResponse response = client.execute(httpP);
-                        thongBao(response);
+                        if(JOptionPane.showConfirmDialog(null, "Lưu ý! Hóa đơn sau khi thanh toán sẽ không thể chỉnh sửa. Bạn có muốn thanh toán hóa đơn này?")==0){
+                            CloseableHttpClient client = HttpClients.createDefault();
+                            HttpPost httpP = new HttpPost("http://localhost:4567/hoa_don/sua");
+                            ArrayList<NameValuePair> params = new ArrayList<>();
+                            params.add(new BasicNameValuePair("MaHD", hd.getMaHD()));
+                            params.add(new BasicNameValuePair("MaBan", hd.getMaBan()));
+                            params.add(new BasicNameValuePair("ThanhTien", Integer.toString(hd.getThanhTien())));
+                            params.add(new BasicNameValuePair("TinhTrang", hd.getTinhTrang()));
+                            httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
+                            CloseableHttpResponse response = client.execute(httpP);
+                            thongBao(response);
+                        }
                     }
                 }
             } catch (IOException | ParseException ex) {
@@ -151,14 +152,16 @@ public class HoaDonData {
                 CloseableHttpClient client = HttpClients.createDefault();
                 HttpPost httpG = new HttpPost("http://localhost:4567/hoa_don/them");
                 ArrayList<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair("MaNV", frm.l_acc.getText()));
+                params.add(new BasicNameValuePair("MaNV", NhanVienData.user));
                 params.add(new BasicNameValuePair("MaBan", frm.getBan()));
                 httpG.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
                 CloseableHttpResponse response = client.execute(httpG);
                 HttpEntity entity = response.getEntity();
                 String responseString = EntityUtils.toString(entity, Charset.defaultCharset());
                 QLHoaDon hd = new Gson().fromJson(responseString, QLHoaDon.class);
-                ChiTietHoaDonData cthd = new ChiTietHoaDonData(frm.l_acc.getText(), hd);
+                System.out.println(hd.getTinhTrang());
+                ChiTietHoaDonData cthd = new ChiTietHoaDonData(hd);
+                frm.dispose();
                 
             } catch (JsonSyntaxException | IOException | ParseException ex) {
                 JOptionPane.showMessageDialog(null, ex, "Thông báo", 1);

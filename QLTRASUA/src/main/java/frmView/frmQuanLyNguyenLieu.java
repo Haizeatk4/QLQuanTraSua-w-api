@@ -4,6 +4,7 @@
  */
 package frmView;
 
+import Controller.NhanVienData;
 import Model.QLNguyenLieu;
 import com.toedter.calendar.JDateChooser;
 import java.awt.BorderLayout;
@@ -85,7 +86,7 @@ public class frmQuanLyNguyenLieu extends JFrame implements ActionListener {
     JLabel l_preAcc = new JLabel("Tài khoản: ");
     JLabel l_acc = new JLabel();
     //</editor-fold>
-    public frmQuanLyNguyenLieu(String tk) {
+    public frmQuanLyNguyenLieu() {
         this.setSize(1200,800);
         this.setLocation(50, 70);
         this.setTitle("Quản lý nguyên liệu");
@@ -94,7 +95,7 @@ public class frmQuanLyNguyenLieu extends JFrame implements ActionListener {
         //<editor-fold defaultstate="collapsed" desc="Menu">
         p2.setLayout(new BorderLayout());
         
-        l_acc.setText(tk);
+        l_acc.setText(NhanVienData.user);
         m_hethong.add(mi_exit);
         mb.add(m_hethong);
         mb.add(l_preAcc);
@@ -254,7 +255,7 @@ public class frmQuanLyNguyenLieu extends JFrame implements ActionListener {
         });
         mi_exit.addActionListener((e) -> {
             try {
-                frmHome home = new frmHome(tk);
+                frmHome home = new frmHome();
                 home.setVisible(true);
                 dispose();
             } catch (IOException ex) {}
@@ -263,7 +264,7 @@ public class frmQuanLyNguyenLieu extends JFrame implements ActionListener {
             @Override
             public void windowClosing(WindowEvent e) {
                 try {
-                    frmHome home = new frmHome(tk);
+                    frmHome home = new frmHome();
                     home.setVisible(true);
                 } catch (IOException ex) {}
             }
@@ -330,7 +331,7 @@ public class frmQuanLyNguyenLieu extends JFrame implements ActionListener {
             String b = txt_tenNL.getText();
             Date g1 = dc_ngayNhap.getDate();
             java.sql.Date c = new java.sql.Date(g1.getTime());
-            String d = spr_soLuong.getValue().toString();
+            int d = Integer.parseInt(spr_soLuong.getValue().toString());
             String e = cb_donVi.getSelectedItem().toString();
             int f = (int) spr_donGia.getValue();
             QLNguyenLieu nl = new QLNguyenLieu(a,b,c,d,e,f);
@@ -342,8 +343,7 @@ public class frmQuanLyNguyenLieu extends JFrame implements ActionListener {
         txt_tenNL.setText(arr.get(item_id).getTenNL());
         java.util.Date  utilDate = new java.util.Date(arr.get(item_id).getNgayNhap().getTime());
         dc_ngayNhap.setDate(utilDate);
-        if(arr.get(item_id).getSoLuong()!= null){
-        spr_soLuong.setValue(Integer.valueOf(arr.get(item_id).getSoLuong()));}
+        spr_soLuong.setValue(arr.get(item_id).getSoLuong());
         cb_donVi.setSelectedItem(arr.get(item_id).getDvTinh());
         spr_donGia.setValue(Integer.valueOf(arr.get(item_id).getDonGia()));
     }

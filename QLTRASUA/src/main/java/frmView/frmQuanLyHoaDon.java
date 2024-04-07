@@ -5,6 +5,8 @@
 package frmView;
 
 import Controller.ChiTietHoaDonData;
+import Controller.ExcelFileExporter;
+import Controller.NhanVienData;
 import Model.QLHoaDon;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -66,6 +68,7 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
     JButton btn_newOrder = new JButton("HÓA ĐƠN MỚI");
     JButton btn_edit = new JButton("SỬA");
     JButton btn_del = new JButton("XÓA");
+    JButton btn_excel = new JButton("EXCEL");
     JCheckBox check_thanhToan = new JCheckBox("Đã thanh toán");
     
     JPanel p3 = new JPanel();
@@ -76,17 +79,17 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
     JMenu m_hethong = new JMenu("Hệ thống");
     JMenuItem mi_exit = new JMenuItem("Thoát");
     JLabel l_preAcc = new JLabel("Tài khoản: ");
-    public JLabel l_acc = new JLabel();
+    JLabel l_acc = new JLabel();
     JComboBox<String> cb_month = new JComboBox<>();
     //</editor-fold>
-    public frmQuanLyHoaDon(String tk) {
+    public frmQuanLyHoaDon() {
         this.setSize(1200,800);
         this.setLocation(50, 70);
         this.setTitle("Quản lý hóa đơn");
         this.setLayout(new BorderLayout());
         Border pad = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         //<editor-fold defaultstate="collapsed" desc="Menu">
-        l_acc.setText(tk);
+        l_acc.setText(NhanVienData.user);
         m_hethong.add(mi_exit);
         mb.add(m_hethong);
         mb.add(l_preAcc);
@@ -106,6 +109,7 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
         btn_del.setEnabled(false);
         cb_ban.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Đem về", "Bàn 001", "Bàn 002", "Bàn 003", "Bàn 004", "Bàn 005", "Bàn 006", "Bàn 007", "Bàn 008", "Bàn 009", "Bàn 010"}));
         cb_ban.setEditable(false);
+        btn_excel.setBackground(Color.WHITE);
         
         JPanel p11 = new JPanel();
         p11.setLayout(new GridLayout(3, 1, 0, 0));
@@ -117,6 +121,7 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
         p1.add(btn_newOrder);
         p1.add(p11);
         p1.add(btn_del);
+        p1.add(btn_excel);
         btn_newOrder.addActionListener(this);
         btn_edit.addActionListener(this);
         btn_del.addActionListener(this);
@@ -173,9 +178,15 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
         this.add(p1,BorderLayout.WEST);
         this.add(p2,BorderLayout.NORTH);
         //<editor-fold defaultstate="collapsed" desc="Event">
+        btn_excel.addActionListener((e) -> {
+            String[] headers = new String[] {"Mã hóa đơn","Tên nhân viên","Ngày lập","Bàn","Thành tiền","Tình trạng"};
+            String fileName = "Quản lí hóa đơn.xlsx";
+            ExcelFileExporter excelFileExporter = new ExcelFileExporter();
+            excelFileExporter.exportHoaDonExcelFile(arr, headers, fileName);
+        });
         btn_detail.addActionListener((e) -> {
             try {
-                ChiTietHoaDonData cthd = new ChiTietHoaDonData(tk, arr.get(item_id));
+                ChiTietHoaDonData cthd = new ChiTietHoaDonData(arr.get(item_id));
                 dispose();
             } catch (IOException | ParseException ex) {
                 Logger.getLogger(frmQuanLyHoaDon.class.getName()).log(Level.SEVERE, null, ex);
@@ -184,16 +195,18 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
         final ListSelectionModel sel = td.getSelectionModel();
         sel.addListSelectionListener((ListSelectionEvent e) -> {
                 if(!sel.isSelectionEmpty()){
-                    btn_detail.setEnabled(true);
-                    btn_del.setEnabled(true);
                     item_id=sel.getMinSelectionIndex();
+                    if(arr.get(item_id).getTinhTrang().equals("Chưa thanh toán")){
+                        btn_detail.setEnabled(true);
+                        btn_del.setEnabled(true);
+                        btn_edit.setEnabled(true);
+                    }
                     cb_ban.setSelectedItem(arr.get(item_id).getMaBan());
                     if(arr.get(item_id).getTinhTrang().equals("Chưa thanh toán")){
                         check_thanhToan.setSelected(false);
                     } else {
                         check_thanhToan.setSelected(true);
                     }
-                    btn_edit.setEnabled(true);
                     isSelected=true;
                 } else {
                     btn_detail.setEnabled(false);
@@ -205,7 +218,7 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
         });
         mi_exit.addActionListener((e) -> {
             try {
-                frmHome home = new frmHome(tk);
+                frmHome home = new frmHome();
                 home.setVisible(true);
                 dispose();
             } catch (IOException ex) {}
@@ -214,7 +227,7 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
             @Override
             public void windowClosing(WindowEvent e) {
                 try {
-                    frmHome home = new frmHome(tk);
+                    frmHome home = new frmHome();
                     home.setVisible(true);
                 } catch (IOException ex) {}
             }
@@ -272,7 +285,9 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
             return true;
         } else {
             mode = 1;
-            check_thanhToan.setEnabled(true);
+            if(arr.get(item_id).getTinhTrang().equals("Chưa thanh toán")){
+                check_thanhToan.setEnabled(true);
+            }
             btn_edit.setBackground(Color.YELLOW);
             btn_del.setEnabled(false);
             td.setEnabled(false);

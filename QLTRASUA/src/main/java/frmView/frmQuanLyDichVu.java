@@ -322,8 +322,7 @@ public class frmQuanLyDichVu extends JFrame implements ActionListener {
         txt_maDV.setText(arr.get(item_id).getMaNL());
         txt_tenDV.setText(arr.get(item_id).getTenNL());
         java.util.Date  utilDate = new java.util.Date(arr.get(item_id).getNgayNhap().getTime());
-        if(arr.get(item_id).getSoLuong()!= null){
-        spr_soLuong.setValue(Integer.valueOf(arr.get(item_id).getSoLuong()));}
+        spr_soLuong.setValue(arr.get(item_id).getSoLuong());
         spr_donGia.setValue(Integer.valueOf(arr.get(item_id).getDonGia()));
         txt_anh.setText(arr.get(item_id).getMaNL());        
     }
