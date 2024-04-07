@@ -357,7 +357,6 @@ public class frmQuanLyNguyenLieu extends JFrame implements ActionListener {
         btn_edit.setEnabled(false);
         btn_del.setEnabled(false);
         td.clearSelection();
-        txt_search.setText("");
     }
     public void clearText(){
         txt_maNL.setText("");
@@ -389,6 +388,7 @@ public class frmQuanLyNguyenLieu extends JFrame implements ActionListener {
             model.addRow(r);
         }
         this.arr = arr;
+        clearMode();
     }
     //</editor-fold>
     @Override

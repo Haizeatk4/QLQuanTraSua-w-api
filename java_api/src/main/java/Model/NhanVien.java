@@ -23,7 +23,7 @@ public class NhanVien {
     private String LuongCoBan;
     private String HeSoLuong;
     private String TienLuong;
-
+    
     public String getMaNhanVien() {
         return MaNhanVien;
     }

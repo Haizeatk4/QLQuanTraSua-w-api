@@ -11,9 +11,17 @@ package Model;
 public class QLMenu {
     String MaMon;
     String TenMon;
-    String SoLuong;
+    int SoLuong;
     int Gia;
     String Anh;
+
+    public QLMenu(String MaMon, String TenMon, int SoLuong, int Gia, String Anh) {
+        this.MaMon = MaMon;
+        this.TenMon = TenMon;
+        this.SoLuong = SoLuong;
+        this.Gia = Gia;
+        this.Anh = Anh;
+    }
 
     public String getMaMon() {
         return MaMon;
@@ -31,11 +39,11 @@ public class QLMenu {
         this.TenMon = TenMon;
     }
 
-    public String getSoLuong() {
+    public int getSoLuong() {
         return SoLuong;
     }
 
-    public void setSoLuong(String SoLuong) {
+    public void setSoLuong(int SoLuong) {
         this.SoLuong = SoLuong;
     }
 

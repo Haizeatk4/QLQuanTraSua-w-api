@@ -14,7 +14,7 @@ import static spark.Spark.get;
  */
 public class ThongKe_API {
     public ThongKe_API() {
-        get("/thong ke", (rqst,rspns) -> {
+        get("/thong_ke", (rqst,rspns) -> {
             ThongKeCtrl tk = new ThongKeCtrl();
             rspns.type("application/json");
             return new Gson().toJson(tk.createArr());

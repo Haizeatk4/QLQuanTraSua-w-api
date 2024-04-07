@@ -389,7 +389,6 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         btn_cal.setEnabled(false);
         td.clearSelection();
         l_noti.setText("");
-        txt_search.setText("");
     }
     public void clearText(){
         txt_maNV.setText("");
@@ -440,6 +439,7 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
             model.addRow(r);
         }
         this.arr = arr;
+        clearMode();
     }
     public boolean checkBlank(){
         if(txt_tenNV.getText().trim().isEmpty()||txt_pass.getText().trim().isEmpty()||txt_sdt.getText().trim().isEmpty()||txt_cccd.getText().trim().isEmpty()||Integer.parseInt(spr_time.getValue().toString())==0||Integer.parseInt(spr_luongCB.getValue().toString())==0||Double.parseDouble(spr_HSLuong.getValue().toString())==0){
