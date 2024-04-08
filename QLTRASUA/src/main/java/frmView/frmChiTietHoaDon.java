@@ -174,7 +174,6 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener{
         model_dv.addColumn("Giá");
         pL2.add(new JScrollPane(tbdv),BorderLayout.CENTER);
         
-//        loadTableMN("");
         //setup ảnh
         l_pic.setPreferredSize(new Dimension(250,250));
         l_pic.setBorder(padB);
