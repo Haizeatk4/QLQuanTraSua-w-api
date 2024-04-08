@@ -105,6 +105,7 @@ public class MenuData {
         public void actionPerformed(ActionEvent e) {
             try {
                 mn = frm.getInfo();
+                frm.saveAnh();
                 if(mn != null){
                     CloseableHttpClient client = HttpClients.createDefault();
                     HttpPost httpP = new HttpPost("http://localhost:4567/menu/them");
@@ -147,6 +148,7 @@ public class MenuData {
             try {
                 if(frm.editMode()){
                     mn = frm.getInfo();
+                    frm.saveAnh();
                     int id = frm.getItem_id();
                     if(mn != null){
                         CloseableHttpClient client = HttpClients.createDefault();

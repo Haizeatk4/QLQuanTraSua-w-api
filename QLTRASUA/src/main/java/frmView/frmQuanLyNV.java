@@ -4,6 +4,7 @@
  */
 package frmView;
 
+import Controller.ExcelFileExporter;
 import Controller.NhanVienData;
 import Model.QLNhanVien;
 import com.toedter.calendar.JDateChooser;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -78,13 +80,15 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
     JTextField txt_email = new JTextField();
     JLabel l_HSLuong = new JLabel("                                   Hệ số lương:");
     JSpinner spr_HSLuong = new JSpinner(snm_HSLuong);
+    JLabel l_phanQuyen = new JLabel("                                   Phân quyền:");
+    JComboBox cb_phanQuyen = new JComboBox();
     JPanel p1 = new JPanel();
     JPanel p11 = new JPanel();
     JPanel p12 = new JPanel();
     JTable td = new JTable();
     DefaultTableModel model = (DefaultTableModel) td.getModel();
     JLabel tile = new JLabel("QUẢN LÝ NHÂN VIÊN");
-    
+    //panel 2
     JPanel p2 = new JPanel();
     JButton btn_add = new JButton("THÊM");
     JButton btn_edit = new JButton("SỬA");
@@ -92,8 +96,8 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
     JButton btn_clear = new JButton("LÀM MỚI");
     JButton btn_search = new JButton("TÌM KIẾM");
     JButton btn_cal = new JButton("TÍNH TIỀN");
+    JButton btn_excel = new JButton("EXCEL");
     JTextField txt_search = new JTextField();
-    JLabel l_noti = new JLabel();
     
     JMenuBar mb = new JMenuBar();
     JMenu m_hethong = new JMenu("Hệ thống");
@@ -143,6 +147,7 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         l_luongCB.setFont(fo_l);
         l_email.setFont(fo_l);
         l_HSLuong.setFont(fo_l);
+        l_phanQuyen.setFont(fo_l);
         
         txt_maNV.setFont(fo_t);
         txt_maNV.setPreferredSize(new Dimension(300,25));
@@ -170,6 +175,10 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         txt_email.setPreferredSize(new Dimension(300,25));
         spr_HSLuong.setFont(fo_t);
         spr_HSLuong.setPreferredSize(new Dimension(300,25));
+        cb_phanQuyen.setFont(fo_t);
+        cb_phanQuyen.setPreferredSize(new Dimension(300,25));
+        cb_phanQuyen.setModel(new javax.swing.DefaultComboBoxModel(new String[] {"", "Nhân viên", "Quản lý"}));
+        cb_phanQuyen.setEditable(false);
         
         model.addColumn("Mã nhân viên");
         model.addColumn("Tên nhân viên");
@@ -182,6 +191,7 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         model.addColumn("Lương cơ bản");
         model.addColumn("Hệ số lương");
         model.addColumn("Tiền lương");
+        model.addColumn("Phân quyền");
         //add
         p11.add(l_maNV);
         p11.add(txt_maNV);
@@ -205,6 +215,8 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         p11.add(spr_HSLuong);
         p11.add(l_luong);
         p11.add(spr_luong);
+        p11.add(l_phanQuyen);
+        p11.add(cb_phanQuyen);
         //table
         p12.setLayout(new BorderLayout());
         p12.add(new JScrollPane(td),BorderLayout.CENTER);
@@ -227,6 +239,7 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         btn_clear.setBackground(Color.WHITE);
         btn_search.setBackground(Color.WHITE);
         btn_cal.setBackground(Color.WHITE);
+        btn_excel.setBackground(Color.WHITE);
         btn_edit.setEnabled(false);
         btn_del.setEnabled(false);
         
@@ -260,6 +273,10 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         gbc.gridx=1;
         p2.add(btn_clear,gbc);
         
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        p2.add(btn_excel,gbc);
+        
         btn_add.addActionListener(this);
         btn_edit.addActionListener(this);
         btn_del.addActionListener(this);
@@ -270,7 +287,6 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         JPanel bl = new JPanel();
         bl.setLayout(new GridLayout(10, 1, 10, 10));
         bl.setPreferredSize(new Dimension(100,400));
-        bl.add(l_noti);
         gbc.gridwidth=2;
         gbc.gridy=5;
         gbc.gridx=0;
@@ -281,6 +297,12 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         this.add(p2,BorderLayout.EAST);
         //<editor-fold defaultstate="collapsed" desc="Event">
         //--------------------------Select--------------------------------------
+        btn_excel.addActionListener((e) -> {
+            String[] headers = new String[] {"Mã nhân viên","Tên nhân viên","SĐT","Email","CCCD","Ngày làm việc","Ca làm","Lương cơ bản","Hệ số lương","Tổng lương"};
+            String fileName = "Quản lí nhân viên.xlsx";
+            ExcelFileExporter excelFileExporter = new ExcelFileExporter();
+            excelFileExporter.exportNhanVienExcelFile(arr, headers, fileName);
+        });
         final ListSelectionModel sel = td.getSelectionModel();
         sel.addListSelectionListener((ListSelectionEvent e) -> {
             if(!sel.isSelectionEmpty()){
@@ -339,10 +361,6 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
     }
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Method">
-//    public String encode(String pass){
-//        String encode = Base64.getEncoder().encodeToString(pass.getBytes());
-//        return encode;
-//    }
     public String decode(String pass){
         return new String(Base64.getDecoder().decode(pass));
     }
@@ -388,7 +406,6 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         btn_del.setEnabled(false);
         btn_cal.setEnabled(false);
         td.clearSelection();
-        l_noti.setText("");
     }
     public void clearText(){
         txt_maNV.setText("");
@@ -402,6 +419,7 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         spr_luongCB.setValue(0);
         spr_HSLuong.setValue(0);
         spr_luong.setValue(0);
+        cb_phanQuyen.setSelectedIndex(0);
     }
     public void setText(){
         txt_maNV.setText(arr.get(item_id).getMaNhanVien());
@@ -417,13 +435,14 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         spr_HSLuong.setValue(Double.valueOf(arr.get(item_id).getHeSoLuong()));
         if(arr.get(item_id).getTienLuong() != null){
         spr_luong.setValue(Integer.valueOf(arr.get(item_id).getTienLuong()));}
+        cb_phanQuyen.setSelectedIndex(arr.get(item_id).getPhanQuyen()+1);
     }
     public void loadTable(ArrayList<QLNhanVien> arr){
         int rc = model.getRowCount();
         for(int i=0;i<rc;i++){
             model.removeRow(0);
         }
-        Object r[] = new Object[11];
+        Object r[] = new Object[12];
         for(int i=0;i<arr.size();i++){
             r[0] = arr.get(i).getMaNhanVien();
             r[1] = arr.get(i).getTenNhanVien();
@@ -436,6 +455,7 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
             r[8] = arr.get(i).getLuongCoBan();
             r[9] = arr.get(i).getHeSoLuong();
             r[10] = arr.get(i).getTienLuong();
+            r[11] = arr.get(i).getPhanQuyen();
             model.addRow(r);
         }
         this.arr = arr;
@@ -475,7 +495,8 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
             String i = spr_luongCB.getValue().toString();
             String k = spr_HSLuong.getValue().toString();
             String l = spr_luong.getValue().toString();
-            QLNhanVien nv = new QLNhanVien(a,b,c,d,e,f,g,h,i,k,l);
+            int m = cb_phanQuyen.getSelectedIndex()-1;
+            QLNhanVien nv = new QLNhanVien(a,b,c,d,e,f,g,h,i,k,l,m);
             return nv;
         }
     }

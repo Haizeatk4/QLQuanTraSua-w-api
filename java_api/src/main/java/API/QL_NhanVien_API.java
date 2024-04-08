@@ -23,11 +23,6 @@ public class QL_NhanVien_API {
             rspns.type("application/json");
             return new Gson().toJson(nv.createArr());
         });
-        get("/nhan_vien", (rqst,rspns) -> {
-            NhanVienCtrl nv = new NhanVienCtrl();
-            rspns.type("application/json");
-            return new Gson().toJson(nv.createArr());
-        });
         post("/nhan_vien/login", (rqst,rspns) -> {
             NhanVienCtrl nv = new NhanVienCtrl();
             String tk = rqst.queryParams("MaNhanVien");
@@ -59,6 +54,7 @@ public class QL_NhanVien_API {
             nv.setLuongCoBan(rqst.queryParams("LuongCoBan"));
             nv.setHeSoLuong(rqst.queryParams("HeSoLuong"));
             nv.setTienLuong(rqst.queryParams("TienLuong"));
+            nv.setPhanQuyen(Integer.parseInt(rqst.queryParams("PhanQuyen")));
             
             rspns.type("application/json");
             return nvCtrl.InsertNhanVien(nv);
@@ -86,6 +82,7 @@ public class QL_NhanVien_API {
             nv.setLuongCoBan(rqst.queryParams("LuongCoBan"));
             nv.setHeSoLuong(rqst.queryParams("HeSoLuong"));
             nv.setTienLuong(rqst.queryParams("TienLuong"));
+            nv.setPhanQuyen(Integer.parseInt(rqst.queryParams("PhanQuyen")));
             
             rspns.type("application/json");
             return nvCtrl.UpdateNhanVien(nv);

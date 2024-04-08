@@ -47,6 +47,7 @@ public class NhanVienData {
     private ArrayList<QLNhanVien> arr = new ArrayList();
     private QLNhanVien nv;
     public static String user;
+    public static int phanQuyen;
     //</editor-fold>
     public NhanVienData(String l) throws SQLException, IOException, ParseException, URISyntaxException {
         if(l.equals("login")){
@@ -92,6 +93,7 @@ public class NhanVienData {
                     params.add(new BasicNameValuePair("LuongCoBan", nv.getLuongCoBan()));
                     params.add(new BasicNameValuePair("HeSoLuong", nv.getHeSoLuong()));
                     params.add(new BasicNameValuePair("TienLuong", nv.getTienLuong()));
+                    params.add(new BasicNameValuePair("PhanQuyen", Integer.toString(nv.getPhanQuyen())));
                     httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
                     CloseableHttpResponse response = client.execute(httpP);
                     thongBao(response);
@@ -147,6 +149,7 @@ public class NhanVienData {
                         } else {
                             params.add(new BasicNameValuePair("TienLuong", nv.getTienLuong()));
                         }
+                        params.add(new BasicNameValuePair("PhanQuyen",Integer.toString(nv.getPhanQuyen())));
                         httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
                         CloseableHttpResponse response = client.execute(httpP);
                         thongBao(response);
@@ -180,6 +183,7 @@ public class NhanVienData {
                         int lcb = Integer.parseInt(nv.getLuongCoBan());
                         double hsl = Double.parseDouble(nv.getHeSoLuong());
                         params.add(new BasicNameValuePair("TienLuong", Integer.toString((int) (hsl*lcb))));
+                        params.add(new BasicNameValuePair("PhanQuyen",Integer.toString(nv.getPhanQuyen())));
                         httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
                         CloseableHttpResponse response = client.execute(httpP);
                         thongBao(response);
@@ -240,7 +244,9 @@ public class NhanVienData {
                     CloseableHttpResponse response = client.execute(httpP);
                     HttpEntity entity = response.getEntity();
                     String r = EntityUtils.toString(entity, Charset.defaultCharset());
-                    if(Boolean.parseBoolean(r)){
+                    int kq = Integer.parseInt(r);
+                    phanQuyen=kq;
+                    if(kq!=-1){
                         JOptionPane.showMessageDialog(null, "Đăng nhập thành công", "Thông báo", 1);
                         frmHome home = new frmHome();
                         home.setVisible(true);

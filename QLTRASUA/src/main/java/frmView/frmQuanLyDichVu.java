@@ -17,10 +17,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -44,7 +51,9 @@ import javax.swing.table.DefaultTableModel;
  */
 public class frmQuanLyDichVu extends JFrame implements ActionListener {
     //<editor-fold defaultstate="collapsed" desc="Var">
-    boolean isSelected = false;
+    File anh;
+    String projectPath;
+    boolean isSelected = false, imgChange=false;
     int item_id,mode=0;
     private ArrayList<QLMenu> arr = new ArrayList();
     //---------------------------------------------------------------------------
@@ -70,7 +79,7 @@ public class frmQuanLyDichVu extends JFrame implements ActionListener {
     JSpinner spr_soLuong = new JSpinner(snm_soLuong);
     SpinnerNumberModel snm_donGia = new SpinnerNumberModel(0, 0, 2000000000, 1000);//------------
     JSpinner spr_donGia = new JSpinner(snm_donGia);
-    JTextField txt_anh = new JTextField();
+    JButton btn_anh = new JButton("CHỌN ẢNH");
     JTable td = new JTable();
     DefaultTableModel model = (DefaultTableModel) td.getModel();
     
@@ -81,6 +90,8 @@ public class frmQuanLyDichVu extends JFrame implements ActionListener {
     JLabel l_acc = new JLabel();
     //</editor-fold>
     public frmQuanLyDichVu() {
+        File file = new File("");
+        projectPath = file.getAbsolutePath() + "/src/main/java";
         this.setSize(1200,800);
         this.setLocation(50, 70);
         this.setTitle("Quản lý nguyên liệu");
@@ -177,10 +188,9 @@ public class frmQuanLyDichVu extends JFrame implements ActionListener {
         spr_donGia.setPreferredSize(new Dimension(200,25));
         gbc.gridy=3;
         p1.add(spr_donGia,gbc);
-        txt_anh.setFont(fo_t);
-        txt_anh.setPreferredSize(new Dimension(200,25));
+        btn_anh.setBackground(Color.WHITE);
         gbc.gridy=4;
-        p1.add(txt_anh,gbc);
+        p1.add(btn_anh,gbc);
         //--------------------------add Button-----------------------------------
         JPanel j_b = new JPanel();
         j_b.setPreferredSize(new Dimension(300,200));
@@ -219,6 +229,15 @@ public class frmQuanLyDichVu extends JFrame implements ActionListener {
         this.setVisible(true);
         //<editor-fold defaultstate="collapsed" desc="Event">
         //--------------------------Select--------------------------------------
+        btn_anh.addActionListener((e) -> {
+            JFileChooser fileChooser = new JFileChooser();
+                int result = fileChooser.showOpenDialog(this);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    // Get the selected file
+                    imgChange = true;
+                    anh = fileChooser.getSelectedFile();
+                }
+        });
         final ListSelectionModel sel = td.getSelectionModel();
         sel.addListSelectionListener((ListSelectionEvent e) -> {
             if(!sel.isSelectionEmpty()){
@@ -288,6 +307,19 @@ public class frmQuanLyDichVu extends JFrame implements ActionListener {
     }
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Method">
+    public void saveAnh(){
+        try {
+            if(imgChange){
+                String img = projectPath + "/Image/Menu/";
+                Path sourcePath = Paths.get(anh.getAbsolutePath());
+                Path targetPath = Paths.get(img + anh.getName());
+
+                Path movedPath = Files.move(sourcePath, targetPath);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public String getSearch(){
         String s = txt_search.getText().trim().replace(" ", "_");
         return s;
@@ -312,8 +344,9 @@ public class frmQuanLyDichVu extends JFrame implements ActionListener {
         return item_id;
     }
     public boolean checkBlank(){
+        int sl = Integer.parseInt(spr_soLuong.getValue().toString());
         int dg = Integer.parseInt(spr_donGia.getValue().toString());
-        if(txt_tenDV.getText().trim().isEmpty()||dg==0){
+        if(txt_tenDV.getText().trim().isEmpty()||dg==0||sl==0||(!imgChange&&!isSelected)){
             JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!", "Thông báo", 1);
             return true;
         } else {
@@ -328,7 +361,12 @@ public class frmQuanLyDichVu extends JFrame implements ActionListener {
             String b = txt_tenDV.getText();
             int c = Integer.parseInt(spr_soLuong.getValue().toString());
             int d = Integer.parseInt(spr_donGia.getValue().toString());
-            String e = txt_anh.getText();
+            String e;
+            if(imgChange){
+                e = "/Image/Menu/" + anh.getName();
+            } else {
+                e = arr.get(item_id).getAnh();
+            }
             
             QLMenu nl = new QLMenu(a,b,c,d,e);
             return nl;
@@ -339,7 +377,6 @@ public class frmQuanLyDichVu extends JFrame implements ActionListener {
         txt_tenDV.setText(arr.get(item_id).getTenMon());
         spr_soLuong.setValue(arr.get(item_id).getSoLuong());
         spr_donGia.setValue(Integer.valueOf(arr.get(item_id).getGia()));
-        txt_anh.setText(arr.get(item_id).getAnh());        
     }
     public void clearMode(){
         clearText();
@@ -357,13 +394,12 @@ public class frmQuanLyDichVu extends JFrame implements ActionListener {
         txt_tenDV.setText("");
         spr_soLuong.setValue(0);
         spr_donGia.setValue(0);
-        txt_anh.setText("");
     }
     public void enableInput(boolean a){
         txt_tenDV.setEditable(a);
         spr_soLuong.setEnabled(a);
         spr_donGia.setEnabled(a);
-        txt_anh.setEnabled(a);
+        btn_anh.setEnabled(a);
     }
     public void loadTable(ArrayList<QLMenu> arr){
         int rc = model.getRowCount();
