@@ -82,6 +82,7 @@ public class NhanVienData {
                     CloseableHttpClient client = HttpClients.createDefault();
                     HttpPost httpP = new HttpPost("http://localhost:4567/nhan_vien/them");
                     ArrayList<NameValuePair> params = new ArrayList<>();
+                    
                     params.add(new BasicNameValuePair("TenNhanVien", nv.getTenNhanVien()));
                     params.add(new BasicNameValuePair("Password", nv.getPassword()));
                     params.add(new BasicNameValuePair("Phone", nv.getPhone()));

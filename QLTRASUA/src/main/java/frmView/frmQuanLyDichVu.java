@@ -388,6 +388,8 @@ public class frmQuanLyDichVu extends JFrame implements ActionListener {
         btn_edit.setEnabled(false);
         btn_del.setEnabled(false);
         td.clearSelection();
+        imgChange = false;
+        isSelected = false;
     }
     public void clearText(){
         txt_maDV.setText("");

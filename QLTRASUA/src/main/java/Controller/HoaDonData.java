@@ -159,7 +159,6 @@ public class HoaDonData {
                 HttpEntity entity = response.getEntity();
                 String responseString = EntityUtils.toString(entity, Charset.defaultCharset());
                 QLHoaDon hd = new Gson().fromJson(responseString, QLHoaDon.class);
-                System.out.println(hd.getTinhTrang());
                 ChiTietHoaDonData cthd = new ChiTietHoaDonData(hd);
                 frm.dispose();
                 

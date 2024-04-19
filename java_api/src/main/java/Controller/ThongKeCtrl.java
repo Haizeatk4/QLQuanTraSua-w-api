@@ -31,7 +31,7 @@ public class ThongKeCtrl {
     
     public ArrayList<ThongKe> createArr() throws SQLException{
         arr = new ArrayList<>();
-        ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT * FROM thongke LIMIT 6");
+        ps = connectDatabase.TaoKetNoi().prepareStatement("select * from thongke order by MaTK desc limit 6");
         rs = ps.executeQuery();
         while(rs.next()){
            ThongKe tmp = new ThongKe();

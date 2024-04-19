@@ -99,7 +99,12 @@ public class frmHome extends JFrame{
         Font fo_b = new Font("Serif", Font.BOLD,20);
         btn_qlnv.setBackground(Color.WHITE);
         btn_qlnv.setFont(fo_b);
-        
+        if (NhanVienData.phanQuyen == 1) {
+            btn_qlnv.setEnabled(true);
+        }
+        else{
+            btn_qlnv.setEnabled(false);
+        }
         ImageIcon nli = new ImageIcon(currentDirectory + "/Image/iconNguyenLieu.png");
         btn_qlnl = new JButton("QUẢN LÝ NGUYÊN LIỆU",nli);
         btn_qlnl.setBackground(Color.WHITE);

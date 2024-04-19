@@ -39,6 +39,8 @@ public class QL_NhanVien_API {
         post("/nhan_vien/them", (rqst,rspns) -> {
             NhanVienCtrl nvCtrl = new NhanVienCtrl();
             NhanVien nv = new NhanVien();
+//            nv.setMaNhanVien(nvCtrl.taomaNhanVien());
+            
             nv.setMaNhanVien(nvCtrl.taomaNhanVien());
             nv.setTenNhanVien(rqst.queryParams("TenNhanVien"));
             nv.setPassword(rqst.queryParams("Password"));
