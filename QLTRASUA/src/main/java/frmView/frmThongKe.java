@@ -139,7 +139,7 @@ public class frmThongKe extends JFrame{
     public void loadChart(){
         //<editor-fold defaultstate="collapsed" desc="Chart1">
         dataset = new DefaultCategoryDataset();
-        for(int i=0;i<arr.size();i++){
+        for(int i=arr.size()-1;i>=0;i--){
             dataset.setValue(arr.get(i).getDoanhThu(), "", arr.get(i).getMaTK().replace("M", "-"));
         }
         chart = ChartFactory.createLineChart("Doanh thu", "Tháng", "", dataset);

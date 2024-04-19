@@ -94,7 +94,39 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
         mb.add(l_preAcc);
         mb.add(l_acc);
         //</editor-fold>
-        //<editor-fold defaultstate="collapsed" desc="Panel01">
+        //<editor-fold defaultstate="collapsed" desc="Panel Top">
+        p2.setLayout(new BorderLayout());
+        
+        p2.add(mb,BorderLayout.NORTH);
+        Font fo_tile = new Font("Serif", Font.BOLD,32);
+        tile.setFont(fo_tile);
+        tile.setHorizontalAlignment(JLabel.CENTER);
+        tile.setBorder(pad);
+        p2.add(tile,BorderLayout.CENTER);
+        //---------------------------------------------------------------------------------
+        JPanel p21 = new JPanel();
+        p21.setLayout(new GridBagLayout());
+        
+        GridBagConstraints gbc= new GridBagConstraints();
+        gbc.weightx = 1;
+        gbc.fill=GridBagConstraints.HORIZONTAL;
+        
+        btn_search.setBackground(Color.WHITE);
+        btn_search.setPreferredSize(new Dimension(75,25));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        p21.add(btn_search,gbc);
+        btn_search.addActionListener(this);
+        
+        Font fo_t = new Font("Serif", Font.PLAIN,14);
+        txt_search.setFont(fo_t);
+        txt_search.setPreferredSize(new Dimension(1000,25));
+        gbc.gridx=1;
+        p21.add(txt_search,gbc);
+        //---------------------------------------------------------------------------------
+        p2.add(p21,BorderLayout.SOUTH);
+        //</editor-fold>
+        //<editor-fold defaultstate="collapsed" desc="Panel Left">
         p1.setBorder(pad);
         p1.setLayout(new GridLayout(5, 1, 10, 10));
         
@@ -125,40 +157,7 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
         btn_edit.addActionListener(this);
         btn_del.addActionListener(this);
         //</editor-fold>
-        //<editor-fold defaultstate="collapsed" desc="Panel02">
-        p2.setLayout(new BorderLayout());
-        
-        p2.add(mb,BorderLayout.NORTH);
-        Font fo_tile = new Font("Serif", Font.BOLD,32);
-        tile.setFont(fo_tile);
-        tile.setHorizontalAlignment(JLabel.CENTER);
-        tile.setBorder(pad);
-        //---------------------------------------------------------------------------------
-        JPanel p21 = new JPanel();
-        p21.setLayout(new GridBagLayout());
-        
-        GridBagConstraints gbc= new GridBagConstraints();
-        gbc.weightx = 1;
-        gbc.weighty = 1.0;
-        gbc.fill=GridBagConstraints.HORIZONTAL;
-        
-        btn_search.setBackground(Color.WHITE);
-        btn_search.setPreferredSize(new Dimension(75,25));
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        p21.add(btn_search,gbc);
-        btn_search.addActionListener(this);
-        
-        Font fo_t = new Font("Serif", Font.PLAIN,14);
-        txt_search.setFont(fo_t);
-        txt_search.setPreferredSize(new Dimension(1000,25));
-        gbc.gridx=1;
-        p21.add(txt_search,gbc);
-        //---------------------------------------------------------------------------------
-        p2.add(tile,BorderLayout.CENTER);
-        p2.add(p21,BorderLayout.SOUTH);
-        //</editor-fold>
-        //<editor-fold defaultstate="collapsed" desc="Panel03">
+        //<editor-fold defaultstate="collapsed" desc="Panel Mid">
         p3.setLayout(new BorderLayout());
         
         cb_month.setModel(new javax.swing.DefaultComboBoxModel(get12Thang()));
@@ -195,15 +194,20 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
         sel.addListSelectionListener((ListSelectionEvent e) -> {
                 if(!sel.isSelectionEmpty()){
                     item_id=sel.getMinSelectionIndex();
+                    cb_ban.setSelectedItem(arr.get(item_id).getMaBan());
+                    btn_detail.setEnabled(true);
                     if(arr.get(item_id).getTinhTrang().equals("Chưa thanh toán")){
-                        btn_detail.setEnabled(true);
                         btn_del.setEnabled(true);
                         btn_edit.setEnabled(true);
-                    }
-                    cb_ban.setSelectedItem(arr.get(item_id).getMaBan());
-                    if(arr.get(item_id).getTinhTrang().equals("Chưa thanh toán")){
                         check_thanhToan.setSelected(false);
                     } else {
+                        if(NhanVienData.phanQuyen==1){   
+                            btn_del.setEnabled(true);
+                            btn_edit.setEnabled(false);
+                        }else{
+                            btn_del.setEnabled(false);
+                            btn_edit.setEnabled(false);
+                        }
                         check_thanhToan.setSelected(true);
                     }
                     isSelected=true;

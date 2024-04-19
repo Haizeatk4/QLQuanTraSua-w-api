@@ -191,7 +191,6 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         model.addColumn("Lương cơ bản");
         model.addColumn("Hệ số lương");
         model.addColumn("Tiền lương");
-        model.addColumn("Phân quyền");
         //add
         p11.add(l_maNV);
         p11.add(txt_maNV);
@@ -442,7 +441,7 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         for(int i=0;i<rc;i++){
             model.removeRow(0);
         }
-        Object r[] = new Object[12];
+        Object r[] = new Object[11];
         for(int i=0;i<arr.size();i++){
             r[0] = arr.get(i).getMaNhanVien();
             r[1] = arr.get(i).getTenNhanVien();
@@ -455,14 +454,13 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
             r[8] = arr.get(i).getLuongCoBan();
             r[9] = arr.get(i).getHeSoLuong();
             r[10] = arr.get(i).getTienLuong();
-            r[11] = arr.get(i).getPhanQuyen();
             model.addRow(r);
         }
         this.arr = arr;
         clearMode();
     }
     public boolean checkBlank(){
-        if(txt_tenNV.getText().trim().isEmpty()||txt_pass.getText().trim().isEmpty()||txt_sdt.getText().trim().isEmpty()||txt_cccd.getText().trim().isEmpty()||Integer.parseInt(spr_time.getValue().toString())==0||Integer.parseInt(spr_luongCB.getValue().toString())==0||Double.parseDouble(spr_HSLuong.getValue().toString())==0){
+        if(txt_tenNV.getText().trim().isEmpty()||txt_pass.getText().trim().isEmpty()||txt_sdt.getText().trim().isEmpty()||txt_cccd.getText().trim().isEmpty()||Integer.parseInt(spr_time.getValue().toString())==0||Integer.parseInt(spr_luongCB.getValue().toString())==0||Double.parseDouble(spr_HSLuong.getValue().toString())==0||cb_phanQuyen.getSelectedIndex()==0){
             JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!", "Thông báo", 1);
             return true;
         } else {
