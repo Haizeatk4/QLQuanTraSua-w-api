@@ -32,14 +32,14 @@ public class NguyenLieuCtrl {
 
     public NguyenLieuCtrl() {}
     public void updateSoLuongNL(String MaDV,int SoLuong) throws SQLException{
-        ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT * FROM NguyenLieu WHERE MaDV=?");
+        ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT * FROM nguyenlieu WHERE MaDV=?");
         ps.setString(1, MaDV);
         rs = ps.executeQuery();
         rs.next();
         int s = rs.getInt("SoLuong");
         int r = s-SoLuong;
         
-        ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE NguyenLieu SET SoLuong=? where MaDV = ?");
+        ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE nguyenlieu SET SoLuong=? where MaDV = ?");
         ps.setInt(1, r);
         ps.setString(2, MaDV);
         ps.executeUpdate();
@@ -67,7 +67,7 @@ public class NguyenLieuCtrl {
     public ArrayList<NguyenLieu> searchArr(String s) throws SQLException{
         
         arr = new ArrayList<>();
-        String sql = "SELECT * FROM NguyenLieu where MaDV like '%"+s+"%'"
+        String sql = "SELECT * FROM nguyenlieu where MaDV like '%"+s+"%'"
                 + " or TenDV like '%"+s+"%'"
                 + " or NgayNhap like '%"+s+"%'"
                 + " or Gia like '%"+s+"%'";
@@ -87,7 +87,7 @@ public class NguyenLieuCtrl {
         return arr;
     }
     public String InsertNguyenLieu(NguyenLieu nl) {
-        String sql = "INSERT INTO NguyenLieu VALUES(?,?,?,?,?,?)";
+        String sql = "INSERT INTO nguyenlieu VALUES(?,?,?,?,?,?)";
         try {
             ps = connectDatabase.TaoKetNoi().prepareStatement(sql);
             ps.setString(1, nl.getMaNL());
@@ -108,7 +108,7 @@ public class NguyenLieuCtrl {
     }
     public String UpdateNguyenLieu(NguyenLieu nl) {
         try {
-            ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE NguyenLieu SET TenDV = ?,"
+            ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE nguyenlieu SET TenDV = ?,"
                     + "NgayNhap = ?,SoLuong=?,DvTinh=?,Gia=? where MaDV = ?");
             ps.setString(1, nl.getTenNL());
             ps.setDate(2, nl.getNgayNhap());
@@ -127,7 +127,7 @@ public class NguyenLieuCtrl {
 
     public String DeleteNguyenLieu(String MaNL) {
         try {
-            ps = connectDatabase.TaoKetNoi().prepareStatement("DELETE FROM NguyenLieu WHERE MaDV = ?");
+            ps = connectDatabase.TaoKetNoi().prepareStatement("DELETE FROM nguyenlieu WHERE MaDV = ?");
             ps.setString(1, MaNL);
             ps.executeUpdate();
             ps.close();
@@ -141,7 +141,7 @@ public class NguyenLieuCtrl {
         Connection conn;
         Statement stmt;
         conn = connectDatabase.TaoKetNoi();
-        String sql = "SELECT MaDV FROM NguyenLieu order by MaDV Desc";
+        String sql = "SELECT MaDV FROM nguyenlieu order by MaDV Desc";
         stmt = conn.createStatement();
         String manv;
         rs = stmt.executeQuery(sql);

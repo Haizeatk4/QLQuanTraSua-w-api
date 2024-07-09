@@ -91,7 +91,7 @@ INSERT INTO dichvu VALUES ('M007','Cafe sữa','27',15000,'/Image/Menu/cafeSua.p
 INSERT INTO dichvu VALUES ('M008','Cafe đá sài gòn','24',14000,'/Image/Menu/cafeDaSaiGon.jpg');
 INSERT INTO dichvu VALUES ('M009','Cafe bạc xỉu','23',15000,'/Image/Menu/cafeBacXiu.jpg');
 INSERT INTO dichvu VALUES ('M010','Hạt dẻ','54',10000,'/Image/Menu/hatDe.jpg');
-INSERT INTO dichvu VALUES ('M011','Pizza xúc xích','20',50000,'/Image/Menu/pizzaXucXich.jpg');
+INSERT INTO dichvu VALUES ('M011','Pizza xúc xíchhh','20',50000,'/Image/Menu/pizzaXucXich.jpg');
 
 --
 -- Table structure for table `hoadon`
@@ -115,7 +115,7 @@ CREATE TABLE hoadon (
 -- Dumping data for table `hoadon`
 --
 
-INSERT INTO hoadon VALUES ('HD001','NV001','2024-04-02','Bàn 003',58000,'Đã thanh toán');
+INSERT INTO hoadon VALUES ('HD001','NV001','2024-04-02','Bàn 003',58000,'Chưa thanh toán');
 INSERT INTO hoadon VALUES ('HD002','NV001','2024-04-02','Bàn 002',28000,'Đã thanh toán');
 INSERT INTO hoadon VALUES ('HD003','NV002','2024-03-12','Đem về',31000,'Đã thanh toán');
 INSERT INTO hoadon VALUES ('HD004','NV003','2024-03-11','Bàn 003',28000,'Đã thanh toán');
@@ -199,6 +199,7 @@ INSERT INTO qlnhan_vien VALUES ('NV004','Hoa','MTIz','0957876451','hoa@gmail.com
 INSERT INTO qlnhan_vien VALUES ('NV005','Chu Nguyên Phong','MTIz','0388298110','phong@gmail.com','123123123123','2024-03-30','2','3500000','1.2000000000000002','0',0);
 INSERT INTO qlnhan_vien VALUES ('NV006','Nguyễn Quốc Duy','MTIz','012345678901','aa@gmail.com','123123456456','2024-03-01','2','3500000','1.2000000000000002','0',0);
 INSERT INTO qlnhan_vien VALUES ('NV007','Nguyễn Minh Đức','MTIz','0123456789','d123@gmail.com','112233445566','2024-01-01','3','2500000','1.0','0',0);
+INSERT INTO qlnhan_vien VALUES ('NV008','1','MQ==','1','1','1','2000-01-01','1','100000','0.1','0',0);
 
 --
 -- Table structure for table `thongke`
@@ -218,10 +219,13 @@ CREATE TABLE thongke (
 -- Dumping data for table `thongke`
 --
 
+INSERT INTO thongke VALUES ('2023M10',50000);
+INSERT INTO thongke VALUES ('2023M11',100000);
+INSERT INTO thongke VALUES ('2023M12',150000);
 INSERT INTO thongke VALUES ('2024M01',100000);
 INSERT INTO thongke VALUES ('2024M02',100000);
-INSERT INTO thongke VALUES ('2024M03',108000);
-INSERT INTO thongke VALUES ('2024M04',222000);
+INSERT INTO thongke VALUES ('2024M03',262000);
+INSERT INTO thongke VALUES ('2024M04',278000);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

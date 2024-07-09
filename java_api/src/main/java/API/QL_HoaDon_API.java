@@ -22,6 +22,7 @@ public class QL_HoaDon_API {
         get("/hoa_don", (rqst,rspns) -> {
                 HoaDonCtrl hd = new HoaDonCtrl();
                 rspns.type("application/json");
+                rspns.body("123");
                 return new Gson().toJson(hd.createArr());
         });
         post("/hoa_don/search", (rqst,rspns) -> {
