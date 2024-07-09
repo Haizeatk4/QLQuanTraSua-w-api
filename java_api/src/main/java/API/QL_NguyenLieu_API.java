@@ -36,6 +36,7 @@ public class QL_NguyenLieu_API {
             nl.setTenNL(rqst.queryParams("TenNL"));
             
             String d = rqst.queryParams("NgayNhap");
+            System.out.println(d);
             Date date = Date.valueOf(d);
             nl.setNgayNhap(date);
             

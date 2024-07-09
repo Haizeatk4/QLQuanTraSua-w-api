@@ -36,7 +36,7 @@ public class NhanVienCtrl {
     }
     public boolean DoiMatKhau(String tk,String mk,String mkMoi) throws SQLException{
             if(dangNhap(tk, mk)!=-1){
-                ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE QLNhan_Vien SET Password = ? where MaNhanVien = ?");
+                ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE qlnhan_vien SET Password = ? where MaNhanVien = ?");
                 ps.setString(1, encode(mkMoi));
                 ps.setString(2, tk);
                 ps.executeUpdate();
@@ -48,7 +48,7 @@ public class NhanVienCtrl {
     }
     public ArrayList<NhanVien> createArr() throws SQLException{
         arr = new ArrayList<>();
-        ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT * FROM QLNhan_Vien WHERE NOT MaNhanVien = 'admin'");
+        ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT * FROM qlnhan_vien WHERE NOT MaNhanVien = 'admin'");
         rs = ps.executeQuery();
         while(rs.next()){
            NhanVien tmp = new NhanVien();
@@ -74,7 +74,7 @@ public class NhanVienCtrl {
     public ArrayList<NhanVien> searchArr(String s) throws SQLException{
         
         arr = new ArrayList<>();
-        String sql = "SELECT * FROM QLNhan_Vien WHERE NOT MaNhanVien = 'admin'"
+        String sql = "SELECT * FROM qlnhan_vien WHERE NOT MaNhanVien = 'admin'"
                 + " and (MaNhanVien like '%"+s+"%'"
                 + " or TenNhanVien like '%"+s+"%'"
                 + " or Phone like '%"+s+"%'"
@@ -106,7 +106,7 @@ public class NhanVienCtrl {
     public int dangNhap(String taiKhoan, String pass) throws SQLException {
         int kt = -1;
         try {
-            ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT PhanQuyen FROM QLNhan_Vien where MaNhanVien = ? and Password=?");
+            ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT PhanQuyen FROM qlnhan_vien where MaNhanVien = ? and Password=?");
             ps.setString(1, taiKhoan);
             ps.setString(2, encode(pass));
             rs = ps.executeQuery();
@@ -122,7 +122,7 @@ public class NhanVienCtrl {
     }
 
     public String InsertNhanVien(NhanVien nv) throws ClassNotFoundException {
-        String sql = "INSERT INTO QLNhan_Vien VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO qlnhan_vien VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
         try {
             if(checkcmnd(nv.getCMND(),nv.getMaNhanVien())) return "Căn cước công dân này đã tồn tại trong hệ thống! Vui lòng nhập lại hoặc xóa bản ghi trước đó.";
             if(checkmail1(nv.getEmail(),nv.getMaNhanVien())) return "Email đã tồn tại trong hệ thống! Vui lòng nhập lại hoặc xóa bản ghi trước đó.";
@@ -154,7 +154,7 @@ public class NhanVienCtrl {
         try {
             if(checkcmnd(nv.getCMND(),nv.getMaNhanVien())) return "Căn cước công dân này đã tồn tại trong hệ thống! Vui lòng nhập lại hoặc xóa bản ghi trước đó.";
             if(checkmail1(nv.getEmail(),nv.getMaNhanVien())) return "Email đã tồn tại trong hệ thống! Vui lòng nhập lại hoặc xóa bản ghi trước đó.";
-            ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE QLNhan_Vien SET TenNhanVien = ?,"
+            ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE qlnhan_vien SET TenNhanVien = ?,"
                     + "Password=? ,Phone=?,Email=?,CMND=?,NgayLamViec=?,CaLamViec=?,LuongCoBan=?,HeSoLuong=?,TienLuong=?,PhanQuyen=? where MaNhanVien = ?");
             ps.setString(1, nv.getTenNhanVien());
             ps.setString(2, encode(nv.getPassword()));
@@ -195,7 +195,7 @@ public class NhanVienCtrl {
         Connection conn;
         Statement stmt;
         conn = connectDatabase.TaoKetNoi();
-        String sql = "SELECT MaNhanVien FROM QLNhan_Vien order by MaNhanVien Desc";
+        String sql = "SELECT MaNhanVien FROM qlnhan_vien order by MaNhanVien Desc";
         stmt = conn.createStatement();
         String manv;
         rs = stmt.executeQuery(sql);
@@ -220,7 +220,7 @@ public class NhanVienCtrl {
         con = connectDatabase.TaoKetNoi();
 
         try {
-            String SQL = "SELECT CMND FROM QLNhan_Vien WHERE CMND = ? AND NOT MaNhanVien = ?";
+            String SQL = "SELECT CMND FROM qlnhan_vien WHERE CMND = ? AND NOT MaNhanVien = ?";
             PreparedStatement pre = con.prepareStatement(SQL);
             pre.setString(1, cmnd);
             pre.setString(2, maNV);
@@ -252,7 +252,7 @@ public class NhanVienCtrl {
         con = connectDatabase.TaoKetNoi();
         boolean check = false;
         try {
-            String SQL = "SELECT Email FROM QLNhan_Vien WHERE Email = ? AND NOT MaNhanVien = ?";
+            String SQL = "SELECT Email FROM qlnhan_vien WHERE Email = ? AND NOT MaNhanVien = ?";
 
             PreparedStatement pre = con.prepareStatement(SQL);
             pre.setString(1, mail);

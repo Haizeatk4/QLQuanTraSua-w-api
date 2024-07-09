@@ -97,6 +97,7 @@ public class NguyenLieuData {
                     ArrayList<NameValuePair> params = new ArrayList<>();
                     params.add(new BasicNameValuePair("TenNL", nl.getTenNL()));
                     String strDate = nl.getNgayNhap().toString();
+                    System.out.println(strDate);
                     params.add(new BasicNameValuePair("NgayNhap", strDate));
                     params.add(new BasicNameValuePair("SoLuong", Integer.toString(nl.getSoLuong())));
                     params.add(new BasicNameValuePair("DonVi", nl.getDvTinh()));

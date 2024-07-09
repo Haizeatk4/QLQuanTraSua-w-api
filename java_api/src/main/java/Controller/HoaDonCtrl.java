@@ -90,7 +90,7 @@ public class HoaDonCtrl {
             tkCtrl.themDoanhThu(nv.getNgayLap(), nv.getThanhTien());
         }
         
-        String sql = "UPDATE HoaDon SET MaBan = ?,"
+        String sql = "UPDATE hoadon SET MaBan = ?,"
                 + "ThanhTien = ?,TinhTrang = ? where MaHD = ?";
         try {
             ps = conn.prepareStatement(sql);;
@@ -108,7 +108,7 @@ public class HoaDonCtrl {
 
     }
     public HoaDon InsertHoaDon(HoaDon nl) throws SQLException {
-        String sql = "INSERT INTO HoaDon VALUES(?,?,?,?,?,?)";
+        String sql = "INSERT INTO hoadon VALUES(?,?,?,?,?,?)";
         ps = conn.prepareStatement(sql);
         ps.setString(1, nl.getMaHD());
         ps.setString(2, nl.getTenNhanVien());
@@ -141,7 +141,7 @@ public class HoaDonCtrl {
 
     public String DeleteHoaDon(String MaHD) throws SQLException {
         try {
-            ps = conn.prepareStatement("DELETE FROM HoaDon WHERE MaHD = ?");
+            ps = conn.prepareStatement("DELETE FROM hoadon WHERE MaHD = ?");
             ps.setString(1, MaHD);
             ps.executeUpdate();
             ps.close();
@@ -156,7 +156,7 @@ public class HoaDonCtrl {
         Connection Nconn;
         Statement stmt;
         Nconn = connectDatabase.TaoKetNoi();
-        String sql = "SELECT MaHD FROM HoaDon order by MaHD Desc";
+        String sql = "SELECT MaHD FROM hoadon order by MaHD Desc";
         stmt = Nconn.createStatement();
         String manv;
         rs = stmt.executeQuery(sql);
