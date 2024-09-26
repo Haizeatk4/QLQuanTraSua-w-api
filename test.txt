@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-ấdasdaádsàasfaf
-=======
-ấdasdaád
->>>>>>> tuan1
+Hello
