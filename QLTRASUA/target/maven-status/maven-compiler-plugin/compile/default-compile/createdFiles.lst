@@ -1,5 +1,6 @@
 Controller\NhanVienData$EditListener.class
 frmView\frmThongKe$1.class
+view\frmQuanLyTaiKhoan.class
 Controller\NguyenLieuData$AddListener.class
 Controller\NguyenLieuData$DelListener.class
 Controller\NhanVienData.class
@@ -9,6 +10,7 @@ frmView\frmThongKe.class
 Controller\NguyenLieuData$2.class
 Controller\MenuData$EditListener.class
 Controller\ChiTietHoaDonData$DelListener.class
+view\frmQuanLyTaiKhoan$2.class
 Controller\NhanVienData$AddListener.class
 Controller\NguyenLieuData.class
 Model\QLMenu.class
@@ -21,6 +23,7 @@ frmView\frmQuanLyHoaDon$1.class
 frmView\frmQuanLyNV$1.class
 Controller\HoaDonData$1.class
 frmView\frmDoiMK$1.class
+view\frmQuanLyTaiKhoan$1.class
 Controller\ChiTietHoaDonData$1.class
 Controller\NhanVienData$ConfirmListener.class
 Controller\ExcelFileExporter.class
