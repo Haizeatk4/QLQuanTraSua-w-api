@@ -33,6 +33,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import org.apache.hc.core5.http.ParseException;
+import view.frmQuanLyTaiKhoan;
 
 /**
  *
@@ -158,7 +159,9 @@ public class frmHome extends JFrame{
             try {
                 NhanVienData frmQLNV = new NhanVienData(NhanVienData.user+"qlnv");
                 dispose();
-            } catch (SQLException | IOException | ParseException | URISyntaxException ex) {}
+            } catch (SQLException | IOException | ParseException | URISyntaxException ex) {
+                Logger.getLogger(frmHome.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }));
         btn_qlnl.addActionListener(((e) -> {
             try {
