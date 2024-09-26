@@ -16,7 +16,16 @@ public class HoaDon {
     private String TenNhanVien;
     private Date NgayLap;
     private String MaBan;
-    private String ThanhTien;
+    private int ThanhTien;
+    private String TinhTrang;
+
+    public String getTinhTrang() {
+        return TinhTrang;
+    }
+
+    public void setTinhTrang(String TinhTrang) {
+        this.TinhTrang = TinhTrang;
+    }
 
     public String getMaHD() {
         return MaHD;
@@ -50,15 +59,15 @@ public class HoaDon {
         this.MaBan = MaBan;
     }
 
-    public String getThanhTien() {
+    public int getThanhTien() {
         return ThanhTien;
     }
 
-    public void setThanhTien(String ThanhTien) {
+    public void setThanhTien(int ThanhTien) {
         this.ThanhTien = ThanhTien;
     }
     
-    public HoaDon(String MaHD, String TenNhanVien, Date NgayLap, String MaBan, String ThanhTien) {
+    public HoaDon(String MaHD, String TenNhanVien, Date NgayLap, String MaBan, int ThanhTien) {
         this.MaHD = MaHD;
         this.TenNhanVien = TenNhanVien;
         this.NgayLap = NgayLap;

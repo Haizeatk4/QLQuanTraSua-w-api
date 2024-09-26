@@ -36,12 +36,13 @@ public class QL_NguyenLieu_API {
             nl.setTenNL(rqst.queryParams("TenNL"));
             
             String d = rqst.queryParams("NgayNhap");
+            System.out.println(d);
             Date date = Date.valueOf(d);
             nl.setNgayNhap(date);
             
-            nl.setSoLuong(rqst.queryParams("SoLuong"));
+            nl.setSoLuong(Integer.parseInt(rqst.queryParams("SoLuong")));
             nl.setDvTinh(rqst.queryParams("DonVi"));
-            nl.setDonGia(rqst.queryParams("DonGia"));
+            nl.setDonGia(Integer.parseInt(rqst.queryParams("DonGia")));
             
             rspns.type("application/json");
             return nvCtrl.InsertNguyenLieu(nl);
@@ -61,9 +62,9 @@ public class QL_NguyenLieu_API {
             Date date = Date.valueOf(d);
             nl.setNgayNhap(date);
             
-            nl.setSoLuong(rqst.queryParams("SoLuong"));
+            nl.setSoLuong(Integer.parseInt(rqst.queryParams("SoLuong")));
             nl.setDvTinh(rqst.queryParams("DonVi"));
-            nl.setDonGia(rqst.queryParams("DonGia"));
+            nl.setDonGia(Integer.parseInt(rqst.queryParams("DonGia")));
             
             rspns.type("application/json");
             return nvCtrl.UpdateNguyenLieu(nl);

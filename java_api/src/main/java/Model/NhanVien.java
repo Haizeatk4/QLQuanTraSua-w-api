@@ -23,7 +23,16 @@ public class NhanVien {
     private String LuongCoBan;
     private String HeSoLuong;
     private String TienLuong;
+    private int PhanQuyen;
 
+    public int getPhanQuyen() {
+        return PhanQuyen;
+    }
+
+    public void setPhanQuyen(int PhanQuyen) {
+        this.PhanQuyen = PhanQuyen;
+    }
+    
     public String getMaNhanVien() {
         return MaNhanVien;
     }

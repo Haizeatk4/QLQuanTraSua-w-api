@@ -15,9 +15,9 @@ public class NguyenLieu {
     private String MaNL;
     private String TenNL;
     private Date NgayNhap;
-    private String SoLuong;
+    private int SoLuong;
     private String DvTinh;
-    private String DonGia;
+    private int DonGia;
 
     public String getMaNL() {
         return MaNL;
@@ -31,7 +31,7 @@ public class NguyenLieu {
         return NgayNhap;
     }
 
-    public String getSoLuong() {
+    public int getSoLuong() {
         return SoLuong;
     }
 
@@ -39,7 +39,7 @@ public class NguyenLieu {
         return DvTinh;
     }
 
-    public String getDonGia() {
+    public int getDonGia() {
         return DonGia;
     }
 
@@ -55,7 +55,7 @@ public class NguyenLieu {
         this.NgayNhap = NgayNhap;
     }
 
-    public void setSoLuong(String SoLuong) {
+    public void setSoLuong(int SoLuong) {
         this.SoLuong = SoLuong;
     }
 
@@ -63,11 +63,11 @@ public class NguyenLieu {
         this.DvTinh = DvTinh;
     }
 
-    public void setDonGia(String DonGia) {
+    public void setDonGia(int DonGia) {
         this.DonGia = DonGia;
     }
 
-    public NguyenLieu(String MaNL, String TenNL, Date NgayNhap, String SoLuong, String DvTinh, String DonGia) {
+    public NguyenLieu(String MaNL, String TenNL, Date NgayNhap, int SoLuong, String DvTinh, int DonGia) {
         this.MaNL = MaNL;
         this.TenNL = TenNL;
         this.NgayNhap = NgayNhap;

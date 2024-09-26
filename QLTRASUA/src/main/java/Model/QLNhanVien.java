@@ -23,7 +23,16 @@ public class QLNhanVien {
     private String LuongCoBan;
     private String HeSoLuong;
     private String TienLuong;
+    private int PhanQuyen;
 
+    public int getPhanQuyen() {
+        return PhanQuyen;
+    }
+
+    public void setPhanQuyen(int PhanQuyen) {
+        this.PhanQuyen = PhanQuyen;
+    }
+    
     public String getMaNhanVien() {
         return MaNhanVien;
     }
@@ -114,7 +123,7 @@ public class QLNhanVien {
         this.TienLuong = Integer.toString(lcb * hsl);
     }
 
-    public QLNhanVien(String MaNhanVien, String TenNhanVien, String Password, String Phone, String Email, String CMND, Date NgayLamViec, String CaLamViec, String LuongCoBan, String HeSoLuong, String TienLuong) {
+    public QLNhanVien(String MaNhanVien, String TenNhanVien, String Password, String Phone, String Email, String CMND, Date NgayLamViec, String CaLamViec, String LuongCoBan, String HeSoLuong, String TienLuong, int PhanQuyen) {
         this.MaNhanVien = MaNhanVien;
         this.TenNhanVien = TenNhanVien;
         this.Password = Password;
@@ -126,8 +135,9 @@ public class QLNhanVien {
         this.LuongCoBan = LuongCoBan;
         this.HeSoLuong = HeSoLuong;
         this.TienLuong = TienLuong;
+        this.PhanQuyen = PhanQuyen;
     }
-
+    
     public QLNhanVien() {
     }
 

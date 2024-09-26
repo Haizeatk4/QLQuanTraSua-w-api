@@ -39,6 +39,8 @@ public class QL_NhanVien_API {
         post("/nhan_vien/them", (rqst,rspns) -> {
             NhanVienCtrl nvCtrl = new NhanVienCtrl();
             NhanVien nv = new NhanVien();
+//            nv.setMaNhanVien(nvCtrl.taomaNhanVien());
+            
             nv.setMaNhanVien(nvCtrl.taomaNhanVien());
             nv.setTenNhanVien(rqst.queryParams("TenNhanVien"));
             nv.setPassword(rqst.queryParams("Password"));
@@ -54,6 +56,7 @@ public class QL_NhanVien_API {
             nv.setLuongCoBan(rqst.queryParams("LuongCoBan"));
             nv.setHeSoLuong(rqst.queryParams("HeSoLuong"));
             nv.setTienLuong(rqst.queryParams("TienLuong"));
+            nv.setPhanQuyen(Integer.parseInt(rqst.queryParams("PhanQuyen")));
             
             rspns.type("application/json");
             return nvCtrl.InsertNhanVien(nv);
@@ -81,6 +84,7 @@ public class QL_NhanVien_API {
             nv.setLuongCoBan(rqst.queryParams("LuongCoBan"));
             nv.setHeSoLuong(rqst.queryParams("HeSoLuong"));
             nv.setTienLuong(rqst.queryParams("TienLuong"));
+            nv.setPhanQuyen(Integer.parseInt(rqst.queryParams("PhanQuyen")));
             
             rspns.type("application/json");
             return nvCtrl.UpdateNhanVien(nv);

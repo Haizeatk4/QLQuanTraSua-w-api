@@ -39,8 +39,8 @@ public class NguyenLieuData {
     private ArrayList<QLNguyenLieu> arr = new ArrayList();
     private QLNguyenLieu nl;
     //</editor-fold>
-    public NguyenLieuData(String tk) throws IOException, ParseException {
-        frm = new frmQuanLyNguyenLieu(tk);
+    public NguyenLieuData() throws IOException, ParseException {
+        frm = new frmQuanLyNguyenLieu();
         createArr();
         frm.loadTable(arr);
         frm.addListener(new AddListener());
@@ -49,6 +49,8 @@ public class NguyenLieuData {
         frm.searchListener(new SearchListener());
         frm.clearListener(new ClearListener());
         frm.setVisible(true);
+    }
+    public NguyenLieuData(String l){
     }
     //<editor-fold defaultstate="collapsed" desc="Method">
     public void thongBao(CloseableHttpResponse response) throws IOException, ParseException{
@@ -62,6 +64,24 @@ public class NguyenLieuData {
             JOptionPane.showMessageDialog(null, response.toString(), "Thông báo", 1);
         }
         
+    }
+    public ArrayList<QLNguyenLieu> getNL(String s) throws ParseException, IOException{
+        try {
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpPost httpG = new HttpPost("http://localhost:4567/nguyen_lieu/search");
+            ArrayList<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("search", s));
+            httpG.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
+            CloseableHttpResponse response = client.execute(httpG);
+            HttpEntity entity = response.getEntity();
+            String responseString = EntityUtils.toString(entity, Charset.defaultCharset());
+            Gson gson = new Gson();
+            Type type = new TypeToken<ArrayList<QLNguyenLieu>>(){}.getType();
+            arr = gson.fromJson(responseString, type);
+        } catch (JsonSyntaxException | IOException | ParseException ex) {
+            JOptionPane.showMessageDialog(null, ex, "Thông báo", 1);
+        }
+        return arr;
     }
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Event">
@@ -77,10 +97,11 @@ public class NguyenLieuData {
                     ArrayList<NameValuePair> params = new ArrayList<>();
                     params.add(new BasicNameValuePair("TenNL", nl.getTenNL()));
                     String strDate = nl.getNgayNhap().toString();
+                    System.out.println(strDate);
                     params.add(new BasicNameValuePair("NgayNhap", strDate));
-                    params.add(new BasicNameValuePair("SoLuong", nl.getSoLuong()));
+                    params.add(new BasicNameValuePair("SoLuong", Integer.toString(nl.getSoLuong())));
                     params.add(new BasicNameValuePair("DonVi", nl.getDvTinh()));
-                    params.add(new BasicNameValuePair("DonGia", nl.getDonGia()));
+                    params.add(new BasicNameValuePair("DonGia", Integer.toString(nl.getDonGia())));
                     httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
                     CloseableHttpResponse response = client.execute(httpP);
                     thongBao(response);
@@ -124,9 +145,9 @@ public class NguyenLieuData {
                         params.add(new BasicNameValuePair("TenNL", nl.getTenNL()));
                         String strDate = nl.getNgayNhap().toString();
                         params.add(new BasicNameValuePair("NgayNhap", strDate));
-                        params.add(new BasicNameValuePair("SoLuong", nl.getSoLuong()));
+                        params.add(new BasicNameValuePair("SoLuong", Integer.toString(nl.getSoLuong())));
                         params.add(new BasicNameValuePair("DonVi", nl.getDvTinh()));
-                        params.add(new BasicNameValuePair("DonGia", nl.getDonGia()));
+                        params.add(new BasicNameValuePair("DonGia", Integer.toString(nl.getDonGia())));
                         httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
                         CloseableHttpResponse response = client.execute(httpP);
                         thongBao(response);

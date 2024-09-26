@@ -5,6 +5,7 @@
  */
 package Controller;
 
+import static Controller.ChiTietHoaDonCtrl.ps;
 import Model.NhanVien;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -34,8 +35,8 @@ public class NhanVienCtrl {
         return encode;
     }
     public boolean DoiMatKhau(String tk,String mk,String mkMoi) throws SQLException{
-            if(dangNhap(tk, mk)){
-                ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE QLNhan_Vien SET Password = ? where MaNhanVien = ?");
+            if(dangNhap(tk, mk)!=-1){
+                ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE qlnhan_vien SET Password = ? where MaNhanVien = ?");
                 ps.setString(1, encode(mkMoi));
                 ps.setString(2, tk);
                 ps.executeUpdate();
@@ -47,7 +48,7 @@ public class NhanVienCtrl {
     }
     public ArrayList<NhanVien> createArr() throws SQLException{
         arr = new ArrayList<>();
-        ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT * FROM QLNhan_Vien WHERE NOT MaNhanVien = 'admin'");
+        ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT * FROM qlnhan_vien WHERE NOT MaNhanVien = 'admin'");
         rs = ps.executeQuery();
         while(rs.next()){
            NhanVien tmp = new NhanVien();
@@ -63,20 +64,23 @@ public class NhanVienCtrl {
            tmp.setLuongCoBan(rs.getString("LuongCoBan"));
            tmp.setHeSoLuong(rs.getString("HeSoLuong"));
            tmp.setTienLuong(rs.getString("TienLuong"));
+           tmp.setPhanQuyen(rs.getInt("PhanQuyen"));
            
            arr.add(tmp);
         }
+        ps.close();
         return arr;
     }
     public ArrayList<NhanVien> searchArr(String s) throws SQLException{
         
         arr = new ArrayList<>();
-        String sql = "SELECT * FROM QLNhan_Vien WHERE NOT MaNhanVien = 'admin'"
+        String sql = "SELECT * FROM qlnhan_vien WHERE NOT MaNhanVien = 'admin'"
                 + " and (MaNhanVien like '%"+s+"%'"
                 + " or TenNhanVien like '%"+s+"%'"
                 + " or Phone like '%"+s+"%'"
                 + " or Email like '%"+s+"%'"
                 + " or CMND like '%"+s+"%'"
+                + " or PhanQuyen like '%"+s+"%'"
                 + " or NgayLamViec like '%"+s+"%')";
         ps = connectDatabase.TaoKetNoi().prepareStatement(sql);
         rs = ps.executeQuery();
@@ -93,30 +97,32 @@ public class NhanVienCtrl {
            tmp.setLuongCoBan(rs.getString("LuongCoBan"));
            tmp.setHeSoLuong(rs.getString("HeSoLuong"));
            tmp.setTienLuong(rs.getString("TienLuong"));
+           tmp.setPhanQuyen(rs.getInt("PhanQuyen"));
            arr.add(tmp);
         }
+        ps.close();
         return arr;
     }
-    public boolean dangNhap(String taiKhoan, String pass) throws SQLException {
-        boolean kt = false;
+    public int dangNhap(String taiKhoan, String pass) throws SQLException {
+        int kt = -1;
         try {
-            ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT * FROM QLNhan_Vien where MaNhanVien = ? and Password=?");
+            ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT PhanQuyen FROM qlnhan_vien where MaNhanVien = ? and Password=?");
             ps.setString(1, taiKhoan);
             ps.setString(2, encode(pass));
             rs = ps.executeQuery();
             if (rs.next()) {
-                kt = true;
+                kt = rs.getInt("PhanQuyen");
                 ps.close();
             }
         } catch (SQLException e) {
-            kt = false;
+            kt = -1;
         }
         return kt;
 
     }
 
     public String InsertNhanVien(NhanVien nv) throws ClassNotFoundException {
-        String sql = "INSERT INTO QLNhan_Vien VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO qlnhan_vien VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
         try {
             if(checkcmnd(nv.getCMND(),nv.getMaNhanVien())) return "Căn cước công dân này đã tồn tại trong hệ thống! Vui lòng nhập lại hoặc xóa bản ghi trước đó.";
             if(checkmail1(nv.getEmail(),nv.getMaNhanVien())) return "Email đã tồn tại trong hệ thống! Vui lòng nhập lại hoặc xóa bản ghi trước đó.";
@@ -134,6 +140,7 @@ public class NhanVienCtrl {
             ps.setString(9, nv.getLuongCoBan());
             ps.setString(10, nv.getHeSoLuong());
             ps.setString(11, nv.getTienLuong());
+            ps.setInt(12, nv.getPhanQuyen());
             ps.execute();
             ps.close();
             return "Ðã thêm thành công!";
@@ -147,8 +154,8 @@ public class NhanVienCtrl {
         try {
             if(checkcmnd(nv.getCMND(),nv.getMaNhanVien())) return "Căn cước công dân này đã tồn tại trong hệ thống! Vui lòng nhập lại hoặc xóa bản ghi trước đó.";
             if(checkmail1(nv.getEmail(),nv.getMaNhanVien())) return "Email đã tồn tại trong hệ thống! Vui lòng nhập lại hoặc xóa bản ghi trước đó.";
-            ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE QLNhan_Vien SET TenNhanVien = ?,"
-                    + "Password=? ,Phone=?,Email=?,CMND=?,NgayLamViec=?,CaLamViec=?,LuongCoBan=?,HeSoLuong=?,TienLuong=? where MaNhanVien = ?");
+            ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE qlnhan_vien SET TenNhanVien = ?,"
+                    + "Password=? ,Phone=?,Email=?,CMND=?,NgayLamViec=?,CaLamViec=?,LuongCoBan=?,HeSoLuong=?,TienLuong=?,PhanQuyen=? where MaNhanVien = ?");
             ps.setString(1, nv.getTenNhanVien());
             ps.setString(2, encode(nv.getPassword()));
             ps.setString(3, nv.getPhone());
@@ -161,7 +168,8 @@ public class NhanVienCtrl {
             ps.setString(8, nv.getLuongCoBan());
             ps.setString(9, nv.getHeSoLuong());
             ps.setString(10, nv.getTienLuong());
-            ps.setString(11, nv.getMaNhanVien());
+            ps.setInt(11, nv.getPhanQuyen());
+            ps.setString(12, nv.getMaNhanVien());
             ps.executeUpdate();
             ps.close();
             return "Ðã sửa thành công!";
@@ -176,6 +184,7 @@ public class NhanVienCtrl {
             ps = connectDatabase.TaoKetNoi().prepareStatement("DELETE FROM QlNhan_Vien WHERE MaNhanVien = ?");
             ps.setString(1, MaNhanVien);
             ps.executeUpdate();
+            ps.close();
             return "Ðã xóa thành công!";
         } catch (SQLException e) {
             return e.getMessage();
@@ -186,7 +195,7 @@ public class NhanVienCtrl {
         Connection conn;
         Statement stmt;
         conn = connectDatabase.TaoKetNoi();
-        String sql = "SELECT MaNhanVien FROM QLNhan_Vien order by MaNhanVien Desc";
+        String sql = "SELECT MaNhanVien FROM qlnhan_vien order by MaNhanVien Desc";
         stmt = conn.createStatement();
         String manv;
         rs = stmt.executeQuery(sql);
@@ -211,7 +220,7 @@ public class NhanVienCtrl {
         con = connectDatabase.TaoKetNoi();
 
         try {
-            String SQL = "SELECT CMND FROM QLNhan_Vien WHERE CMND = ? AND NOT MaNhanVien = ?";
+            String SQL = "SELECT CMND FROM qlnhan_vien WHERE CMND = ? AND NOT MaNhanVien = ?";
             PreparedStatement pre = con.prepareStatement(SQL);
             pre.setString(1, cmnd);
             pre.setString(2, maNV);
@@ -243,7 +252,7 @@ public class NhanVienCtrl {
         con = connectDatabase.TaoKetNoi();
         boolean check = false;
         try {
-            String SQL = "SELECT Email FROM QLNhan_Vien WHERE Email = ? AND NOT MaNhanVien = ?";
+            String SQL = "SELECT Email FROM qlnhan_vien WHERE Email = ? AND NOT MaNhanVien = ?";
 
             PreparedStatement pre = con.prepareStatement(SQL);
             pre.setString(1, mail);

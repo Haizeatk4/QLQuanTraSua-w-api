@@ -46,6 +46,8 @@ public class NhanVienData {
     frmDoiMK frm_doiMK;
     private ArrayList<QLNhanVien> arr = new ArrayList();
     private QLNhanVien nv;
+    public static String user;
+    public static int phanQuyen;
     //</editor-fold>
     public NhanVienData(String l) throws SQLException, IOException, ParseException, URISyntaxException {
         if(l.equals("login")){
@@ -53,7 +55,7 @@ public class NhanVienData {
             frm_login.loginListener(new LoginListener());
             frm_login.setVisible(true);
         } else if (l.contains("qlnv")){
-            frm = new frmQuanLyNV(l.replace("qlnv", ""));
+            frm = new frmQuanLyNV();
             createArr();
             frm.loadTable(arr);
             frm.addListener(new AddListener());
@@ -64,7 +66,7 @@ public class NhanVienData {
             frm.clearListener(new ClearListener());
             frm.setVisible(true);
         } else {
-            this.frm_doiMK = new frmDoiMK(l);
+            this.frm_doiMK = new frmDoiMK();
             frm_doiMK.confirmListener(new ConfirmListener());
             frm_doiMK.setVisible(true);
         }
@@ -80,6 +82,7 @@ public class NhanVienData {
                     CloseableHttpClient client = HttpClients.createDefault();
                     HttpPost httpP = new HttpPost("http://localhost:4567/nhan_vien/them");
                     ArrayList<NameValuePair> params = new ArrayList<>();
+                    
                     params.add(new BasicNameValuePair("TenNhanVien", nv.getTenNhanVien()));
                     params.add(new BasicNameValuePair("Password", nv.getPassword()));
                     params.add(new BasicNameValuePair("Phone", nv.getPhone()));
@@ -91,6 +94,7 @@ public class NhanVienData {
                     params.add(new BasicNameValuePair("LuongCoBan", nv.getLuongCoBan()));
                     params.add(new BasicNameValuePair("HeSoLuong", nv.getHeSoLuong()));
                     params.add(new BasicNameValuePair("TienLuong", nv.getTienLuong()));
+                    params.add(new BasicNameValuePair("PhanQuyen", Integer.toString(nv.getPhanQuyen())));
                     httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
                     CloseableHttpResponse response = client.execute(httpP);
                     thongBao(response);
@@ -146,6 +150,7 @@ public class NhanVienData {
                         } else {
                             params.add(new BasicNameValuePair("TienLuong", nv.getTienLuong()));
                         }
+                        params.add(new BasicNameValuePair("PhanQuyen",Integer.toString(nv.getPhanQuyen())));
                         httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
                         CloseableHttpResponse response = client.execute(httpP);
                         thongBao(response);
@@ -179,6 +184,7 @@ public class NhanVienData {
                         int lcb = Integer.parseInt(nv.getLuongCoBan());
                         double hsl = Double.parseDouble(nv.getHeSoLuong());
                         params.add(new BasicNameValuePair("TienLuong", Integer.toString((int) (hsl*lcb))));
+                        params.add(new BasicNameValuePair("PhanQuyen",Integer.toString(nv.getPhanQuyen())));
                         httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
                         CloseableHttpResponse response = client.execute(httpP);
                         thongBao(response);
@@ -226,6 +232,7 @@ public class NhanVienData {
         @Override
         public void actionPerformed(ActionEvent e) {
             String tk = frm_login.getTK();
+            user=tk;
             String mk = frm_login.getMK();
             if(tk!=null && mk!=null){
                 try {
@@ -238,10 +245,11 @@ public class NhanVienData {
                     CloseableHttpResponse response = client.execute(httpP);
                     HttpEntity entity = response.getEntity();
                     String r = EntityUtils.toString(entity, Charset.defaultCharset());
-                    if(Boolean.parseBoolean(r)){
+                    int kq = Integer.parseInt(r);
+                    phanQuyen=kq;
+                    if(kq!=-1){
                         JOptionPane.showMessageDialog(null, "Đăng nhập thành công", "Thông báo", 1);
-                        frmHome home = new frmHome(tk);
-                        if(!tk.equals("admin")) home.lock();
+                        frmHome home = new frmHome();
                         home.setVisible(true);
                         frm_login.dispose();
                     } else {
@@ -255,7 +263,7 @@ public class NhanVienData {
     }class ConfirmListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            String tk = frm_doiMK.l_acc.getText();
+            String tk = NhanVienData.user;
             String mk = frm_doiMK.getMatKhauCu();
             String mkMoi = frm_doiMK.getMatKhauMoi();
             if(tk!=null && mk!=null && mkMoi!=null){

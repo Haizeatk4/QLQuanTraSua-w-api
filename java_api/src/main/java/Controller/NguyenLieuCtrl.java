@@ -5,8 +5,9 @@
  */
 package Controller;
 
+import static Controller.MenuCtrl.ps;
 import Model.NguyenLieu;
-import Model.QLThongKe;
+import Model.ThongKe;
 import java.awt.HeadlessException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,6 +31,20 @@ public class NguyenLieuCtrl {
     private ArrayList<NguyenLieu> arr = new ArrayList();
 
     public NguyenLieuCtrl() {}
+    public void updateSoLuongNL(String MaDV,int SoLuong) throws SQLException{
+        ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT * FROM nguyenlieu WHERE MaDV=?");
+        ps.setString(1, MaDV);
+        rs = ps.executeQuery();
+        rs.next();
+        int s = rs.getInt("SoLuong");
+        int r = s-SoLuong;
+        
+        ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE nguyenlieu SET SoLuong=? where MaDV = ?");
+        ps.setInt(1, r);
+        ps.setString(2, MaDV);
+        ps.executeUpdate();
+        ps.close();
+    }
     public ArrayList<NguyenLieu> createArr() throws SQLException{
         arr = new ArrayList<>();
         ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT * FROM NguyenLieu");
@@ -37,39 +52,42 @@ public class NguyenLieuCtrl {
         while(rs.next()){
            NguyenLieu tmp = new NguyenLieu();
            
-           tmp.setMaNL(rs.getString("MaNL"));
-           tmp.setTenNL(rs.getString("TenNL"));
+           tmp.setMaNL(rs.getString("MaDV"));
+           tmp.setTenNL(rs.getString("TenDV"));
            tmp.setNgayNhap(rs.getDate("NgayNhap"));
-           tmp.setSoLuong(rs.getString("SoLuong"));
+           tmp.setSoLuong(rs.getInt("SoLuong"));
            tmp.setDvTinh(rs.getString("DvTinh"));
-           tmp.setDonGia(rs.getString("Gia"));
+           tmp.setDonGia(rs.getInt("Gia"));
            
            arr.add(tmp);
         }
+        ps.close();
         return arr;
     }
     public ArrayList<NguyenLieu> searchArr(String s) throws SQLException{
         
         arr = new ArrayList<>();
-        String sql = "SELECT * FROM NguyenLieu where MaNL like '%"+s+"%'"
-                + " or TenNL like '%"+s+"%'"
-                + " or NgayNhap like '%"+s+"%'";
+        String sql = "SELECT * FROM nguyenlieu where MaDV like '%"+s+"%'"
+                + " or TenDV like '%"+s+"%'"
+                + " or NgayNhap like '%"+s+"%'"
+                + " or Gia like '%"+s+"%'";
         ps = connectDatabase.TaoKetNoi().prepareStatement(sql);
         rs = ps.executeQuery();
         while(rs.next()){
            NguyenLieu tmp = new NguyenLieu();
-           tmp.setMaNL(rs.getString("MaNL"));
-           tmp.setTenNL(rs.getString("TenNL"));
+           tmp.setMaNL(rs.getString("MaDV"));
+           tmp.setTenNL(rs.getString("TenDV"));
            tmp.setNgayNhap(rs.getDate("NgayNhap"));
-           tmp.setSoLuong(rs.getString("SoLuong"));
+           tmp.setSoLuong(rs.getInt("SoLuong"));
            tmp.setDvTinh(rs.getString("DvTinh"));
-           tmp.setDonGia(rs.getString("Gia"));
+           tmp.setDonGia(rs.getInt("Gia"));
            arr.add(tmp);
         }
+        ps.close();
         return arr;
     }
     public String InsertNguyenLieu(NguyenLieu nl) {
-        String sql = "INSERT INTO NguyenLieu VALUES(?,?,?,?,?,?)";
+        String sql = "INSERT INTO nguyenlieu VALUES(?,?,?,?,?,?)";
         try {
             ps = connectDatabase.TaoKetNoi().prepareStatement(sql);
             ps.setString(1, nl.getMaNL());
@@ -77,9 +95,9 @@ public class NguyenLieuCtrl {
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 String strDate = dateFormat.format(nl.getNgayNhap());
             ps.setString(3, strDate);
-            ps.setString(4, nl.getSoLuong());
+            ps.setInt(4, nl.getSoLuong());
             ps.setString(5, nl.getDvTinh());
-            ps.setString(6, nl.getDonGia());
+            ps.setInt(6, nl.getDonGia());
             ps.execute();
             ps.close();
             return "Ðã thêm nguyên liệu thành công!";
@@ -88,26 +106,15 @@ public class NguyenLieuCtrl {
         }
 
     }
-    public void InsertTienNL(QLThongKe nl){
-        String sql = "INSERT INTO ThongKe VALUES (?)";
-        
-        try {
-            ps = connectDatabase.TaoKetNoi().prepareStatement(sql);
-            ps.setString(1, nl.getTongTienNL());
-            ps.execute();
-            JOptionPane.showMessageDialog(null, "Đã thanh toán xong tiền nguyên liệu cho NCC");
-        } catch (HeadlessException | SQLException e) {
-        }
-    }
     public String UpdateNguyenLieu(NguyenLieu nl) {
         try {
-            ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE NguyenLieu SET TenNL = ?,"
-                    + "NgayNhap = ?,SoLuong=?,DvTinh=?,Gia=? where MaNL = ?");
+            ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE nguyenlieu SET TenDV = ?,"
+                    + "NgayNhap = ?,SoLuong=?,DvTinh=?,Gia=? where MaDV = ?");
             ps.setString(1, nl.getTenNL());
             ps.setDate(2, nl.getNgayNhap());
-            ps.setString(3, nl.getSoLuong());
+            ps.setInt(3, nl.getSoLuong());
             ps.setString(4, nl.getDvTinh());
-            ps.setString(5, nl.getDonGia());
+            ps.setInt(5, nl.getDonGia());
             ps.setString(6, nl.getMaNL());
             ps.executeUpdate();
             ps.close();
@@ -120,9 +127,10 @@ public class NguyenLieuCtrl {
 
     public String DeleteNguyenLieu(String MaNL) {
         try {
-            ps = connectDatabase.TaoKetNoi().prepareStatement("DELETE FROM NguyenLieu WHERE MaNL = ?");
+            ps = connectDatabase.TaoKetNoi().prepareStatement("DELETE FROM nguyenlieu WHERE MaDV = ?");
             ps.setString(1, MaNL);
             ps.executeUpdate();
+            ps.close();
             return "Ðã xóa thành công!";
         } catch (SQLException e) {
             return e.getMessage();
@@ -133,12 +141,12 @@ public class NguyenLieuCtrl {
         Connection conn;
         Statement stmt;
         conn = connectDatabase.TaoKetNoi();
-        String sql = "SELECT MaNL FROM NguyenLieu order by MaNL Desc";
+        String sql = "SELECT MaDV FROM nguyenlieu order by MaDV Desc";
         stmt = conn.createStatement();
         String manv;
         rs = stmt.executeQuery(sql);
         rs.next();
-        manv = rs.getString("MaNL").trim();
+        manv = rs.getString("MaDV").trim();
         stmt.close();
         conn.close();
 
