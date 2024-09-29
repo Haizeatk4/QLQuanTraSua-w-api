@@ -4,24 +4,217 @@
  */
 package view;
 
+import Controller.ExcelFileExporter;
+import Controller.TaiKhoanData;
+import Model.QLNhanVien;
+import frmView.frmHome;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.table.DefaultTableModel;
+import org.apache.hc.core5.http.ParseException;
+
 /**
  *
  * @author ad
  */
-public class frmQLNhanVien extends javax.swing.JFrame {
+public class frmQLNhanVien extends javax.swing.JFrame implements ActionListener {
 
     /**
      * Creates new form frmQLNhanVien
      */
+    boolean isSelected = false;
+    int item_id,mode=0;
+    private ArrayList<QLNhanVien> arr = new ArrayList();
+    private DefaultTableModel model;
+    
     public frmQLNhanVien() {
         initComponents();
+        l_acc.setText("Tài khoản: "+TaiKhoanData.user);
+        this.model = (DefaultTableModel) td.getModel();
+        btn_add.addActionListener(this);
+        btn_del.addActionListener(this);
+        btn_search.addActionListener(this);
+        btn_save.addActionListener(this);
+        //<editor-fold defaultstate="collapsed" desc="Event">
+        btn_excel.addActionListener((e) -> {
+            String[] headers = new String[] {"Mã nhân viên","Tên nhân viên","SĐT","Email","CCCD","Ngày bắt đầu"};
+            String fileName = "Quản lí nhân viên.xlsx";
+            ExcelFileExporter excelFileExporter = new ExcelFileExporter();
+            excelFileExporter.exportNhanVienExcelFile(arr, headers, fileName);
+        });
+        final ListSelectionModel sel = td.getSelectionModel();
+        sel.addListSelectionListener((ListSelectionEvent e) -> {
+            if(!sel.isSelectionEmpty()){
+                if(!sel.isSelectionEmpty()){
+                    btn_add.setEnabled(false);
+                    btn_edit.setEnabled(true);
+                    btn_del.setEnabled(true);
+                    item_id=sel.getMinSelectionIndex();
+                    enableInput(false);
+                    isSelected=true;
+                    setText();
+                } else {
+                    isSelected=false;
+                }
+            }
+        });
+        mi_exit.addActionListener((e) -> {
+            try {
+                frmHome home = new frmHome();
+                home.setVisible(true);
+                dispose();
+            } catch (IOException ex) {}
+        });
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    frmHome home = new frmHome();
+                    home.setVisible(true);
+                } catch (IOException ex) {}
+            }
+        });
+        //</editor-fold>
+    }
+    //<editor-fold defaultstate="collapsed" desc="Event2">
+    
+    public void addListener (ActionListener log){
+        btn_add.addActionListener(log);
+    }
+    public void saveListener (ActionListener log){
+        btn_save.addActionListener(log);
+    }
+    
+    public void delListener (ActionListener log){
+        btn_del.addActionListener(log);
+    }
+    public void searchListener (ActionListener log){
+        btn_search.addActionListener(log);
+    }
+    //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Method">
+    public String decode(String pass){
+        return new String(Base64.getDecoder().decode(pass));
+    }
+    public String getSearch(){
+        String s = txt_search.getText().trim().replace(" ", "_");
+        return s;
+    }
+    public boolean editMode(){
+        if(mode == 1){
+            mode = 0;
+            btn_del.setEnabled(true);
+            td.setEnabled(true);
+            enableInput(false);
+            btn_save.setEnabled(false);
+            return true;
+        } else {
+            mode = 1;
+            btn_del.setEnabled(false);
+            td.setEnabled(false);
+            btn_save.setEnabled(true);
+            enableInput(true);
+            return false;
+        }
+    }
+    public void enableInput(boolean a){
+        txt_tenNV.setEditable(a);
+        txt_sdt.setEditable(a);
+        txt_email.setEditable(a);
+        txt_cccd.setEditable(a);
+        dc_workDate.setEnabled(a);
+    }
+    public void clearMode(){
+        clearText();
+        mode = 0;
+        enableInput(true);
+        td.setEnabled(true);
+        btn_add.setEnabled(true);
+        btn_edit.setEnabled(false);
+        btn_del.setEnabled(false);
+        td.clearSelection();
+    }
+    public void clearText(){
+        txt_maNV.setText("");
+        txt_tenNV.setText("");
+        txt_sdt.setText("");
+        txt_email.setText("");
+        txt_cccd.setText("");
+        dc_workDate.setDate(new java.util.Date("01/01/2000"));
+    }
+    public void setText(){
+        txt_maNV.setText(arr.get(item_id).getMaNhanVien());
+        txt_tenNV.setText(arr.get(item_id).getTenNhanVien());
+        txt_sdt.setText(arr.get(item_id).getPhone());
+        txt_email.setText(arr.get(item_id).getEmail());
+        txt_cccd.setText(arr.get(item_id).getCMND());
+        java.util.Date  utilDate = new java.util.Date(arr.get(item_id).getNgayLamViec().getTime());
+        dc_workDate.setDate(utilDate);
+    }
+    public void loadTable(ArrayList<QLNhanVien> arr){
+        int rc = model.getRowCount();
+        for(int i=0;i<rc;i++){
+            model.removeRow(0);
+        }
+        Object r[] = new Object[6];
+        for(int i=0;i<arr.size();i++){
+            r[0] = arr.get(i).getMaNhanVien();
+            r[1] = arr.get(i).getTenNhanVien();
+            r[2] = arr.get(i).getPhone();
+            r[3] = arr.get(i).getEmail();
+            r[4] = arr.get(i).getCMND();
+            r[5] = arr.get(i).getNgayLamViec();
+            model.addRow(r);
+        }
+        this.arr = arr;
+        clearMode();
+    }
+    public boolean checkBlank(){
+        if(txt_tenNV.getText().trim().isEmpty()||txt_sdt.getText().trim().isEmpty()||txt_cccd.getText().trim().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!", "Thông báo", 1);
+            return true;
+        } else {
+            if(txt_sdt.getText().matches("[0-9]+") && txt_cccd.getText().matches("[0-9]+")){
+                return false;
+            } else {
+                JOptionPane.showMessageDialog(null, "Số điện thoại hoặc CCCD không hợp lệ!", "Thông báo", 1);
+                return true;
+            }
+        }
     }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
+    public int getItem_id() {
+        return item_id;
+    }
+    
+    public QLNhanVien getInfo(){
+        if(checkBlank()){
+            return null;
+        } else {
+            String a = txt_maNV.getText().trim();
+            String b = txt_tenNV.getText().trim();
+            String d = txt_sdt.getText().trim();
+            String e = txt_email.getText().trim();
+            String f = txt_cccd.getText().trim();
+            Date g1 = dc_workDate.getDate();
+            java.sql.Date g = new java.sql.Date(g1.getTime());
+            QLNhanVien nv = new QLNhanVien(a,b,d,e,f,g);
+            return nv;
+        }
+    }
+    //</editor-fold>
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -35,16 +228,16 @@ public class frmQLNhanVien extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        txt_maNV1 = new javax.swing.JTextField();
+        txt_maNV = new javax.swing.JTextField();
         txt_cccd = new javax.swing.JTextField();
         txt_tenNV = new javax.swing.JTextField();
         txt_email = new javax.swing.JTextField();
         dc_workDate = new com.toedter.calendar.JDateChooser();
         jPanel2 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        btn_search = new javax.swing.JButton();
         txt_search = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        td = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         btn_add = new javax.swing.JButton();
         btn_edit = new javax.swing.JButton();
@@ -54,10 +247,12 @@ public class frmQLNhanVien extends javax.swing.JFrame {
         btn_clear = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         m_hethong = new javax.swing.JMenu();
+        mi_qltk = new javax.swing.JMenuItem();
         mi_exit = new javax.swing.JMenuItem();
         l_acc = new javax.swing.JMenu();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Quản Lý Nhân Viên");
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 36)); // NOI18N
         jLabel1.setText("QUẢN LÝ NHÂN VIÊN");
@@ -83,6 +278,10 @@ public class frmQLNhanVien extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Ngày vào làm:");
 
+        txt_maNV.setEnabled(false);
+
+        dc_workDate.setBackground(new java.awt.Color(255, 255, 254));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -99,7 +298,7 @@ public class frmQLNhanVien extends javax.swing.JFrame {
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txt_maNV1, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                    .addComponent(txt_maNV, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
                     .addComponent(txt_sdt)
                     .addComponent(txt_cccd))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -120,7 +319,7 @@ public class frmQLNhanVien extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txt_maNV1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_maNV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
                     .addComponent(txt_tenNV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
@@ -141,9 +340,10 @@ public class frmQLNhanVien extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jButton1.setText("Tìm kiếm");
+        btn_search.setBackground(new java.awt.Color(255, 255, 254));
+        btn_search.setText("Tìm kiếm");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        td.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
@@ -162,11 +362,11 @@ public class frmQLNhanVien extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(50);
-            jTable1.getColumnModel().getColumn(1).setPreferredWidth(150);
-            jTable1.getColumnModel().getColumn(3).setPreferredWidth(150);
+        jScrollPane1.setViewportView(td);
+        if (td.getColumnModel().getColumnCount() > 0) {
+            td.getColumnModel().getColumn(0).setPreferredWidth(50);
+            td.getColumnModel().getColumn(1).setPreferredWidth(150);
+            td.getColumnModel().getColumn(3).setPreferredWidth(150);
         }
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -178,7 +378,7 @@ public class frmQLNhanVien extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1029, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_search, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txt_search)))
                 .addContainerGap())
@@ -188,7 +388,7 @@ public class frmQLNhanVien extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                    .addComponent(btn_search)
                     .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
@@ -217,6 +417,7 @@ public class frmQLNhanVien extends javax.swing.JFrame {
         btn_del.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button/delete_icon.png"))); // NOI18N
         btn_del.setText("Xóa");
 
+        btn_excel.setBackground(new java.awt.Color(255, 255, 254));
         btn_excel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button/excel_icon.png"))); // NOI18N
         btn_excel.setText("Xuất Excel");
 
@@ -261,6 +462,14 @@ public class frmQLNhanVien extends javax.swing.JFrame {
         jMenuBar1.setBackground(new java.awt.Color(255, 255, 254));
 
         m_hethong.setText("Hệ thống");
+
+        mi_qltk.setText("Quản lý tài khoản");
+        mi_qltk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mi_qltkActionPerformed(evt);
+            }
+        });
+        m_hethong.add(mi_qltk);
 
         mi_exit.setText("Thoát");
         m_hethong.add(mi_exit);
@@ -322,34 +531,15 @@ public class frmQLNhanVien extends javax.swing.JFrame {
         clearMode();
     }//GEN-LAST:event_btn_clearActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+    private void mi_qltkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mi_qltkActionPerformed
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(frmQLNhanVien.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(frmQLNhanVien.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(frmQLNhanVien.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(frmQLNhanVien.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            TaiKhoanData frm = new TaiKhoanData("qlnv");
+        } catch (IOException | ParseException ex) {
+            Logger.getLogger(frmQLNhanVien.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //</editor-fold>
+    }//GEN-LAST:event_mi_qltkActionPerformed
 
-        /* Create and display the form */
+    public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new frmQLNhanVien().setVisible(true);
@@ -364,8 +554,8 @@ public class frmQLNhanVien extends javax.swing.JFrame {
     private javax.swing.JButton btn_edit;
     private javax.swing.JButton btn_excel;
     private javax.swing.JButton btn_save;
+    private javax.swing.JButton btn_search;
     private com.toedter.calendar.JDateChooser dc_workDate;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -378,15 +568,34 @@ public class frmQLNhanVien extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JMenu l_acc;
     private javax.swing.JMenu m_hethong;
     private javax.swing.JMenuItem mi_exit;
+    private javax.swing.JMenuItem mi_qltk;
+    private javax.swing.JTable td;
     private javax.swing.JTextField txt_cccd;
     private javax.swing.JTextField txt_email;
-    private javax.swing.JTextField txt_maNV1;
+    private javax.swing.JTextField txt_maNV;
     private javax.swing.JTextField txt_sdt;
     private javax.swing.JTextField txt_search;
     private javax.swing.JTextField txt_tenNV;
     // End of variables declaration//GEN-END:variables
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+    }
+
+    /**
+     * @return the model
+     */
+    public DefaultTableModel getModel() {
+        return model;
+    }
+
+    /**
+     * @param model the model to set
+     */
+    public void setModel(DefaultTableModel model) {
+        this.model = model;
+    }
 }

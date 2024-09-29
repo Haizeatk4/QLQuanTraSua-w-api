@@ -4,7 +4,6 @@
 
 package com.mycompany.qltrasua;
 
-import Controller.NhanVienData;
 import Controller.TaiKhoanData;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -18,8 +17,7 @@ import org.apache.hc.core5.http.ParseException;
 public class QLTRASUA {
 
     public static void main(String[] args) throws SQLException, IOException, URISyntaxException, InterruptedException, ParseException {
-//        TaiKhoanData frm = new TaiKhoanData("login");
-//        TaiKhoanData frmQLTK = new TaiKhoanData();
-        NhanVienData frm = new NhanVienData();
+        TaiKhoanData frm = new TaiKhoanData("login");
+//        TaiKhoanData frm_chon = new TaiKhoanData("Chọn nv");
     }
 }

@@ -48,6 +48,24 @@ public class NhanVienCtrl {
         ps.close();
         return arr;
     }
+    public ArrayList<NhanVien> nhanVienKhongTK() throws SQLException{
+        arr = new ArrayList<>();
+        ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT * FROM nhanvien WHERE MaNhanVien NOT IN(SELECT MaNhanVien FROM taikhoan)");
+        rs = ps.executeQuery();
+        while(rs.next()){
+           NhanVien tmp = new NhanVien();
+           tmp.setMaNhanVien(rs.getString("MaNhanVien"));
+           tmp.setTenNhanVien(rs.getString("TenNhanVien"));
+           tmp.setPhone(rs.getString("Phone"));
+           tmp.setEmail(rs.getString("Email"));
+           tmp.setCMND(rs.getString("CMND"));
+           tmp.setNgayLamViec(rs.getDate("NgayLamViec"));
+           
+           arr.add(tmp);
+        }
+        ps.close();
+        return arr;
+    }
     public ArrayList<NhanVien> searchArr(String s) throws SQLException{
         
         arr = new ArrayList<>();
@@ -104,13 +122,13 @@ public class NhanVienCtrl {
             ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE nhanvien SET TenNhanVien = ?,"
                     + "Phone=?,Email=?,CMND=?,NgayLamViec=? where MaNhanVien = ?");
             ps.setString(1, nv.getTenNhanVien());
-            ps.setString(3, nv.getPhone());
-            ps.setString(4, nv.getEmail());
-            ps.setString(5, nv.getCMND());
+            ps.setString(2, nv.getPhone());
+            ps.setString(3, nv.getEmail());
+            ps.setString(4, nv.getCMND());
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 String strDate = dateFormat.format(nv.getNgayLamViec());
-            ps.setString(6, strDate);
-            ps.setString(12, nv.getMaNhanVien());
+            ps.setString(5, strDate);
+            ps.setString(6, nv.getMaNhanVien());
             ps.executeUpdate();
             ps.close();
             return "Ðã sửa thành công!";

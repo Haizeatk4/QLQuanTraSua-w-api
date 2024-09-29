@@ -4,16 +4,21 @@
  */
 package view;
 
+import Controller.TaiKhoanData;
 import Model.TaiKhoan;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
+import org.apache.hc.core5.http.ParseException;
 
 /**
  *
@@ -27,12 +32,12 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
     private DefaultTableModel model;
     public frmQuanLyTaiKhoan() {
         initComponents();
+        l_acc.setText("Tài khoản: "+TaiKhoanData.user);
         this.model = (DefaultTableModel) td.getModel();
-        btn_add.addActionListener(this);
-        btn_edit.addActionListener(this);
         btn_del.addActionListener(this);
         btn_search.addActionListener(this);
         btn_save.addActionListener(this);
+        btn_add.addActionListener(this);
         //<editor-fold defaultstate="collapsed" desc="Event">
         final ListSelectionModel sel = td.getSelectionModel();
         sel.addListSelectionListener((ListSelectionEvent e) -> {
@@ -49,6 +54,9 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
                     isSelected=false;
                 }
             }
+        });
+        mi_exit.addActionListener((e) -> {
+            dispose();
         });
         //</editor-fold>
     }
@@ -71,9 +79,11 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
         btn_del = new javax.swing.JButton();
         btn_clear = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu3 = new javax.swing.JMenu();
+        m_hethong = new javax.swing.JMenu();
+        mi_exit = new javax.swing.JMenuItem();
+        l_acc = new javax.swing.JMenu();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Quản lý tài khoản");
 
         td.setModel(new javax.swing.table.DefaultTableModel(
@@ -103,6 +113,11 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
         btn_add.setBackground(new java.awt.Color(255, 255, 254));
         btn_add.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button/add_icon.png"))); // NOI18N
         btn_add.setText("Thêm");
+        btn_add.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_addActionPerformed(evt);
+            }
+        });
 
         btn_edit.setBackground(new java.awt.Color(255, 255, 254));
         btn_edit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button/edit_icon.png"))); // NOI18N
@@ -176,9 +191,16 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
 
         jMenuBar1.setBackground(new java.awt.Color(204, 204, 204));
 
-        jMenu3.setBackground(new java.awt.Color(255, 255, 254));
-        jMenu3.setText("jMenu3");
-        jMenuBar1.add(jMenu3);
+        m_hethong.setBackground(new java.awt.Color(255, 255, 254));
+        m_hethong.setText("Hệ thống");
+
+        mi_exit.setText("Thoát");
+        m_hethong.add(mi_exit);
+
+        jMenuBar1.add(m_hethong);
+
+        l_acc.setText("tk");
+        jMenuBar1.add(l_acc);
 
         setJMenuBar(jMenuBar1);
 
@@ -237,6 +259,15 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
     private void btn_editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_editActionPerformed
         editMode();
     }//GEN-LAST:event_btn_editActionPerformed
+
+    private void btn_addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_addActionPerformed
+        try {
+            TaiKhoanData frm_chon = new TaiKhoanData("Chọn nv");
+            this.dispose();
+        } catch (IOException | ParseException ex) {
+            Logger.getLogger(frmQuanLyTaiKhoan.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btn_addActionPerformed
 
     private void btn_clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_clearActionPerformed
         clearMode();
@@ -317,10 +348,10 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
         if(checkBlank()){
             return null;
         } else {
-            String a = arr.get(item_id).getHoTen();
+            String a = arr.get(item_id).getMaNV();
             String b = arr.get(item_id).getHoTen();
-            String c = arr.get(item_id).getHoTen();
-            String d = arr.get(item_id).getHoTen();
+            String c = txt_pass.getText();
+            String d = cb_phanquyen.getSelectedItem().toString();
             TaiKhoan nv = new TaiKhoan(a,b,c,d);
             return nv;
         }
@@ -362,10 +393,12 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
     private javax.swing.JComboBox<String> cb_phanquyen;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JMenu l_acc;
+    private javax.swing.JMenu m_hethong;
+    private javax.swing.JMenuItem mi_exit;
     private javax.swing.JTable td;
     private javax.swing.JPasswordField txt_pass;
     private javax.swing.JTextField txt_search;

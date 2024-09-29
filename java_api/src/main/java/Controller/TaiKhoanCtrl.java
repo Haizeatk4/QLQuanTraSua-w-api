@@ -103,8 +103,8 @@ public class TaiKhoanCtrl {
         try {
             ps = connectDatabase.TaoKetNoi().prepareStatement(sql);
             ps.setString(1, tk.getMaNV());
-            ps.setString(2, encode(tk.getPassword()));
-            ps.setString(3, tk.getPhanQuyen());
+            ps.setString(2, encode("123"));
+            ps.setString(3, "Nhân viên");
             ps.execute();
             ps.close();
             return "Ðã thêm thành công!";
@@ -115,10 +115,10 @@ public class TaiKhoanCtrl {
     }
     public String UpdateNhanVien(TaiKhoan tk) throws ClassNotFoundException {
         try {
-            ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE taikhoan SET Password = ?,"
+            ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE taikhoan SET `Password` = ?,"
                     + "PhanQuyen=? where MaNhanVien = ?");
-            ps.setString(1, tk.getPassword());
-            ps.setString(2, encode(tk.getPassword()));
+            ps.setString(1, encode(tk.getPassword()));
+            ps.setString(2, tk.getPhanQuyen());
             ps.setString(3, tk.getMaNV());
             ps.executeUpdate();
             ps.close();

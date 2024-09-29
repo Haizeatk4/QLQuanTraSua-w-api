@@ -9,10 +9,6 @@ import Model.QLNhanVien;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import frmView.frmDangNhap;
-import frmView.frmDoiMK;
-import frmView.frmHome;
-import frmView.frmQuanLyNV;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -33,6 +29,7 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import java.lang.reflect.Type;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
+import view.frmQLNhanVien;
 
 /**
  *
@@ -41,17 +38,17 @@ import org.apache.hc.client5.http.classic.methods.HttpGet;
 public class NhanVienData {
 
     //<editor-fold defaultstate="collapsed" desc="Var">
-    frmQuanLyNV frm;
+    frmQLNhanVien frm;
     private ArrayList<QLNhanVien> arr = new ArrayList();
     private QLNhanVien nv;
     //</editor-fold>
     public NhanVienData() throws SQLException, IOException, ParseException, URISyntaxException {
-        frm = new frmQuanLyNV();
+        frm = new frmQLNhanVien();
         createArr();
         frm.loadTable(arr);
         frm.addListener(new AddListener());
         frm.delListener(new DelListener());
-        frm.editListener(new EditListener());
+        frm.saveListener(new SaveListener());
         frm.searchListener(new SearchListener());
         frm.setVisible(true);
     }
@@ -101,7 +98,7 @@ public class NhanVienData {
             }
         }
     }
-    class EditListener implements ActionListener {
+    class SaveListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {

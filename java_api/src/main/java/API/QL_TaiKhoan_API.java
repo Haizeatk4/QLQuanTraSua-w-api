@@ -40,8 +40,6 @@ public class QL_TaiKhoan_API {
             TaiKhoan tk = new TaiKhoan();
             
             tk.setMaNV(rqst.queryParams("MaNhanVien"));
-            tk.setPassword(rqst.queryParams("Password"));
-            tk.setPhanQuyen(rqst.queryParams("PhanQuyen"));
             
             rspns.type("application/json");
             return tkCtrl.InsertTaiKhoan(tk);
