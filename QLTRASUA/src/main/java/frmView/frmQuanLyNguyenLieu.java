@@ -5,6 +5,7 @@
 package frmView;
 
 import Controller.NhanVienData;
+import Controller.TaiKhoanData;
 import Model.QLNguyenLieu;
 import com.toedter.calendar.JDateChooser;
 import java.awt.BorderLayout;
@@ -95,7 +96,7 @@ public class frmQuanLyNguyenLieu extends JFrame implements ActionListener {
         //<editor-fold defaultstate="collapsed" desc="Menu">
         p2.setLayout(new BorderLayout());
         
-        l_acc.setText(NhanVienData.user);
+        l_acc.setText(TaiKhoanData.user);
         m_hethong.add(mi_exit);
         mb.add(m_hethong);
         mb.add(l_preAcc);

@@ -6,6 +6,7 @@ package frmView;
 
 import Controller.MenuData;
 import Controller.NhanVienData;
+import Controller.TaiKhoanData;
 import Controller.ThongKeData;
 import Model.QLMenu;
 import Model.QLThongKe;
@@ -68,7 +69,7 @@ public class frmThongKe extends JFrame{
         this.setLayout(new BorderLayout());
         
         //<editor-fold defaultstate="collapsed" desc="Menu">
-        l_acc.setText(NhanVienData.user);
+        l_acc.setText(TaiKhoanData.user);
         m_hethong.add(mi_exit);
         mb.add(m_hethong);
         mb.add(l_preAcc);

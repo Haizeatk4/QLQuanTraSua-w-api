@@ -4,7 +4,7 @@
  */
 package frmView;
 
-import Controller.NhanVienData;
+import Controller.TaiKhoanData;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -49,7 +49,7 @@ public class frmDoiMK extends JFrame implements ActionListener {
     JLabel l_acc = new JLabel();
     //</editor-fold>
     public frmDoiMK() throws IOException {
-        l_acc.setText(NhanVienData.user);
+        l_acc.setText(TaiKhoanData.user);
         this.setTitle("ĐỔI MẬT KHẨU");
         this.setSize(750,400);
         this.setLocation(50, 70);

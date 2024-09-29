@@ -5,6 +5,7 @@
 package frmView;
 
 import Controller.NhanVienData;
+import Controller.TaiKhoanData;
 import Model.QLMenu;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -99,7 +100,7 @@ public class frmQuanLyDichVu extends JFrame implements ActionListener {
         Border pad = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         //<editor-fold defaultstate="collapsed" desc="Menu">
         p2.setLayout(new BorderLayout());
-        l_acc.setText(NhanVienData.user);
+        l_acc.setText(TaiKhoanData.user);
         m_hethong.add(mi_exit);
         mb.add(m_hethong);
         mb.add(l_preAcc);

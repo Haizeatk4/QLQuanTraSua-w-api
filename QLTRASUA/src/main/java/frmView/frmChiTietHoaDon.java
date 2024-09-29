@@ -9,6 +9,7 @@ import Controller.HoaDonData;
 import Controller.MenuData;
 import Controller.NguyenLieuData;
 import Controller.NhanVienData;
+import Controller.TaiKhoanData;
 import Model.ChiTietHoaDon;
 import Model.QLHoaDon;
 import Model.QLMenu;
@@ -119,7 +120,7 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener{
         Border pad = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         Border padB = BorderFactory.createLineBorder(Color.BLACK);
         //<editor-fold defaultstate="collapsed" desc="Menu">
-        l_acc.setText(NhanVienData.user);
+        l_acc.setText(TaiKhoanData.user);
         m_hethong.add(mi_exit);
         mb.add(m_hethong);
         mb.add(l_preAcc);

@@ -6,6 +6,7 @@ package frmView;
 
 import Controller.ExcelFileExporter;
 import Controller.NhanVienData;
+import Controller.TaiKhoanData;
 import Model.QLNhanVien;
 import com.toedter.calendar.JDateChooser;
 import java.awt.BorderLayout;
@@ -118,7 +119,7 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         p_tile.setLayout(new BorderLayout());
         p_tile.add(tile,BorderLayout.CENTER);
         //<editor-fold defaultstate="collapsed" desc="Menu">
-        l_acc.setText(NhanVienData.user);
+        l_acc.setText(TaiKhoanData.user);
         m_hethong.add(mi_exit);
         mb.add(m_hethong);
         mb.add(l_preAcc);
@@ -423,18 +424,11 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
     public void setText(){
         txt_maNV.setText(arr.get(item_id).getMaNhanVien());
         txt_tenNV.setText(arr.get(item_id).getTenNhanVien());
-        txt_pass.setText(decode(arr.get(item_id).getPassword()));
         txt_sdt.setText(arr.get(item_id).getPhone());
         txt_email.setText(arr.get(item_id).getEmail());
         txt_cccd.setText(arr.get(item_id).getCMND());
         java.util.Date  utilDate = new java.util.Date(arr.get(item_id).getNgayLamViec().getTime());
         dc_workDate.setDate(utilDate);
-        spr_time.setValue(Integer.valueOf(arr.get(item_id).getCaLamViec()));
-        spr_luongCB.setValue(Integer.valueOf(arr.get(item_id).getLuongCoBan()));
-        spr_HSLuong.setValue(Double.valueOf(arr.get(item_id).getHeSoLuong()));
-        if(arr.get(item_id).getTienLuong() != null){
-        spr_luong.setValue(Integer.valueOf(arr.get(item_id).getTienLuong()));}
-        cb_phanQuyen.setSelectedIndex(arr.get(item_id).getPhanQuyen()+1);
     }
     public void loadTable(ArrayList<QLNhanVien> arr){
         int rc = model.getRowCount();
@@ -445,15 +439,10 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
         for(int i=0;i<arr.size();i++){
             r[0] = arr.get(i).getMaNhanVien();
             r[1] = arr.get(i).getTenNhanVien();
-            r[2] = arr.get(i).getPassword();
             r[3] = arr.get(i).getPhone();
             r[4] = arr.get(i).getEmail();
             r[5] = arr.get(i).getCMND();
             r[6] = arr.get(i).getNgayLamViec();
-            r[7] = arr.get(i).getCaLamViec();
-            r[8] = arr.get(i).getLuongCoBan();
-            r[9] = arr.get(i).getHeSoLuong();
-            r[10] = arr.get(i).getTienLuong();
             model.addRow(r);
         }
         this.arr = arr;
@@ -494,7 +483,7 @@ public class frmQuanLyNV extends JFrame implements ActionListener {
             String k = spr_HSLuong.getValue().toString();
             String l = spr_luong.getValue().toString();
             int m = cb_phanQuyen.getSelectedIndex()-1;
-            QLNhanVien nv = new QLNhanVien(a,b,c,d,e,f,g,h,i,k,l,m);
+            QLNhanVien nv = new QLNhanVien(a,b,d,e,f,g);
             return nv;
         }
     }
