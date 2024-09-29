@@ -8,6 +8,7 @@ import Controller.HoaDonData;
 import Controller.MenuData;
 import Controller.NguyenLieuData;
 import Controller.NhanVienData;
+import Controller.TaiKhoanData;
 import Controller.ThongKeData;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -74,7 +75,7 @@ public class frmHome extends JFrame{
         p_tile.setLayout(new BorderLayout());
         p_tile.add(tile,BorderLayout.CENTER);
         //<editor-fold defaultstate="collapsed" desc="Menu">
-        l_acc.setText(NhanVienData.user);
+        l_acc.setText(TaiKhoanData.user);
         m_hethong.add(mi_exit);
         m_acc.add(mi_logout);
         m_acc.add(mi_changePass);
@@ -100,7 +101,7 @@ public class frmHome extends JFrame{
         Font fo_b = new Font("Serif", Font.BOLD,20);
         btn_qlnv.setBackground(Color.WHITE);
         btn_qlnv.setFont(fo_b);
-        if (NhanVienData.phanQuyen == 1) {
+        if (TaiKhoanData.phanQuyen.equals("Quản lý")) {
             btn_qlnv.setEnabled(true);
         }
         else{
@@ -157,9 +158,9 @@ public class frmHome extends JFrame{
         });
         btn_qlnv.addActionListener(((e) -> {
             try {
-                NhanVienData frmQLNV = new NhanVienData(NhanVienData.user+"qlnv");
+                NhanVienData frmQLNV = new NhanVienData();
                 dispose();
-            } catch (SQLException | IOException | ParseException | URISyntaxException ex) {
+            } catch (IOException | ParseException | SQLException | URISyntaxException  ex) {
                 Logger.getLogger(frmHome.class.getName()).log(Level.SEVERE, null, ex);
             }
         }));
@@ -180,15 +181,15 @@ public class frmHome extends JFrame{
         });
         mi_logout.addActionListener((e) -> {
             try {
-                NhanVienData frm = new NhanVienData("login");
+                TaiKhoanData frm = new TaiKhoanData("login");
                 dispose();
-            } catch (SQLException | ParseException | URISyntaxException | IOException ex) {}
+            } catch (ParseException | IOException ex) {}
         });
         mi_changePass.addActionListener((e) -> {
             try {
-                NhanVienData frm = new NhanVienData("");
+                TaiKhoanData frm = new TaiKhoanData("");
                 dispose();
-            } catch (SQLException | ParseException | URISyntaxException | IOException ex) {}
+            } catch (ParseException | IOException ex) {}
         });
         //</editor-fold>
     }

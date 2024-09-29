@@ -7,6 +7,7 @@ package frmView;
 import Controller.ChiTietHoaDonData;
 import Controller.ExcelFileExporter;
 import Controller.NhanVienData;
+import Controller.TaiKhoanData;
 import Model.QLHoaDon;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -88,7 +89,7 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
         this.setLayout(new BorderLayout());
         Border pad = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         //<editor-fold defaultstate="collapsed" desc="Menu">
-        l_acc.setText(NhanVienData.user);
+        l_acc.setText(TaiKhoanData.user);
         m_hethong.add(mi_exit);
         mb.add(m_hethong);
         mb.add(l_preAcc);
@@ -201,7 +202,7 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
                         btn_edit.setEnabled(true);
                         check_thanhToan.setSelected(false);
                     } else {
-                        if(NhanVienData.phanQuyen==1){   
+                        if(TaiKhoanData.phanQuyen.equals("Quản lý")){   
                             btn_del.setEnabled(true);
                             btn_edit.setEnabled(false);
                         }else{

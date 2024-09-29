@@ -165,42 +165,35 @@ INSERT INTO nguyenlieu VALUES ('NL015','Cà chua','2024-04-02',3,'Kg',5000);
 INSERT INTO nguyenlieu VALUES ('NL016','Thạch Xoài','2024-04-05',40,'Hộp',6000);
 
 --
--- Table structure for table `qlnhan_vien`
+-- Table structure for table `nhanvien`
 --
 
-DROP TABLE IF EXISTS qlnhan_vien;
+DROP TABLE IF EXISTS nhanvien;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE qlnhan_vien (
+CREATE TABLE nhanvien (
   MaNhanVien varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   TenNhanVien varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   Phone varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   Email varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   CMND varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  NgayLamViec date DEFAULT NULL,
   PRIMARY KEY (MaNhanVien)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `qlnhan_vien`
+-- Dumping data for table `nhanvien`
 --
 
-INSERT INTO qlnhan_vien VALUES ('NV001','Nguyễn Văn Bảoo','098578985','mailtailieudn99@gmail.com','201985789');
-INSERT INTO qlnhan_vien VALUES ('NV002','Lê Khánh Linh','0986898578','khanhlinh@gmail.com','209187587');
-INSERT INTO qlnhan_vien VALUES ('NV003','Đỗ Hùng Tiến','0985986798','mmmm@gmail.com','298190589');
-INSERT INTO qlnhan_vien VALUES ('NV004','Hoa','0957876451','hoa@gmail.com','297589085');
-INSERT INTO qlnhan_vien VALUES ('NV005','Chu Nguyên Phong','0388298110','phong@gmail.com','123123123123');
-INSERT INTO qlnhan_vien VALUES ('NV006','Nguyễn Quốc Duy','012345678901','aa@gmail.com','123123456456');
-INSERT INTO qlnhan_vien VALUES ('NV007','Nguyễn Minh Đức','0123456789','d123@gmail.com','112233445566');
-INSERT INTO qlnhan_vien VALUES ('NV008','1','1','1','1');
-
---
--- Table structure for table `taikhoan`
---
-
-DROP TABLE IF EXISTS taikhoan;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+INSERT INTO nhanvien VALUES ('NV001','Nguyễn Văn Bảoo','098578985','mailtailieudn99@gmail.com','201985789','2022-10-01');
+INSERT INTO nhanvien VALUES ('NV002','Lê Khánh Linh','0986898578','khanhlinh@gmail.com','209187587','2022-10-01');
+INSERT INTO nhanvien VALUES ('NV003','Đỗ Hùng Tiến','0985986798','mmmm@gmail.com','298190589','2023-02-05');
+INSERT INTO nhanvien VALUES ('NV004','Hoa','0957876451','hoa@gmail.com','297589085','2023-02-05');
+INSERT INTO nhanvien VALUES ('NV005','Chu Nguyên Phong','0388298110','phong@gmail.com','123123123123','2023-02-05');
+INSERT INTO nhanvien VALUES ('NV006','Nguyễn Quốc Duy','012345678901','aa@gmail.com','123123456456','2023-02-05');
+INSERT INTO nhanvien VALUES ('NV007','Nguyễn Minh Đức','0123456789','d123@gmail.com','112233445566','2023-02-05');
+INSERT INTO nhanvien VALUES ('NV008','1','1','1','1','2023-02-05');
 
 --
 -- Table structure for table `taikhoan`
@@ -209,7 +202,15 @@ DROP TABLE IF EXISTS taikhoan;
 DROP TABLE IF EXISTS taikhoan;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE qlnhan_vien (
+
+--
+-- Table structure for table `taikhoan`
+--
+
+DROP TABLE IF EXISTS taikhoan;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE taikhoan (
   STT int AUTO_INCREMENT,
   MaNhanVien varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `Password` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
@@ -223,14 +224,14 @@ CREATE TABLE qlnhan_vien (
 -- Dumping data for table `taikhoan`
 --
 
-INSERT INTO taikhoan VALUES ('NV001','MTIz','Quản lý');
-INSERT INTO taikhoan VALUES ('NV002','MTIz','Quản lý');
-INSERT INTO taikhoan VALUES ('NV003','MTIz','Nhân viên');
-INSERT INTO taikhoan VALUES ('NV004','MTIz','Nhân viên');
-INSERT INTO taikhoan VALUES ('NV005','MTIz','Nhân viên');
-INSERT INTO taikhoan VALUES ('NV006','MTIz','Nhân viên');
-INSERT INTO taikhoan VALUES ('NV007','MTIz','Nhân viên');
-INSERT INTO taikhoan VALUES ('NV008','MQ==','Nhân viên');
+INSERT INTO taikhoan VALUES (null,'NV001','MTIz','Quản lý');
+INSERT INTO taikhoan VALUES (null,'NV002','MTIz','Quản lý');
+INSERT INTO taikhoan VALUES (null,'NV003','MTIz','Nhân viên');
+INSERT INTO taikhoan VALUES (null,'NV004','MTIz','Nhân viên');
+INSERT INTO taikhoan VALUES (null,'NV005','MTIz','Nhân viên');
+INSERT INTO taikhoan VALUES (null,'NV006','MTIz','Nhân viên');
+INSERT INTO taikhoan VALUES (null,'NV007','MTIz','Nhân viên');
+INSERT INTO taikhoan VALUES (null,'NV008','MQ==','Nhân viên');
 --
 -- Table structure for table `thongke`
 --

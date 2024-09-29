@@ -30,41 +30,18 @@ public class NhanVienCtrl {
     //</editor-fold>
     public NhanVienCtrl(){}
     //<editor-fold defaultstate="collapsed" desc="Method">
-    public String encode(String pass){
-        String encode = Base64.getEncoder().encodeToString(pass.getBytes());
-        return encode;
-    }
-    public boolean DoiMatKhau(String tk,String mk,String mkMoi) throws SQLException{
-            if(dangNhap(tk, mk)!=-1){
-                ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE qlnhan_vien SET Password = ? where MaNhanVien = ?");
-                ps.setString(1, encode(mkMoi));
-                ps.setString(2, tk);
-                ps.executeUpdate();
-                ps.close();
-                return true;
-            } else {
-                return false;
-            }
-    }
     public ArrayList<NhanVien> createArr() throws SQLException{
         arr = new ArrayList<>();
-        ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT * FROM qlnhan_vien WHERE NOT MaNhanVien = 'admin'");
+        ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT * FROM nhanvien");
         rs = ps.executeQuery();
         while(rs.next()){
            NhanVien tmp = new NhanVien();
-           
            tmp.setMaNhanVien(rs.getString("MaNhanVien"));
            tmp.setTenNhanVien(rs.getString("TenNhanVien"));
-           tmp.setPassword(rs.getString("Password"));
            tmp.setPhone(rs.getString("Phone"));
            tmp.setEmail(rs.getString("Email"));
            tmp.setCMND(rs.getString("CMND"));
            tmp.setNgayLamViec(rs.getDate("NgayLamViec"));
-           tmp.setCaLamViec(rs.getString("CaLamViec"));
-           tmp.setLuongCoBan(rs.getString("LuongCoBan"));
-           tmp.setHeSoLuong(rs.getString("HeSoLuong"));
-           tmp.setTienLuong(rs.getString("TienLuong"));
-           tmp.setPhanQuyen(rs.getInt("PhanQuyen"));
            
            arr.add(tmp);
         }
@@ -74,13 +51,12 @@ public class NhanVienCtrl {
     public ArrayList<NhanVien> searchArr(String s) throws SQLException{
         
         arr = new ArrayList<>();
-        String sql = "SELECT * FROM qlnhan_vien WHERE NOT MaNhanVien = 'admin'"
+        String sql = "SELECT * FROM nhanvien"
                 + " and (MaNhanVien like '%"+s+"%'"
                 + " or TenNhanVien like '%"+s+"%'"
                 + " or Phone like '%"+s+"%'"
                 + " or Email like '%"+s+"%'"
                 + " or CMND like '%"+s+"%'"
-                + " or PhanQuyen like '%"+s+"%'"
                 + " or NgayLamViec like '%"+s+"%')";
         ps = connectDatabase.TaoKetNoi().prepareStatement(sql);
         rs = ps.executeQuery();
@@ -88,59 +64,30 @@ public class NhanVienCtrl {
            NhanVien tmp = new NhanVien();
            tmp.setMaNhanVien(rs.getString("MaNhanVien"));
            tmp.setTenNhanVien(rs.getString("TenNhanVien"));
-           tmp.setPassword(rs.getString("Password"));
            tmp.setPhone(rs.getString("Phone"));
            tmp.setEmail(rs.getString("Email"));
            tmp.setCMND(rs.getString("CMND"));
            tmp.setNgayLamViec(rs.getDate("NgayLamViec"));
-           tmp.setCaLamViec(rs.getString("CaLamViec"));
-           tmp.setLuongCoBan(rs.getString("LuongCoBan"));
-           tmp.setHeSoLuong(rs.getString("HeSoLuong"));
-           tmp.setTienLuong(rs.getString("TienLuong"));
-           tmp.setPhanQuyen(rs.getInt("PhanQuyen"));
            arr.add(tmp);
         }
         ps.close();
         return arr;
     }
-    public int dangNhap(String taiKhoan, String pass) throws SQLException {
-        int kt = -1;
-        try {
-            ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT PhanQuyen FROM qlnhan_vien where MaNhanVien = ? and Password=?");
-            ps.setString(1, taiKhoan);
-            ps.setString(2, encode(pass));
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                kt = rs.getInt("PhanQuyen");
-                ps.close();
-            }
-        } catch (SQLException e) {
-            kt = -1;
-        }
-        return kt;
-
-    }
 
     public String InsertNhanVien(NhanVien nv) throws ClassNotFoundException {
-        String sql = "INSERT INTO qlnhan_vien VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO nhanvien VALUES(?,?,?,?,?,?)";
         try {
             if(checkcmnd(nv.getCMND(),nv.getMaNhanVien())) return "Căn cước công dân này đã tồn tại trong hệ thống! Vui lòng nhập lại hoặc xóa bản ghi trước đó.";
             if(checkmail1(nv.getEmail(),nv.getMaNhanVien())) return "Email đã tồn tại trong hệ thống! Vui lòng nhập lại hoặc xóa bản ghi trước đó.";
             ps = connectDatabase.TaoKetNoi().prepareStatement(sql);
             ps.setString(1, nv.getMaNhanVien());
             ps.setString(2, nv.getTenNhanVien());
-            ps.setString(3, encode(nv.getPassword()));
-            ps.setString(4, nv.getPhone());
-            ps.setString(5, nv.getEmail());
-            ps.setString(6, nv.getCMND());
+            ps.setString(3, nv.getPhone());
+            ps.setString(4, nv.getEmail());
+            ps.setString(5, nv.getCMND());
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 String strDate = dateFormat.format(nv.getNgayLamViec());
-            ps.setString(7, strDate);
-            ps.setString(8, nv.getCaLamViec());
-            ps.setString(9, nv.getLuongCoBan());
-            ps.setString(10, nv.getHeSoLuong());
-            ps.setString(11, nv.getTienLuong());
-            ps.setInt(12, nv.getPhanQuyen());
+            ps.setString(6, strDate);
             ps.execute();
             ps.close();
             return "Ðã thêm thành công!";
@@ -154,21 +101,15 @@ public class NhanVienCtrl {
         try {
             if(checkcmnd(nv.getCMND(),nv.getMaNhanVien())) return "Căn cước công dân này đã tồn tại trong hệ thống! Vui lòng nhập lại hoặc xóa bản ghi trước đó.";
             if(checkmail1(nv.getEmail(),nv.getMaNhanVien())) return "Email đã tồn tại trong hệ thống! Vui lòng nhập lại hoặc xóa bản ghi trước đó.";
-            ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE qlnhan_vien SET TenNhanVien = ?,"
-                    + "Password=? ,Phone=?,Email=?,CMND=?,NgayLamViec=?,CaLamViec=?,LuongCoBan=?,HeSoLuong=?,TienLuong=?,PhanQuyen=? where MaNhanVien = ?");
+            ps = connectDatabase.TaoKetNoi().prepareStatement("UPDATE nhanvien SET TenNhanVien = ?,"
+                    + "Phone=?,Email=?,CMND=?,NgayLamViec=? where MaNhanVien = ?");
             ps.setString(1, nv.getTenNhanVien());
-            ps.setString(2, encode(nv.getPassword()));
             ps.setString(3, nv.getPhone());
             ps.setString(4, nv.getEmail());
             ps.setString(5, nv.getCMND());
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 String strDate = dateFormat.format(nv.getNgayLamViec());
             ps.setString(6, strDate);
-            ps.setString(7, nv.getCaLamViec());
-            ps.setString(8, nv.getLuongCoBan());
-            ps.setString(9, nv.getHeSoLuong());
-            ps.setString(10, nv.getTienLuong());
-            ps.setInt(11, nv.getPhanQuyen());
             ps.setString(12, nv.getMaNhanVien());
             ps.executeUpdate();
             ps.close();
@@ -181,7 +122,7 @@ public class NhanVienCtrl {
 
     public String DeleteKhachHang(String MaNhanVien) {
         try {
-            ps = connectDatabase.TaoKetNoi().prepareStatement("DELETE FROM QlNhan_Vien WHERE MaNhanVien = ?");
+            ps = connectDatabase.TaoKetNoi().prepareStatement("DELETE FROM nhanvien WHERE MaNhanVien = ?");
             ps.setString(1, MaNhanVien);
             ps.executeUpdate();
             ps.close();
@@ -195,7 +136,7 @@ public class NhanVienCtrl {
         Connection conn;
         Statement stmt;
         conn = connectDatabase.TaoKetNoi();
-        String sql = "SELECT MaNhanVien FROM qlnhan_vien order by MaNhanVien Desc";
+        String sql = "SELECT MaNhanVien FROM nhanvien order by MaNhanVien Desc";
         stmt = conn.createStatement();
         String manv;
         rs = stmt.executeQuery(sql);

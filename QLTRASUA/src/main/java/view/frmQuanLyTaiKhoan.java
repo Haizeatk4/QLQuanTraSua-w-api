@@ -5,12 +5,15 @@
 package view;
 
 import Model.TaiKhoan;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Base64;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -21,8 +24,15 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
     boolean isSelected = false;
     int item_id,mode=0;
     private ArrayList<TaiKhoan> arr = new ArrayList();
+    private DefaultTableModel model;
     public frmQuanLyTaiKhoan() {
         initComponents();
+        this.model = (DefaultTableModel) td.getModel();
+        btn_add.addActionListener(this);
+        btn_edit.addActionListener(this);
+        btn_del.addActionListener(this);
+        btn_search.addActionListener(this);
+        btn_save.addActionListener(this);
         //<editor-fold defaultstate="collapsed" desc="Event">
         final ListSelectionModel sel = td.getSelectionModel();
         sel.addListSelectionListener((ListSelectionEvent e) -> {
@@ -59,10 +69,12 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
         cb_phanquyen = new javax.swing.JComboBox<>();
         btn_save = new javax.swing.JButton();
         btn_del = new javax.swing.JButton();
+        btn_clear = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu3 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Quản lý tài khoản");
 
         td.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -85,24 +97,37 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
             td.getColumnModel().getColumn(0).setMaxWidth(50);
         }
 
+        btn_search.setBackground(new java.awt.Color(255, 255, 254));
         btn_search.setText("Tìm kiếm");
 
-        btn_add.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/Button/add_icon.png"))); // NOI18N
+        btn_add.setBackground(new java.awt.Color(255, 255, 254));
+        btn_add.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button/add_icon.png"))); // NOI18N
         btn_add.setText("Thêm");
 
-        btn_edit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/Button/edit_icon.png"))); // NOI18N
+        btn_edit.setBackground(new java.awt.Color(255, 255, 254));
+        btn_edit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button/edit_icon.png"))); // NOI18N
         btn_edit.setText("Sửa");
+        btn_edit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_editActionPerformed(evt);
+            }
+        });
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        txt_pass.setBackground(new java.awt.Color(255, 255, 252));
 
         jLabel2.setText("Phân quyền");
 
         jLabel3.setText("Mật khẩu");
 
+        cb_phanquyen.setBackground(new java.awt.Color(255, 255, 254));
         cb_phanquyen.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nhân viên", "Quản lý" }));
 
-        btn_save.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/Button/save_icon.png"))); // NOI18N
+        btn_save.setBackground(new java.awt.Color(255, 255, 254));
+        btn_save.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button/save_icon.png"))); // NOI18N
         btn_save.setText("Lưu");
+        btn_save.setEnabled(false);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -111,11 +136,11 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btn_save, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txt_pass)
-                    .addComponent(cb_phanquyen, javax.swing.GroupLayout.Alignment.TRAILING, 0, 142, Short.MAX_VALUE)
+                    .addComponent(btn_save, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cb_phanquyen, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txt_pass, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3)
                             .addComponent(jLabel2))
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -137,9 +162,21 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        btn_del.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/Button/delete_icon.png"))); // NOI18N
+        btn_del.setBackground(new java.awt.Color(255, 255, 254));
+        btn_del.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button/delete_icon.png"))); // NOI18N
         btn_del.setText("Xóa");
 
+        btn_clear.setBackground(new java.awt.Color(255, 255, 254));
+        btn_clear.setText("Làm mới");
+        btn_clear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_clearActionPerformed(evt);
+            }
+        });
+
+        jMenuBar1.setBackground(new java.awt.Color(204, 204, 204));
+
+        jMenu3.setBackground(new java.awt.Color(255, 255, 254));
         jMenu3.setText("jMenu3");
         jMenuBar1.add(jMenu3);
 
@@ -149,21 +186,25 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btn_search, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_search, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txt_search))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btn_add, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btn_edit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btn_del, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btn_edit, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btn_add, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btn_del, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 699, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btn_clear)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 699, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -173,23 +214,37 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_search))
-                .addGap(5, 5, 5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btn_add)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btn_edit)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_del))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(btn_del)
+                        .addGap(0, 57, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_clear)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btn_editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_editActionPerformed
+        editMode();
+    }//GEN-LAST:event_btn_editActionPerformed
+
+    private void btn_clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_clearActionPerformed
+        clearMode();
+    }//GEN-LAST:event_btn_clearActionPerformed
     //<editor-fold defaultstate="collapsed" desc="Method">
+    public int getItem_id() {
+        return item_id;
+    }
     public String decode(String pass){
         return new String(Base64.getDecoder().decode(pass));
     }
@@ -200,6 +255,93 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
     public void setText(){
         txt_pass.setText(decode(arr.get(item_id).getPassword()));
         cb_phanquyen.setSelectedItem(arr.get(item_id).getPhanQuyen());
+    }
+    public void clearText(){
+        txt_pass.setText("");
+        cb_phanquyen.setSelectedIndex(0);
+    }
+    public void clearMode(){
+        clearText();
+        mode = 0;
+        btn_edit.setBackground(Color.WHITE);
+        enableInput(true);
+        td.setEnabled(true);
+        btn_add.setEnabled(true);
+        btn_edit.setEnabled(false);
+        btn_del.setEnabled(false);
+        td.clearSelection();
+    }
+    public void loadTable(ArrayList<TaiKhoan> arr){
+        int rc = getModel().getRowCount();
+        for(int i=0;i<rc;i++){
+            getModel().removeRow(0);
+        }
+        Object r[] = new Object[5];
+        for(int i=0;i<arr.size();i++){
+            r[0] = i+1;
+            r[1] = arr.get(i).getMaNV();
+            r[2] = arr.get(i).getHoTen();
+            r[3] = arr.get(i).getPassword();
+            r[4] = arr.get(i).getPhanQuyen();
+            getModel().addRow(r);
+        }
+        this.arr = arr;
+        clearMode();
+    }
+    public boolean editMode(){
+        if(mode == 1){
+            mode = 0;
+            btn_del.setEnabled(true);
+            td.setEnabled(true);
+            enableInput(false);
+            btn_save.setEnabled(false);
+            return true;
+        } else {
+            mode = 1;
+            btn_del.setEnabled(false);
+            td.setEnabled(false);
+            btn_save.setEnabled(true);
+            enableInput(true);
+            return false;
+        }
+    }
+    public boolean checkBlank(){
+        if(txt_pass.getText().trim().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!", "Thông báo", 1);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public TaiKhoan getInfo(){
+        if(checkBlank()){
+            return null;
+        } else {
+            String a = arr.get(item_id).getHoTen();
+            String b = arr.get(item_id).getHoTen();
+            String c = arr.get(item_id).getHoTen();
+            String d = arr.get(item_id).getHoTen();
+            TaiKhoan nv = new TaiKhoan(a,b,c,d);
+            return nv;
+        }
+    }
+    public String getSearch(){
+        String s = txt_search.getText().trim().replace(" ", "_");
+        return s;
+    }
+    //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Event2">
+    public void addListener (ActionListener log){
+        btn_add.addActionListener(log);
+    }
+    public void delListener (ActionListener log){
+        btn_del.addActionListener(log);
+    }
+    public void searchListener (ActionListener log){
+        btn_search.addActionListener(log);
+    }
+    public void saveListener (ActionListener log) {
+        btn_save.addActionListener(log);
     }
     //</editor-fold>
     public static void main(String args[]) {
@@ -212,6 +354,7 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_add;
+    private javax.swing.JButton btn_clear;
     private javax.swing.JButton btn_del;
     private javax.swing.JButton btn_edit;
     private javax.swing.JButton btn_save;
@@ -230,6 +373,19 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
+     * @return the model
+     */
+    public DefaultTableModel getModel() {
+        return model;
+    }
+
+    /**
+     * @param model the model to set
+     */
+    public void setModel(DefaultTableModel model) {
+        this.model = model;
     }
 }

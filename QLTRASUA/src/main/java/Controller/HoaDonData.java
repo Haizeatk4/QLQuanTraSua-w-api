@@ -152,7 +152,7 @@ public class HoaDonData {
                 CloseableHttpClient client = HttpClients.createDefault();
                 HttpPost httpG = new HttpPost("http://localhost:4567/hoa_don/them");
                 ArrayList<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair("MaNV", NhanVienData.user));
+                params.add(new BasicNameValuePair("MaNV", TaiKhoanData.user));
                 params.add(new BasicNameValuePair("MaBan", frm.getBan()));
                 httpG.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
                 CloseableHttpResponse response = client.execute(httpG);

@@ -9,6 +9,7 @@ import API.QL_HoaDon_API;
 import API.QL_Menu_API;
 import API.QL_NguyenLieu_API;
 import API.QL_NhanVien_API;
+import API.QL_TaiKhoan_API;
 import API.ThongKe_API;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,6 +30,7 @@ public class Mavenproject1 {
         QL_HoaDon_API qlhd = new QL_HoaDon_API();
         QL_Menu_API qlmn = new QL_Menu_API();
         ChiTietHoaDon_API cthd = new ChiTietHoaDon_API();
+        QL_TaiKhoan_API qltk = new QL_TaiKhoan_API();
     }
 }
 

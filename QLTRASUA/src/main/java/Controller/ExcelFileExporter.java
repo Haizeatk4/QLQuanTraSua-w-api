@@ -95,22 +95,6 @@ public class ExcelFileExporter {
         cell = row.createCell(5);
         cell.setCellValue(nv.getNgayLamViec());
         cell.setCellStyle(cellStyle);
-
-        cell = row.createCell(6);
-        cell.setCellValue(nv.getCaLamViec());
-        cell.setCellStyle(cellStyle);
-        
-        cell = row.createCell(7);
-        cell.setCellValue(nv.getLuongCoBan());
-        cell.setCellStyle(cellStyle);
-
-        cell = row.createCell(8);
-        cell.setCellValue(nv.getHeSoLuong());
-        cell.setCellStyle(cellStyle);
-
-        cell = row.createCell(9);
-        cell.setCellValue(nv.getTienLuong());
-        cell.setCellStyle(cellStyle);
     }
     //<editor-fold defaultstate="collapsed" desc="HoaDon">
     public void exportHoaDonExcelFile(ArrayList<QLHoaDon> hd, String[] headers, String fileName) {

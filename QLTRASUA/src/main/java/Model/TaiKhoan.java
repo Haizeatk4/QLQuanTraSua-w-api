@@ -9,7 +9,6 @@ package Model;
  * @author ad
  */
 public class TaiKhoan {
-    int STT;
     String MaNV;
     String HoTen;
     String Password;
@@ -18,22 +17,12 @@ public class TaiKhoan {
     public TaiKhoan() {
     }
 
-    public TaiKhoan(int STT, String MaNV, String HoTen, String Password, String PhanQuyen) {
-        this.STT = STT;
+    public TaiKhoan(String MaNV, String HoTen, String Password, String PhanQuyen) {
         this.MaNV = MaNV;
         this.HoTen = HoTen;
         this.Password = Password;
         this.PhanQuyen = PhanQuyen;
     }
-
-    public int getSTT() {
-        return STT;
-    }
-
-    public void setSTT(int STT) {
-        this.STT = STT;
-    }
-
     public String getMaNV() {
         return MaNV;
     }

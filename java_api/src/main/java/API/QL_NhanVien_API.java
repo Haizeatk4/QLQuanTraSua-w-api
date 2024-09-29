@@ -23,13 +23,6 @@ public class QL_NhanVien_API {
             rspns.type("application/json");
             return new Gson().toJson(nv.createArr());
         });
-        post("/nhan_vien/login", (rqst,rspns) -> {
-            NhanVienCtrl nv = new NhanVienCtrl();
-            String tk = rqst.queryParams("MaNhanVien");
-            String mk = rqst.queryParams("Password");
-            rspns.type("application/json");
-            return nv.dangNhap(tk, mk);
-        });
         post("/nhan_vien/search", (rqst,rspns) -> {
             NhanVienCtrl nv = new NhanVienCtrl();
             String s = rqst.queryParams("search");
@@ -39,11 +32,9 @@ public class QL_NhanVien_API {
         post("/nhan_vien/them", (rqst,rspns) -> {
             NhanVienCtrl nvCtrl = new NhanVienCtrl();
             NhanVien nv = new NhanVien();
-//            nv.setMaNhanVien(nvCtrl.taomaNhanVien());
             
             nv.setMaNhanVien(nvCtrl.taomaNhanVien());
             nv.setTenNhanVien(rqst.queryParams("TenNhanVien"));
-            nv.setPassword(rqst.queryParams("Password"));
             nv.setPhone(rqst.queryParams("Phone"));
             nv.setEmail(rqst.queryParams("Email"));
             nv.setCMND(rqst.queryParams("CMND"));
@@ -51,12 +42,6 @@ public class QL_NhanVien_API {
             String d = rqst.queryParams("NgayLamViec");
             Date date = Date.valueOf(d);
             nv.setNgayLamViec(date);
-            
-            nv.setCaLamViec(rqst.queryParams("CaLamViec"));
-            nv.setLuongCoBan(rqst.queryParams("LuongCoBan"));
-            nv.setHeSoLuong(rqst.queryParams("HeSoLuong"));
-            nv.setTienLuong(rqst.queryParams("TienLuong"));
-            nv.setPhanQuyen(Integer.parseInt(rqst.queryParams("PhanQuyen")));
             
             rspns.type("application/json");
             return nvCtrl.InsertNhanVien(nv);
@@ -71,7 +56,6 @@ public class QL_NhanVien_API {
             NhanVien nv = new NhanVien();
             nv.setMaNhanVien(rqst.queryParams("MaNhanVien"));
             nv.setTenNhanVien(rqst.queryParams("TenNhanVien"));
-            nv.setPassword(rqst.queryParams("Password"));
             nv.setPhone(rqst.queryParams("Phone"));
             nv.setEmail(rqst.queryParams("Email"));
             nv.setCMND(rqst.queryParams("CMND"));
@@ -80,23 +64,8 @@ public class QL_NhanVien_API {
             Date date = Date.valueOf(d);
             nv.setNgayLamViec(date);
             
-            nv.setCaLamViec(rqst.queryParams("CaLamViec"));
-            nv.setLuongCoBan(rqst.queryParams("LuongCoBan"));
-            nv.setHeSoLuong(rqst.queryParams("HeSoLuong"));
-            nv.setTienLuong(rqst.queryParams("TienLuong"));
-            nv.setPhanQuyen(Integer.parseInt(rqst.queryParams("PhanQuyen")));
-            
             rspns.type("application/json");
             return nvCtrl.UpdateNhanVien(nv);
-        });
-        post("/nhan_vien/doi_mat_khau", (rqst,rspns) -> {
-            NhanVienCtrl nvCtrl = new NhanVienCtrl();
-            String tk = rqst.queryParams("MaNhanVien");
-            String mk = rqst.queryParams("Password");
-            String newPass = rqst.queryParams("NewPassword");
-            
-            rspns.type("application/json");
-            return nvCtrl.DoiMatKhau(tk,mk,newPass);
         });
     }
 }
