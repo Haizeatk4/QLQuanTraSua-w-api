@@ -10,7 +10,6 @@ Controller\HoaDonData$EditListener.class
 Controller\MenuData$3.class
 Controller\NguyenLieuData$EditListener.class
 frmView\frmQuanLyHoaDon$1.class
-frmView\frmQuanLyNV$1.class
 view\frmQuanLyTaiKhoan$4.class
 frmView\frmDoiMK$1.class
 view\frmQuanLyTaiKhoan$1.class
@@ -18,7 +17,6 @@ Controller\ChiTietHoaDonData$1.class
 Controller\TaiKhoanData$SearchListener.class
 Controller\ThongKeData.class
 Controller\NguyenLieuData$SearchListener.class
-frmView\frmQuanLyNV.class
 Controller\ChiTietHoaDonData.class
 Model\QLHoaDon.class
 Model\QLNhanVien.class
