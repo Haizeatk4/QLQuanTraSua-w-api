@@ -14,12 +14,12 @@ import frmView.frmDoiMK;
 import frmView.frmHome;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
@@ -44,7 +44,6 @@ public class TaiKhoanData {
     frmQuanLyTaiKhoan frmQL;
     frmDangNhap frm_login;
     frmDoiMK frm_doiMK;
-    frmChonNhanVien frm_chon;
     private ArrayList<TaiKhoan> arr = new ArrayList();
     private ArrayList<QLNhanVien> arr_nv = new ArrayList();
     private TaiKhoan tk;
@@ -65,12 +64,6 @@ public class TaiKhoanData {
             frmQL.saveListener(new EditListener());
             frmQL.searchListener(new SearchListener());
             frmQL.setVisible(true);
-        } else if(l.equals("Chọn nv")){
-            this.frm_chon = new frmChonNhanVien();
-            nhanVienKhongTK();
-            frm_chon.loadTable(arr_nv);
-            frm_chon.addListener(new ChoseListener());
-            frm_chon.setVisible(true);
         } else {
             this.frm_doiMK = new frmDoiMK();
             frm_doiMK.confirmListener(new ConfirmListener());
@@ -121,9 +114,17 @@ public class TaiKhoanData {
             }
         }
     }
-    class SearchListener implements ActionListener {
+    class SearchListener implements KeyListener {
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void keyTyped(KeyEvent e) {
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
             try {
                 CloseableHttpClient client = HttpClients.createDefault();
                 HttpPost httpG = new HttpPost("http://localhost:4567/tai_khoan/search");
@@ -162,7 +163,7 @@ public class TaiKhoanData {
                     HttpEntity entity = response.getEntity();
                     String kq = EntityUtils.toString(entity, Charset.defaultCharset());
                     phanQuyen=kq;
-                    if(kq!=null){
+                    if(kq.equals("Quản lý")||kq.equals("Nhân viên")){
                         JOptionPane.showMessageDialog(null, "Đăng nhập thành công", "Thông báo", 1);
                         frmHome home = new frmHome();
                         home.setVisible(true);
@@ -204,47 +205,6 @@ public class TaiKhoanData {
                 } catch (IOException | ParseException ex) {
                     JOptionPane.showMessageDialog(null, ex, "Thông báo", 1);
                 }
-            }
-        }
-    }
-    //</editor-fold>
-    //<editor-fold defaultstate="collapsed" desc="Event of Chọn">
-    private void nhanVienKhongTK() throws IOException, ParseException{
-        CloseableHttpClient client = HttpClients.createDefault();
-        HttpGet httpG = new HttpGet("http://localhost:4567/nhan_vien/chua_tai_khoan");
-        CloseableHttpResponse response = client.execute(httpG);
-        HttpEntity entity = response.getEntity();
-        String responseString = EntityUtils.toString(entity, Charset.defaultCharset());
-        Gson gson = new Gson();
-        Type type = new TypeToken<ArrayList<QLNhanVien>>(){}.getType();
-        arr_nv = gson.fromJson(responseString, type);
-    }
-    class ChoseListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            try {
-                QLNhanVien nv = new QLNhanVien();
-                nv.setMaNhanVien(frm_chon.getMa());
-                if(nv != null){
-                    CloseableHttpClient client = HttpClients.createDefault();
-                    HttpPost httpP = new HttpPost("http://localhost:4567/tai_khoan/them");
-                    ArrayList<NameValuePair> params = new ArrayList<>();
-                    
-                    params.add(new BasicNameValuePair("MaNhanVien", nv.getMaNhanVien()));
-                    httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
-                    CloseableHttpResponse response = client.execute(httpP);
-                    if(response.toString().contains("200")){
-                        HttpEntity entity = response.getEntity();
-                        String r = EntityUtils.toString(entity, Charset.defaultCharset());
-                        JOptionPane.showMessageDialog(null, r, "Thông báo", 1);
-                    } else {
-                        JOptionPane.showMessageDialog(null, response.toString(), "Thông báo", 1);
-                    }
-                    TaiKhoanData frm = new TaiKhoanData("qlnv");
-                    frm_chon.dispose();
-                }
-            } catch (IOException | ParseException ex) {
-                JOptionPane.showMessageDialog(null, ex, "Thông báo", 1);
             }
         }
     }

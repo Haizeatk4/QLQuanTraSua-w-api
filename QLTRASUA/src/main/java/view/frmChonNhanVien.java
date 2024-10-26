@@ -4,19 +4,28 @@
  */
 package view;
 
+import Controller.TaiKhoanData;
 import Model.QLNhanVien;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
+import org.apache.hc.core5.http.ParseException;
 
 /**
  *
  * @author ADMIN
  */
-public class frmChonNhanVien extends javax.swing.JFrame implements ActionListener {
+public class frmChonNhanVien extends javax.swing.JFrame implements ActionListener, KeyListener {
 
     /**
      * Creates new form frmChonNhanVien
@@ -37,6 +46,16 @@ public class frmChonNhanVien extends javax.swing.JFrame implements ActionListene
                     isSelected=true;
                 } else {
                     isSelected=false;
+                }
+            }
+        });
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    TaiKhoanData home = new TaiKhoanData("qlnv");
+                } catch (IOException | ParseException ex) {
+                    Logger.getLogger(frmChonNhanVien.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -70,8 +89,6 @@ public class frmChonNhanVien extends javax.swing.JFrame implements ActionListene
     private void initComponents() {
 
         jPanel2 = new javax.swing.JPanel();
-        btn_search = new javax.swing.JButton();
-        txt_search = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         td = new javax.swing.JTable();
         btn_cancel = new javax.swing.JButton();
@@ -82,9 +99,6 @@ public class frmChonNhanVien extends javax.swing.JFrame implements ActionListene
         setResizable(false);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        btn_search.setBackground(new java.awt.Color(255, 255, 254));
-        btn_search.setText("Tìm kiếm");
 
         td.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -113,23 +127,14 @@ public class frmChonNhanVien extends javax.swing.JFrame implements ActionListene
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(btn_search, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txt_search)))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 750, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_search)
-                    .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -188,12 +193,10 @@ public class frmChonNhanVien extends javax.swing.JFrame implements ActionListene
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_add;
     private javax.swing.JButton btn_cancel;
-    private javax.swing.JButton btn_search;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable td;
-    private javax.swing.JTextField txt_search;
     // End of variables declaration//GEN-END:variables
     
     @Override
@@ -212,5 +215,17 @@ public class frmChonNhanVien extends javax.swing.JFrame implements ActionListene
      */
     public void setModel(DefaultTableModel model) {
         this.model = model;
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
     }
 }

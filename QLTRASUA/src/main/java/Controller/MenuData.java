@@ -11,6 +11,8 @@ import com.google.gson.reflect.TypeToken;
 import frmView.frmQuanLyDichVu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
@@ -27,6 +29,7 @@ import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
+import view.frmQLMenu;
 
 /**
  *
@@ -34,19 +37,18 @@ import org.apache.hc.core5.http.message.BasicNameValuePair;
  */
 public class MenuData {
     //<editor-fold defaultstate="collapsed" desc="Var">
-    private frmQuanLyDichVu frm;
+    private frmQLMenu frm;
     private ArrayList<QLMenu> arr = new ArrayList();
     private QLMenu mn;
     //</editor-fold>
     public MenuData() throws IOException, ParseException{
-        frm = new frmQuanLyDichVu();
+        frm = new frmQLMenu();
         createArr();
         frm.loadTable(arr);
         frm.addListener(new AddListener());
         frm.delListener(new DelListener());
-        frm.editListener(new EditListener());
+        frm.saveListener(new EditListener());
         frm.searchListener(new SearchListener());
-        frm.clearListener(new ClearListener());
         frm.setVisible(true);
     }
     public MenuData(String l){
@@ -169,9 +171,17 @@ public class MenuData {
             }
         }
     }
-    class SearchListener implements ActionListener {
+    class SearchListener implements KeyListener {
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void keyTyped(KeyEvent e) {
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
             try {
                 CloseableHttpClient client = HttpClients.createDefault();
                 HttpPost httpG = new HttpPost("http://localhost:4567/menu/search");
@@ -187,17 +197,6 @@ public class MenuData {
                 frm.loadTable(arr);
             } catch (JsonSyntaxException | IOException | ParseException ex) {
                 JOptionPane.showMessageDialog(null, ex, "Thông báo", 1);
-            }
-        }
-    }
-    class ClearListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            try {
-                frm.clearMode();
-                createArr();
-                frm.loadTable(arr);
-            } catch (IOException | ParseException ex) {
             }
         }
     }

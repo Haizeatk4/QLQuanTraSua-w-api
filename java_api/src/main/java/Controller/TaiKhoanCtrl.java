@@ -79,8 +79,8 @@ public class TaiKhoanCtrl {
     public ArrayList<TaiKhoan> searchArr(String s) throws SQLException{
         
         arr = new ArrayList<>();
-        String sql = "select TaiKhoan.MaNhanVien,TenNhanVien,'Password',PhanQuyen from nhanvien,taikhoan where taikhoan.MaNhanVien=nhanvien.MaNhanVien"
-                + " and (MaNhanVien like '%"+s+"%'"
+        String sql = "select TaiKhoan.MaNhanVien,TenNhanVien,Password,PhanQuyen from nhanvien,taikhoan where taikhoan.MaNhanVien=nhanvien.MaNhanVien"
+                + " and (TaiKhoan.MaNhanVien like '%"+s+"%'"
                 + " or TenNhanVien like '%"+s+"%'"
                 + " or PhanQuyen like '%"+s+"%')";
         ps = connectDatabase.TaoKetNoi().prepareStatement(sql);

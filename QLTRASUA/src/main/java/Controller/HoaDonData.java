@@ -43,7 +43,6 @@ public class HoaDonData {
         createArr();
         frm.loadTable(arr);
         frm.searchListener(new SearchListener());
-        frm.monthListener(new MonthListener());
         frm.newOrderListener(new NewOrderListener());
         frm.delListener(new DelListener());
         frm.editListener(new EditListener());
@@ -107,31 +106,6 @@ public class HoaDonData {
                 HttpPost httpG = new HttpPost("http://localhost:4567/hoa_don/search");
                 ArrayList<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair("search", frm.getSearch()));
-                httpG.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
-                CloseableHttpResponse response = client.execute(httpG);
-                HttpEntity entity = response.getEntity();
-                String responseString = EntityUtils.toString(entity, Charset.defaultCharset());
-                Gson gson = new Gson();
-                Type type = new TypeToken<ArrayList<QLHoaDon>>(){}.getType();
-                arr = gson.fromJson(responseString, type);
-                frm.loadTable(arr);
-            } catch (JsonSyntaxException | IOException | ParseException ex) {
-                JOptionPane.showMessageDialog(null, ex, "Thông báo", 1);
-            }
-        }
-    }
-    class MonthListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            try {
-                CloseableHttpClient client = HttpClients.createDefault();
-                HttpPost httpG = new HttpPost("http://localhost:4567/hoa_don/search");
-                ArrayList<NameValuePair> params = new ArrayList<>();
-                if(frm.getMonth().equals("Toàn bộ")){
-                    params.add(new BasicNameValuePair("search", ""));
-                } else {
-                    params.add(new BasicNameValuePair("search", frm.getMonth()));
-                }
                 httpG.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
                 CloseableHttpResponse response = client.execute(httpG);
                 HttpEntity entity = response.getEntity();

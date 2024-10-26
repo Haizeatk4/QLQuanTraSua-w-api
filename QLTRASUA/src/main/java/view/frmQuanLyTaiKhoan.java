@@ -4,12 +4,17 @@
  */
 package view;
 
+import Controller.NhanVienData;
 import Controller.TaiKhoanData;
 import Model.TaiKhoan;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.logging.Level;
@@ -24,7 +29,7 @@ import org.apache.hc.core5.http.ParseException;
  *
  * @author ad
  */
-public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListener {
+public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListener, KeyListener {
 
     boolean isSelected = false;
     int item_id,mode=0;
@@ -35,7 +40,7 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
         l_acc.setText("Tài khoản: "+TaiKhoanData.user);
         this.model = (DefaultTableModel) td.getModel();
         btn_del.addActionListener(this);
-        btn_search.addActionListener(this);
+        txt_search.addKeyListener(this);
         btn_save.addActionListener(this);
         btn_add.addActionListener(this);
         //<editor-fold defaultstate="collapsed" desc="Event">
@@ -67,7 +72,6 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
         jScrollPane1 = new javax.swing.JScrollPane();
         td = new javax.swing.JTable();
         txt_search = new javax.swing.JTextField();
-        btn_search = new javax.swing.JButton();
         btn_add = new javax.swing.JButton();
         btn_edit = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
@@ -78,6 +82,7 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
         btn_save = new javax.swing.JButton();
         btn_del = new javax.swing.JButton();
         btn_clear = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         m_hethong = new javax.swing.JMenu();
         mi_exit = new javax.swing.JMenuItem();
@@ -106,9 +111,6 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
         if (td.getColumnModel().getColumnCount() > 0) {
             td.getColumnModel().getColumn(0).setMaxWidth(50);
         }
-
-        btn_search.setBackground(new java.awt.Color(255, 255, 254));
-        btn_search.setText("Tìm kiếm");
 
         btn_add.setBackground(new java.awt.Color(255, 255, 254));
         btn_add.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button/add_icon.png"))); // NOI18N
@@ -189,6 +191,9 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel1.setText("Tìm kiếm:");
+
         jMenuBar1.setBackground(new java.awt.Color(204, 204, 204));
 
         m_hethong.setBackground(new java.awt.Color(255, 255, 254));
@@ -212,7 +217,7 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btn_search, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txt_search))
                     .addGroup(layout.createSequentialGroup()
@@ -235,7 +240,7 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_search))
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -246,7 +251,7 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btn_del)
-                        .addGap(0, 57, Short.MAX_VALUE))
+                        .addGap(0, 58, Short.MAX_VALUE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btn_clear)
@@ -262,9 +267,9 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
 
     private void btn_addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_addActionPerformed
         try {
-            TaiKhoanData frm_chon = new TaiKhoanData("Chọn nv");
+            NhanVienData frm_chon = new NhanVienData("Chọn nv");
             this.dispose();
-        } catch (IOException | ParseException ex) {
+        } catch (IOException | ParseException | SQLException | URISyntaxException ex) {
             Logger.getLogger(frmQuanLyTaiKhoan.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btn_addActionPerformed
@@ -368,8 +373,8 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
     public void delListener (ActionListener log){
         btn_del.addActionListener(log);
     }
-    public void searchListener (ActionListener log){
-        btn_search.addActionListener(log);
+    public void searchListener (KeyListener log){
+        txt_search.addKeyListener(log);
     }
     public void saveListener (ActionListener log) {
         btn_save.addActionListener(log);
@@ -389,8 +394,8 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
     private javax.swing.JButton btn_del;
     private javax.swing.JButton btn_edit;
     private javax.swing.JButton btn_save;
-    private javax.swing.JButton btn_search;
     private javax.swing.JComboBox<String> cb_phanquyen;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JMenuBar jMenuBar1;
@@ -420,5 +425,17 @@ public class frmQuanLyTaiKhoan extends javax.swing.JFrame implements ActionListe
      */
     public void setModel(DefaultTableModel model) {
         this.model = model;
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
     }
 }

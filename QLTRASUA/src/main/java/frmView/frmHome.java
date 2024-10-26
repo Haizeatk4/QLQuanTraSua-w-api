@@ -158,7 +158,7 @@ public class frmHome extends JFrame{
         });
         btn_qlnv.addActionListener(((e) -> {
             try {
-                NhanVienData frmQLNV = new NhanVienData();
+                NhanVienData frmQLNV = new NhanVienData("QL");
                 dispose();
             } catch (IOException | ParseException | SQLException | URISyntaxException  ex) {
                 Logger.getLogger(frmHome.class.getName()).log(Level.SEVERE, null, ex);

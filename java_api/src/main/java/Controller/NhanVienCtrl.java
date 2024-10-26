@@ -70,12 +70,12 @@ public class NhanVienCtrl {
         
         arr = new ArrayList<>();
         String sql = "SELECT * FROM nhanvien"
-                + " and (MaNhanVien like '%"+s+"%'"
+                + " where MaNhanVien like '%"+s+"%'"
                 + " or TenNhanVien like '%"+s+"%'"
                 + " or Phone like '%"+s+"%'"
                 + " or Email like '%"+s+"%'"
                 + " or CMND like '%"+s+"%'"
-                + " or NgayLamViec like '%"+s+"%')";
+                + " or NgayLamViec like '%"+s+"%'";
         ps = connectDatabase.TaoKetNoi().prepareStatement(sql);
         rs = ps.executeQuery();
         while(rs.next()){

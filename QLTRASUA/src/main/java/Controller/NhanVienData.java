@@ -11,6 +11,8 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -29,6 +31,7 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import java.lang.reflect.Type;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
+import view.frmChonNhanVien;
 import view.frmQLNhanVien;
 
 /**
@@ -41,16 +44,25 @@ public class NhanVienData {
     frmQLNhanVien frm;
     private ArrayList<QLNhanVien> arr = new ArrayList();
     private QLNhanVien nv;
+    frmChonNhanVien frm_chon;
     //</editor-fold>
-    public NhanVienData() throws SQLException, IOException, ParseException, URISyntaxException {
-        frm = new frmQLNhanVien();
-        createArr();
-        frm.loadTable(arr);
-        frm.addListener(new AddListener());
-        frm.delListener(new DelListener());
-        frm.saveListener(new SaveListener());
-        frm.searchListener(new SearchListener());
-        frm.setVisible(true);
+    public NhanVienData(String l) throws SQLException, IOException, ParseException, URISyntaxException {
+        if(l.equals("QL")){
+            frm = new frmQLNhanVien();
+            createArr();
+            frm.loadTable(arr);
+            frm.addListener(new AddListener());
+            frm.delListener(new DelListener());
+            frm.saveListener(new SaveListener());
+            frm.searchListener(new SearchListener());
+            frm.setVisible(true); 
+        } else if(l.equals("Chọn nv")){
+            this.frm_chon = new frmChonNhanVien();
+            nhanVienKhongTK();
+            frm_chon.loadTable(arr);
+            frm_chon.addListener(new ChoseListener());
+            frm_chon.setVisible(true);
+        }
     }
     //<editor-fold defaultstate="collapsed" desc="Event of QLNV">
     class AddListener implements ActionListener {
@@ -126,9 +138,17 @@ public class NhanVienData {
             }
         }
     }
-    class SearchListener implements ActionListener {
+    class SearchListener implements KeyListener {
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void keyTyped(KeyEvent e) {
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
             try {
                 CloseableHttpClient client = HttpClients.createDefault();
                 HttpPost httpG = new HttpPost("http://localhost:4567/nhan_vien/search");
@@ -143,6 +163,47 @@ public class NhanVienData {
                 arr = gson.fromJson(responseString, type);
                 frm.loadTable(arr);
             } catch (JsonSyntaxException | IOException | ParseException ex) {
+                JOptionPane.showMessageDialog(null, ex, "Thông báo", 1);
+            }
+        }
+    }
+    //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Event of Chọn">
+    private void nhanVienKhongTK() throws IOException, ParseException{
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpGet httpG = new HttpGet("http://localhost:4567/nhan_vien/chua_tai_khoan");
+        CloseableHttpResponse response = client.execute(httpG);
+        HttpEntity entity = response.getEntity();
+        String responseString = EntityUtils.toString(entity, Charset.defaultCharset());
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<QLNhanVien>>(){}.getType();
+        arr = gson.fromJson(responseString, type);
+    }
+    class ChoseListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                QLNhanVien nv = new QLNhanVien();
+                nv.setMaNhanVien(frm_chon.getMa());
+                if(nv != null){
+                    CloseableHttpClient client = HttpClients.createDefault();
+                    HttpPost httpP = new HttpPost("http://localhost:4567/tai_khoan/them");
+                    ArrayList<NameValuePair> params = new ArrayList<>();
+                    
+                    params.add(new BasicNameValuePair("MaNhanVien", nv.getMaNhanVien()));
+                    httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
+                    CloseableHttpResponse response = client.execute(httpP);
+                    if(response.toString().contains("200")){
+                        HttpEntity entity = response.getEntity();
+                        String r = EntityUtils.toString(entity, Charset.defaultCharset());
+                        JOptionPane.showMessageDialog(null, r, "Thông báo", 1);
+                    } else {
+                        JOptionPane.showMessageDialog(null, response.toString(), "Thông báo", 1);
+                    }
+                    TaiKhoanData frm = new TaiKhoanData("qlnv");
+                    frm_chon.dispose();
+                }
+            } catch (IOException | ParseException ex) {
                 JOptionPane.showMessageDialog(null, ex, "Thông báo", 1);
             }
         }

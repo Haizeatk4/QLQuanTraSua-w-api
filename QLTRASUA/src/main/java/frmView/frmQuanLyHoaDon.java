@@ -80,7 +80,6 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
     JMenuItem mi_exit = new JMenuItem("Thoát");
     JLabel l_preAcc = new JLabel("Tài khoản: ");
     JLabel l_acc = new JLabel();
-    JComboBox<String> cb_month = new JComboBox<>();
     //</editor-fold>
     public frmQuanLyHoaDon() {
         this.setSize(1200,800);
@@ -160,10 +159,6 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
         //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="Panel Mid">
         p3.setLayout(new BorderLayout());
-        
-        cb_month.setModel(new javax.swing.DefaultComboBoxModel(get12Thang()));
-        p3.add(cb_month,BorderLayout.NORTH);
-        cb_month.addActionListener(this);
         
         model.addColumn("Mã hóa đơn");
         model.addColumn("Tên nhân viên");
@@ -251,14 +246,8 @@ public class frmQuanLyHoaDon extends JFrame implements ActionListener{
     public void delListener (ActionListener log){
         btn_del.addActionListener(log);
     }
-    public void monthListener (ActionListener log){
-        cb_month.addActionListener(log);
-    }
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Method">
-    public String getMonth(){
-        return cb_month.getSelectedItem().toString();
-    }
     public Object[] get12Thang(){
         LocalDate date = LocalDate.now();
         ArrayList<String> dates = new ArrayList<>();

@@ -11,6 +11,8 @@ import frmView.frmHome;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -29,7 +31,7 @@ import org.apache.hc.core5.http.ParseException;
  *
  * @author ad
  */
-public class frmQLNhanVien extends javax.swing.JFrame implements ActionListener {
+public class frmQLNhanVien extends javax.swing.JFrame implements ActionListener, KeyListener{
 
     /**
      * Creates new form frmQLNhanVien
@@ -45,7 +47,7 @@ public class frmQLNhanVien extends javax.swing.JFrame implements ActionListener 
         this.model = (DefaultTableModel) td.getModel();
         btn_add.addActionListener(this);
         btn_del.addActionListener(this);
-        btn_search.addActionListener(this);
+        txt_search.addKeyListener(this);
         btn_save.addActionListener(this);
         //<editor-fold defaultstate="collapsed" desc="Event">
         btn_excel.addActionListener((e) -> {
@@ -100,8 +102,8 @@ public class frmQLNhanVien extends javax.swing.JFrame implements ActionListener 
     public void delListener (ActionListener log){
         btn_del.addActionListener(log);
     }
-    public void searchListener (ActionListener log){
-        btn_search.addActionListener(log);
+    public void searchListener (KeyListener log){
+        txt_search.addKeyListener(log);
     }
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Method">
@@ -234,10 +236,10 @@ public class frmQLNhanVien extends javax.swing.JFrame implements ActionListener 
         txt_email = new javax.swing.JTextField();
         dc_workDate = new com.toedter.calendar.JDateChooser();
         jPanel2 = new javax.swing.JPanel();
-        btn_search = new javax.swing.JButton();
         txt_search = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         td = new javax.swing.JTable();
+        jLabel8 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         btn_add = new javax.swing.JButton();
         btn_edit = new javax.swing.JButton();
@@ -340,9 +342,6 @@ public class frmQLNhanVien extends javax.swing.JFrame implements ActionListener 
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        btn_search.setBackground(new java.awt.Color(255, 255, 254));
-        btn_search.setText("Tìm kiếm");
-
         td.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
@@ -369,6 +368,9 @@ public class frmQLNhanVien extends javax.swing.JFrame implements ActionListener 
             td.getColumnModel().getColumn(3).setPreferredWidth(150);
         }
 
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel8.setText("Tìm kiếm:");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -378,7 +380,7 @@ public class frmQLNhanVien extends javax.swing.JFrame implements ActionListener 
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1029, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(btn_search, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txt_search)))
                 .addContainerGap())
@@ -388,8 +390,8 @@ public class frmQLNhanVien extends javax.swing.JFrame implements ActionListener 
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_search)
-                    .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
                 .addContainerGap())
@@ -554,7 +556,6 @@ public class frmQLNhanVien extends javax.swing.JFrame implements ActionListener 
     private javax.swing.JButton btn_edit;
     private javax.swing.JButton btn_excel;
     private javax.swing.JButton btn_save;
-    private javax.swing.JButton btn_search;
     private com.toedter.calendar.JDateChooser dc_workDate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -563,6 +564,7 @@ public class frmQLNhanVien extends javax.swing.JFrame implements ActionListener 
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -597,5 +599,17 @@ public class frmQLNhanVien extends javax.swing.JFrame implements ActionListener 
      */
     public void setModel(DefaultTableModel model) {
         this.model = model;
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
     }
 }
