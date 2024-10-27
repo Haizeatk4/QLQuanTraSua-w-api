@@ -1,5 +1,6 @@
 frmView\frmThongKe$1.class
 Controller\NguyenLieuData$AddListener.class
+view\frmQLHoaDon$1.class
 Controller\NhanVienData.class
 Controller\NhanVienData$DelListener.class
 Controller\NhanVienData$ChoseListener.class
@@ -11,7 +12,6 @@ Controller\MenuData$3.class
 Controller\NguyenLieuData$EditListener.class
 frmView\frmQuanLyHoaDon$1.class
 view\frmQuanLyTaiKhoan$4.class
-view\frmQLMenu$5.class
 frmView\frmDoiMK$1.class
 view\frmQuanLyTaiKhoan$1.class
 Controller\ChiTietHoaDonData$1.class
@@ -28,6 +28,7 @@ view\frmQLNhanVien.class
 Controller\HoaDonData$DelListener.class
 Model\QLThongKe.class
 frmView\frmQuanLyDichVu$1.class
+view\frmQLHoaDon.class
 Controller\MenuData$1.class
 Model\QLNguyenLieu.class
 frmView\frmDangNhap.class
@@ -80,6 +81,7 @@ Controller\HoaDonData.class
 frmView\frmChiTietHoaDon$1.class
 Controller\NhanVienData$SearchListener.class
 frmView\frmDoiMK.class
+Controller\TaiKhoanData$EnterListener.class
 Controller\MenuData$DelListener.class
 view\frmQLNhanVien$6.class
 frmView\frmQuanLyDichVu.class
@@ -91,5 +93,6 @@ Controller\NhanVienData$2.class
 Controller\HoaDonData$NewOrderListener.class
 Controller\MenuData$SearchListener$1.class
 Controller\NhanVienData$SearchListener$1.class
+view\frmQLHoaDon$2.class
 view\frmQuanLyTaiKhoan$3.class
 Controller\ChiTietHoaDonData$AddListener.class

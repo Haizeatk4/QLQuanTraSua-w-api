@@ -11,6 +11,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +32,7 @@ import javax.swing.border.Border;
  *
  * @author ADMIN
  */
-public class frmDangNhap extends JFrame implements ActionListener {
+public class frmDangNhap extends JFrame implements ActionListener, KeyListener {
     //<editor-fold defaultstate="collapsed" desc="Var">
     JLabel tile = new JLabel("ĐĂNG NHẬP");
     JLabel l_pic = new JLabel();
@@ -102,6 +104,8 @@ public class frmDangNhap extends JFrame implements ActionListener {
         gbc.gridy = 4;
         p1.add(btn_login,gbc);
         btn_login.addActionListener(this);
+        txt_tk.addKeyListener(this);
+        txt_mk.addKeyListener(this);
         //</editor-fold>
         Border pad = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         p1.setBorder(pad);
@@ -128,7 +132,23 @@ public class frmDangNhap extends JFrame implements ActionListener {
     public void loginListener (ActionListener log){
         btn_login.addActionListener(log);
     }
+    public void enterListener (KeyListener log){
+        txt_tk.addKeyListener(log);
+        txt_mk.addKeyListener(log);
+    }
     @Override
     public void actionPerformed(ActionEvent e) {
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
     }
 }

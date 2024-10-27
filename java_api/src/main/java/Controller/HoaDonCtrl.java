@@ -34,7 +34,7 @@ public class HoaDonCtrl {
     }
     public ArrayList<HoaDon> createArr() throws SQLException{
         arr = new ArrayList<>();
-        ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT MaHD,TenNhanVien,Ngay,MaBan,ThanhTien,TinhTrang FROM hoadon,qlnhan_vien WHERE qlnhan_vien.MaNhanVien=hoadon.MaNhanVien");
+        ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT MaHD,TenNhanVien,Ngay,MaBan,ThanhTien,TinhTrang FROM hoadon,nhanvien WHERE nhanvien.MaNhanVien=hoadon.MaNhanVien");
         rs = ps.executeQuery();
         while(rs.next()){
            HoaDon tmp = new HoaDon();
@@ -54,7 +54,7 @@ public class HoaDonCtrl {
     public ArrayList<HoaDon> searchArr(String s) throws SQLException{
         
         arr = new ArrayList<>();
-        String sql = "SELECT MaHD,TenNhanVien,Ngay,MaBan,ThanhTien,TinhTrang FROM hoadon,qlnhan_vien WHERE qlnhan_vien.MaNhanVien=hoadon.MaNhanVien "
+        String sql = "SELECT MaHD,TenNhanVien,Ngay,MaBan,ThanhTien,TinhTrang FROM hoadon,nhanvien WHERE nhanvien.MaNhanVien=hoadon.MaNhanVien "
                 + "and (MaHD like '%"+s+"%'"
                 + " or TenNhanVien like '%"+s+"%'"
                 + " or Ngay like '%"+s+"%'"
@@ -121,8 +121,8 @@ public class HoaDonCtrl {
         ps.execute();
         
         ps = connectDatabase.TaoKetNoi().prepareStatement("SELECT MaHD,TenNhanVien,Ngay,MaBan,ThanhTien,TinhTrang "
-                + "FROM hoadon,qlnhan_vien "
-                + "WHERE qlnhan_vien.MaNhanVien=hoadon.MaNhanVien "
+                + "FROM hoadon,nhanvien "
+                + "WHERE nhanvien.MaNhanVien=hoadon.MaNhanVien "
                 + "AND MaHD='"+nl.getMaHD()+"'");
         rs = ps.executeQuery();
         HoaDon tmp = new HoaDon();
@@ -142,6 +142,9 @@ public class HoaDonCtrl {
     public String DeleteHoaDon(String MaHD) throws SQLException {
         try {
             ps = conn.prepareStatement("DELETE FROM hoadon WHERE MaHD = ?");
+            ps.setString(1, MaHD);
+            ps.executeUpdate();
+            ps = conn.prepareStatement("DELETE FROM chitiethoadon WHERE MaHD = ?");
             ps.setString(1, MaHD);
             ps.executeUpdate();
             ps.close();

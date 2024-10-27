@@ -11,6 +11,8 @@ import com.google.gson.reflect.TypeToken;
 import frmView.frmQuanLyHoaDon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
@@ -27,6 +29,7 @@ import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
+import view.frmQLHoaDon;
 
 /**
  *
@@ -34,12 +37,13 @@ import org.apache.hc.core5.http.message.BasicNameValuePair;
  */
 public class HoaDonData {
     //<editor-fold defaultstate="collapsed" desc="Var">
-    private frmQuanLyHoaDon frm;
+    private frmQLHoaDon frm;
+//    private frmQuanLyHoaDon frm;
     private ArrayList<QLHoaDon> arr = new ArrayList();
     QLHoaDon hd = new QLHoaDon();
     //</editor-fold>
     public HoaDonData() throws ParseException, IOException {
-        frm = new frmQuanLyHoaDon();
+        frm = new frmQLHoaDon();
         createArr();
         frm.loadTable(arr);
         frm.searchListener(new SearchListener());
@@ -98,9 +102,38 @@ public class HoaDonData {
             }
         }
     }
-    class SearchListener implements ActionListener {
+//    class SearchListener implements ActionListener {
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            try {
+//                CloseableHttpClient client = HttpClients.createDefault();
+//                HttpPost httpG = new HttpPost("http://localhost:4567/hoa_don/search");
+//                ArrayList<NameValuePair> params = new ArrayList<>();
+//                params.add(new BasicNameValuePair("search", frm.getSearch()));
+//                httpG.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
+//                CloseableHttpResponse response = client.execute(httpG);
+//                HttpEntity entity = response.getEntity();
+//                String responseString = EntityUtils.toString(entity, Charset.defaultCharset());
+//                Gson gson = new Gson();
+//                Type type = new TypeToken<ArrayList<QLHoaDon>>(){}.getType();
+//                arr = gson.fromJson(responseString, type);
+//                frm.loadTable(arr);
+//            } catch (JsonSyntaxException | IOException | ParseException ex) {
+//                JOptionPane.showMessageDialog(null, ex, "Thông báo", 1);
+//            }
+//        }
+//    }
+    class SearchListener implements KeyListener {
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void keyTyped(KeyEvent e) {
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
             try {
                 CloseableHttpClient client = HttpClients.createDefault();
                 HttpPost httpG = new HttpPost("http://localhost:4567/hoa_don/search");

@@ -55,6 +55,7 @@ public class TaiKhoanData {
         if(l.equals("login")){
             this.frm_login = new frmDangNhap();
             frm_login.loginListener(new LoginListener());
+            frm_login.enterListener(new EnterListener());
             frm_login.setVisible(true);
         } else if (l.contains("qlnv")){
             this.frmQL = new frmQuanLyTaiKhoan();
@@ -149,7 +150,7 @@ public class TaiKhoanData {
         @Override
         public void actionPerformed(ActionEvent e) {
             String tk = frm_login.getTK();
-            user=tk;
+            user=tk.toUpperCase();
             String mk = frm_login.getMK();
             if(tk!=null && mk!=null){
                 try {
@@ -176,7 +177,8 @@ public class TaiKhoanData {
                 }
             }
         }
-    }class ConfirmListener implements ActionListener {
+    }
+    class ConfirmListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             String tk = TaiKhoanData.user;
@@ -204,6 +206,49 @@ public class TaiKhoanData {
                     }
                 } catch (IOException | ParseException ex) {
                     JOptionPane.showMessageDialog(null, ex, "Thông báo", 1);
+                }
+            }
+        }
+    }
+    class EnterListener implements KeyListener {
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            if(e.getKeyChar()=='\n'){
+                String tk = frm_login.getTK();
+                String mk = frm_login.getMK();
+                if(tk!=null && mk!=null){
+                    user=tk.toUpperCase();
+                    try {
+                        CloseableHttpClient client = HttpClients.createDefault();
+                        HttpPost httpP = new HttpPost("http://localhost:4567/tai_khoan/login");
+                        ArrayList<NameValuePair> params = new ArrayList<>();
+                        params.add(new BasicNameValuePair("MaNhanVien", tk));
+                        params.add(new BasicNameValuePair("Password", mk));
+                        httpP.setEntity(new UrlEncodedFormEntity(params, Charset.defaultCharset()));
+                        CloseableHttpResponse response = client.execute(httpP);
+                        HttpEntity entity = response.getEntity();
+                        String kq = EntityUtils.toString(entity, Charset.defaultCharset());
+                        phanQuyen=kq;
+                        if(kq.equals("Quản lý")||kq.equals("Nhân viên")){
+                            JOptionPane.showMessageDialog(null, "Đăng nhập thành công", "Thông báo", 1);
+                            frmHome home = new frmHome();
+                            home.setVisible(true);
+                            frm_login.dispose();
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Tài khoản hoặc mật khẩu không chính xác", "Thông báo", 1);
+                        }
+                    } catch (IOException | ParseException ex) {
+                        JOptionPane.showMessageDialog(null, ex, "Thông báo", 1);
+                    }
                 }
             }
         }

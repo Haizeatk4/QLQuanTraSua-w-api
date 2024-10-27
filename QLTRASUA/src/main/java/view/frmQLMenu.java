@@ -45,6 +45,8 @@ public class frmQLMenu extends javax.swing.JFrame implements ActionListener, Key
     private DefaultTableModel model;
     public frmQLMenu() {
         initComponents();
+        File file = new File("");
+        projectPath = file.getAbsolutePath() + "/src/main/java";
         l_acc.setText("Tài khoản: "+TaiKhoanData.user);
         this.model = (DefaultTableModel) td.getModel();
         btn_add.addActionListener(this);
@@ -60,6 +62,13 @@ public class frmQLMenu extends javax.swing.JFrame implements ActionListener, Key
                     // Get the selected file
                     imgChange = true;
                     anh = fileChooser.getSelectedFile();
+                    try {
+                        BufferedImage myPicture = ImageIO.read(new File(anh.getAbsolutePath()));
+                        l_pic.setIcon(new ImageIcon(myPicture.getScaledInstance(200, 200, Image.SCALE_SMOOTH)));
+                        l_pic.repaint();
+                    } catch (IOException ex) {
+                        Logger.getLogger(frmQLMenu.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
         });
         final ListSelectionModel sel = td.getSelectionModel();
@@ -84,15 +93,6 @@ public class frmQLMenu extends javax.swing.JFrame implements ActionListener, Key
         });
         btn_clear.addActionListener((e) -> {
             clearMode();
-        });
-        mi_exit.addActionListener((e) -> {
-           
-        });
-        this.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-              
-            }
         });
         mi_exit.addActionListener((e) -> {
             try {
@@ -284,7 +284,7 @@ public class frmQLMenu extends javax.swing.JFrame implements ActionListener, Key
         mi_exit = new javax.swing.JMenuItem();
         l_acc = new javax.swing.JMenu();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Quản lý Menu");
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 32)); // NOI18N
@@ -475,7 +475,7 @@ public class frmQLMenu extends javax.swing.JFrame implements ActionListener, Key
                             .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btn_clear))
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -486,11 +486,20 @@ public class frmQLMenu extends javax.swing.JFrame implements ActionListener, Key
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_editActionPerformed
-        // TODO add your handling code here:
+        editMode();
     }//GEN-LAST:event_btn_editActionPerformed
 
     private void btn_clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_clearActionPerformed
-        // TODO add your handling code here:
+        clearMode();
+        try {
+            File file = new File("");
+            String currentDirectory = file.getAbsolutePath() + "/src/main/java";
+            BufferedImage myPicture = ImageIO.read(new File(currentDirectory + "/Image/Menu/null.jpeg"));
+            l_pic.setIcon(new ImageIcon(myPicture.getScaledInstance(200, 200, Image.SCALE_SMOOTH)));
+            l_pic.repaint();
+        } catch (IOException ex) {
+            Logger.getLogger(frmQLMenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btn_clearActionPerformed
 
     public static void main(String args[]) {
