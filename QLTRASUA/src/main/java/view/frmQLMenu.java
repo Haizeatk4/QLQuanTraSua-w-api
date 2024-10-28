@@ -303,7 +303,15 @@ public class frmQLMenu extends javax.swing.JFrame implements ActionListener, Key
             new String [] {
                 "Mã Món", "Tên Món", "Số Lượng", "Giá", "Ảnh"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(td);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));

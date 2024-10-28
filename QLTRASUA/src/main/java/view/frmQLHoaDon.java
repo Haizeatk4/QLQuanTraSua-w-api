@@ -224,7 +224,15 @@ public class frmQLHoaDon extends javax.swing.JFrame implements ActionListener, K
             new String [] {
                 "Mã hóa đơn", "Tên nhân viên", "Ngày lập", "Bàn", "Thành tiền", "Tình trạng"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(td);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -233,7 +241,6 @@ public class frmQLHoaDon extends javax.swing.JFrame implements ActionListener, K
         btn_detail.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button/detail_icon.png"))); // NOI18N
         btn_detail.setText("Chi Tiết");
         btn_detail.setEnabled(false);
-        btn_detail.setPreferredSize(new java.awt.Dimension(106, 39));
 
         btn_newOrder.setBackground(new java.awt.Color(255, 255, 254));
         btn_newOrder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button/add_icon.png"))); // NOI18N
@@ -342,7 +349,7 @@ public class frmQLHoaDon extends javax.swing.JFrame implements ActionListener, K
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 586, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1))
                 .addContainerGap())
         );
 

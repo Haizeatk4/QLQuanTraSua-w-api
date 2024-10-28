@@ -28,19 +28,21 @@ import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
+import view.frmChiTietHD;
 
 /**
  *
  * @author ad
  */
 public class ChiTietHoaDonData {
-    frmChiTietHoaDon frm;
+//    frmChiTietHoaDon frm;
+    frmChiTietHD frm;
     ArrayList<ChiTietHoaDon> arr = new ArrayList();
     ChiTietHoaDon cthd;
     QLHoaDon hd;
     public ChiTietHoaDonData(QLHoaDon hd) throws IOException, ParseException {
         this.hd=hd;
-        frm = new frmChiTietHoaDon(hd);
+        frm = new frmChiTietHD(hd);
         createArr(hd.getMaHD());
         frm.loadTable(arr);
         updateTong();

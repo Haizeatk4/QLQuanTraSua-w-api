@@ -64,7 +64,7 @@ import org.apache.hc.core5.http.ParseException;
 public class frmChiTietHoaDon extends JFrame implements ActionListener{
     //<editor-fold defaultstate="collapsed" desc="Var">
     boolean tbdv_isSelected = false, tbhd_isSelected = false;
-    int tbdv_item_id, tbhd_item_id,n;
+    int tbdv_item_id, tbhd_item_id;
     private ArrayList<QLNguyenLieu> arr_nl = new ArrayList();
     private ArrayList<ChiTietHoaDon> arr_hd = new ArrayList();
     private ArrayList<QLMenu> arr_mn = new ArrayList();
@@ -221,7 +221,7 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener{
         l_tenNV.setFont(fo_l);
         l_ngayLap.setFont(fo_l);
         l_ban.setFont(fo_l);
-       
+        
         l_maHD.setText("Mã hóa đơn: " + hd.getMaHD());
         l_tenNV.setText("Nhân viên: " + hd.getTenNhanVien());
         
@@ -359,7 +359,6 @@ public class frmChiTietHoaDon extends JFrame implements ActionListener{
     }
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Method">
-
     public QLHoaDon getChd() {
         return chd;
     }

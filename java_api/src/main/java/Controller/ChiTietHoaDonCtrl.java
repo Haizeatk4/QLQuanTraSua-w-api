@@ -75,12 +75,12 @@ public class ChiTietHoaDonCtrl {
         }
     }
     public String DeleteMon(String ID) throws SQLException {
-        ps = connectDatabase.TaoKetNoi().prepareStatement("select MaDV,SoLuong from chitiethoadon where WHERE STT = ?");
+        ps = connectDatabase.TaoKetNoi().prepareStatement("select MaDV,SoLuong from chitiethoadon where STT = ?");
         ps.setString(1, ID);
         rs = ps.executeQuery();
         rs.next();
         String MaDV = rs.getString("MaDV");
-        int SoLuong = rs.getInt("Soluong");
+        int SoLuong = rs.getInt("SoLuong");
         if(MaDV.contains("NL")){
             NguyenLieuCtrl nl = new NguyenLieuCtrl();
             nl.updateSoLuongNL(MaDV, SoLuong*(-1));
